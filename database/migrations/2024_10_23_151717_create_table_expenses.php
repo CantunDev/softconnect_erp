@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->string('folio');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->foreignId('provider_id')->references('id')->on('providers')->onDelete('cascade');
             $table->tinyInteger('invoiced');
             $table->string('folio_invoiced');
