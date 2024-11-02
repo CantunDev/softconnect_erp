@@ -30,6 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/categories', [ExpensesCategoriesController::class, 'getCategories'])->name('categories.get');
     Route::get('/subcategories/{id}', [ExpensesCategoriesController::class, 'getSubcategories'])->name('subcategories.get');
 
+    Route::post('/fetch-subcategories', [ExpensesController::class, 'fetchSubcategories'])->name('fetchsubcategories');
+    Route::post('/fetch-subsubcategories', [ExpensesController::class, 'fetchSubsubcategories'])->name('fetchsubsubcategories');
+
+
+
 });
 
 require __DIR__.'/auth.php';    
