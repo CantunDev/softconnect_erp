@@ -1,81 +1,176 @@
 <x-app-layout>
-  <x-slot name="header">
-    <h2 class="font-semibold text-xl px-5 text-gray-800 dark:text-gray-200 leading-tight">
-      {{ __('Empresas') }}
-    </h2>
-  </x-slot>
-
-  <div class="py-12 px-0">
-    <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-      <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
-        <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+  <!-- Table Section -->
+  <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <!-- Card -->
+    <div class="flex flex-col">
+      <div class="-m-1.5 overflow-x-auto">
+        <div class="p-1.5 min-w-full inline-block align-middle">
           <div
-            class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
-            <div class="flex items-center flex-1 space-x-4">
-
-            </div>
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-900">
+            <!-- Header -->
             <div
-              class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-              <a href="{{ route('business.create') }}"
-                class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-slate-700 hover:bg-slate-800 focus:ring-4 focus:ring-slate-300 dark:bg-slate-600 dark:hover:bg-slate-700 focus:outline-none dark:focus:ring-slate-800">
-                <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true">
-                  <path clip-rule="evenodd" fill-rule="evenodd"
-                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                </svg>
-                Nueva empresa
-              </a>
+              class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-neutral-700">
+              <div>
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
+                  {{ __('Empresas') }}
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-neutral-400">
+                  0 registros
+                </p>
+              </div>
+
+              <div>
+                <div class="inline-flex gap-x-2">
+                  <a class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                    href="{{ route('business.create') }}">
+                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M5 12h14" />
+                      <path d="M12 5v14" />
+                    </svg>
+                    Nueva empresa
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <!-- End Header -->
+
+            <!-- Table -->
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700 text-sm">
+              <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th scope="col" class="px-4 py-3">Nombre</th>
-                  <th scope="col" class="px-4 py-3">Rfc</th>
-                  <th scope="col" class="px-4 py-3">Línea de negocio</th>
-                  <th scope="col" class="px-4 py-3">Regimen</th>
-                  <th scope="col" class="px-4 py-3">Opciones</th>
+                  <th scope="col" class="px-6 py-3 text-start">
+                    <div class="flex items-center gap-x-2">
+                      <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
+                        Nombre
+                      </span>
+                    </div>
+                  </th>
+
+                  <th scope="col" class="px-6 py-3 text-start">
+                    <div class="flex items-center gap-x-2">
+                      <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
+                        Rfc
+                      </span>
+                    </div>
+                  </th>
+
+                  <th scope="col" class="px-6 py-3 text-start">
+                    <div class="flex items-center gap-x-2">
+                      <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
+                        Linea de negocio
+                      </span>
+                    </div>
+                  </th>
+
+                  <th scope="col" class="px-6 py-3 text-start">
+                    <div class="flex items-center gap-x-2">
+                      <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
+                        Regimen
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-end"></th>
                 </tr>
               </thead>
-              <tbody>
+
+              <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                 <tr>
-                  <td class="px-4 py-2">Demo SA de CV</td>
-                  <td class="px-4 py-2">SGH3567456732</td>
-                  <td class="px-4 py-2">Restaurantes</td>
-                  <td class="px-4 py-2">Fiscal</td>
-                  <td class="flex px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    <a href="{{ route('business.edit', 1) }}" type="button"
-                      class="px-2 py-1 text-xs font-medium text-center inline-flex items-center text-white bg-yellow-600 rounded-lg hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                      <svg class="w-4 h-5 text-white-800 dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="6" height="6" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-                      </svg>
-                    </a>
-                    <form method="POST" action="{{ route('business.destroy', 1) }} ">
-                      @method('DELETE')
-                      {{ csrf_field() }}
-                      <input type="hidden" name="id" value="{{ 1 }}">
-                      <button type="submit"
-                        class="px-2 py-1 ml-1 text-xs font-medium text-center inline-flex items-center text-white bg-gray-600 rounded-lg hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        <svg class="w-4 h-5 text-white-800 dark:text-white" aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                          viewBox="0 0 24 24">
-                          <path fill-rule="evenodd"
-                            d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                            clip-rule="evenodd" />
-                        </svg>
-                      </button>
-                    </form>
+                  <td class="size-px whitespace-nowrap">
+                    <div class="px-6 py-3">
+                      <div class="flex items-center gap-x-3">
+                        <div class="grow">
+                          <span class="block text-sm text-gray-800 dark:text-gray-400">Demo SA de
+                            CV</span>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="h-px w-72 whitespace-nowrap">
+                    <div class="px-6 py-3">
+                      <span class="block text-sm text-gray-800 dark:text-gray-400">SGH3567456732</span>
+                    </div>
+                  </td>
+                  <td class="size-px whitespace-nowrap">
+                    <div class="px-6 py-3">
+                      <span class="text-gray-500 dark:text-gray-400">Restaurantes</span>
+                    </div>
+                  </td>
+                  <td class="size-px whitespace-nowrap">
+                    <div class="px-6 py-3">
+                      <span class="text-gray-500 dark:text-gray-400">Fiscal</span>
+                    </div>
+                  </td>
+                  <td class="size-px whitespace-nowrap">
+                    <div class="px-6 py-1.5">
+                      <div class="flex px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <a href="{{ route('business.edit', 1) }}" type="button"
+                          class="px-2 py-1 text-xs font-medium text-center inline-flex items-center text-white bg-yellow-600 rounded-lg hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                          <svg class="w-4 h-5 text-white-800 dark:text-white" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="6" height="6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                          </svg>
+                        </a>
+
+                        <form method="POST" action="{{ route('business.destroy', 1) }} ">
+                          @method('DELETE')
+                          {{ csrf_field() }}
+                          <input type="hidden" name="id" value="{{ 1 }}">
+                          <button type="submit"
+                            class="px-2 py-1 ml-1 text-xs font-medium text-center inline-flex items-center text-white bg-gray-600 rounded-lg hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <svg class="w-4 h-5 text-white-800 dark:text-white" aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                              viewBox="0 0 24 24">
+                              <path fill-rule="evenodd"
+                                d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                clip-rule="evenodd" />
+                            </svg>
+                          </button>
+                        </form>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
+            <!-- End Table -->
+
+            <!-- Footer -->
+            <div
+              class="px-6 py-4 grid gap-3 md:flex md:justify-end md:items-center border-t border-gray-200 dark:border-neutral-700">
+              <div>
+                <div class="inline-flex gap-x-2">
+                  <button type="button"
+                    class="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-gray-600 dark:focus:bg-gray-600">
+                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="m15 18-6-6 6-6" />
+                    </svg>
+                    Anterior
+                  </button>
+
+                  <button type="button"
+                    class="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-gray-600 dark:focus:bg-gray-600">
+                    Siguiente
+                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- End Footer -->
           </div>
         </div>
       </div>
-    </section>
+    </div>
+    <!-- End Card -->
   </div>
+  <!-- End Table Section -->
 </x-app-layout>
