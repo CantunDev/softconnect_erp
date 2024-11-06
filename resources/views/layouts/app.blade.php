@@ -14,8 +14,10 @@
         <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"  rel="stylesheet" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
+        <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+        <script src="../../media/js/jquery.dataTables.js"></script>
+        <script src="../../media/js/dataTables.tailwindcss.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js">
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
