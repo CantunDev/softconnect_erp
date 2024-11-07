@@ -1,7 +1,8 @@
 <x-app-layout>
   <div class="py-14">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <form action="{{ route('business.store') }}" method="POST" class="dark:bg-gray-800 rounded-xl p-5">
+      <form action="{{ route('business.store') }}" method="POST" class="dark:bg-gray-800 rounded-xl p-5"
+        enctype="multipart/form-data">
         @csrf
         @method('POST')
         <h1 class="text-white text-2xl mb-3 font-semibold">Nueva empresa</h1>
@@ -12,7 +13,10 @@
               corto</label>
             <input type="text" name="name" id="inputName"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Empresa Demo" required>
+              placeholder="Ej: Empresa Demo" value="{{ old('name') }}">
+            @error('name')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 lg:col-span-6">
@@ -20,14 +24,20 @@
               oficial</label>
             <input type="text" name="business_name" id="inputBusinessName"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Empresa Demo SA de CV" required>
+              placeholder="Ej: Empresa Demo SA de CV" value="{{ old('business_name') }}">
+            @error('business_name')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-4 md:col-span-3 lg:col-span-2">
             <label for="inputRfc" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RFC</label>
             <input type="text" name="rfc" id="inputRfc" minlength="12" maxlength="13"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 uppercase"
-              required>
+              value="{{ old('rfc') }}">
+            @error('rfc')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-3">
@@ -35,7 +45,10 @@
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección</label>
             <input type="text" name="business_address" id="inputAddress"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Calle A entre B y C" required>
+              placeholder="Ej: Calle A entre B y C" value="{{ old('business_address') }}">
+            @error('business_address')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 md:col-span-3 lg:col-span-2">
@@ -43,7 +56,10 @@
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Teléfono</label>
             <input type="tel" name="telephone" id="inputPhone" minlength="10" maxlength="15"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: 9380000000" required>
+              placeholder="Ej: 9380000000" value="{{ old('telephone') }}">
+            @error('telephone')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 lg:col-span-4">
@@ -51,7 +67,10 @@
               electrónico</label>
             <input type="email" name="email" id="inputEmail"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 lowercase"
-              placeholder="softconnect_erp@mail.com" required>
+              placeholder="softconnect_erp@mail.com" value="{{ old('email') }}">
+            @error('email')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 lg:col-span-3">
@@ -59,7 +78,10 @@
               <span class="dark:text-gray-500">(opcional)</span></label>
             <input type="url" name="web" id="inputWeb"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: www.sitioweb.com">
+              placeholder="Ej: www.sitioweb.com" value="{{ old('web') }}">
+            @error('web')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
@@ -67,28 +89,41 @@
               negocio</label>
             <input type="text" name="business_line" id="inputBusinessLine"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Restaurantes" required>
+              placeholder="Ej: Restaurantes" value="{{ old('business_line') }}">
+            @error('business_line')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-4 lg:col-span-3">
             <label for="inputCountry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">País</label>
             <input type="text" name="country" id="inputCountry"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              value="México" required>
+              value="{{ old('country', 'México') }}">
+            @error('country')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-4 lg:col-span-3">
-            <label for="inputState" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
+            <label for="inputState"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
             <input type="text" name="state" id="inputState"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              required>
+              value="{{ old('state') }}">
+            @error('state')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-4 lg:col-span-3">
             <label for="inputCity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
             <input type="text" name="city" id="inputCity"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              required>
+              value="{{ old('city') }}">
+            @error('city')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
@@ -96,7 +131,11 @@
               Régimen <span class="dark:text-gray-500">(opcional)</span>
             </label>
             <input type="text" name="regime" id="inputRegime"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              value="{{ old('regime') }}">
+            @error('regime')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
@@ -104,7 +143,11 @@
               Regimen SAT <span class="dark:text-gray-500">(opcional)</span>
             </label>
             <input type="text" name="idregiment_sat" id="inputRegimensat"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              value="{{ old('idregiment_sat') }}">
+            @error('idregiment_sat')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-12 lg:col-span-4">
@@ -113,6 +156,9 @@
             </label>
             <input type="file" name="business_file" accept=".jpg,.jpeg,.png" id="inputLogo"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+            @error('business_file')
+              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="col-span-full">
