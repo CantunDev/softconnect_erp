@@ -1,5 +1,5 @@
 <x-app-layout>
-  <div class="py-14">
+  <div class="py-10">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <form action="{{ route('business.store') }}" method="POST" class="dark:bg-gray-800 rounded-xl p-5"
         enctype="multipart/form-data">
