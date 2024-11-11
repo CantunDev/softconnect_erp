@@ -9,6 +9,7 @@ class Business extends Model
 {
     use HasFactory;
 
+    protected $table = "business";
     protected $fillable = [
         'name', 'business_name', 'business_address', 'rfc', 'telephone', 'business_line', 'email', 'web', 'country', 'state', 'city', 'regime', 'business_file', 'idregiment_sat'
     ];

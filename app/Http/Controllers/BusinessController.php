@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BusinessRequest;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BusinessController extends Controller
@@ -12,7 +13,8 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        return view('business.index');
+        $companies = Business::orderBy('id', 'desc')->paginate(10);
+        return view('business.index', compact('companies'));
     }
 
     /**
@@ -28,7 +30,8 @@ class BusinessController extends Controller
      */
     public function store(BusinessRequest $request)
     {
-        dd($request->all());
+        $business = Business::create($request->validated());
+        return redirect()->route('business.index');
     }
 
     /**
@@ -58,8 +61,10 @@ class BusinessController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $business = Business::findOrFail($id);
+        $business->delete();
+        return redirect()->route('business.index');
     }
 }
