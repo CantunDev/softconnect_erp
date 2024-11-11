@@ -99,7 +99,7 @@
                       </td>
                       <td class="h-px w-72 whitespace-nowrap">
                         <div class="px-6 py-3">
-                          <span class="block text-sm text-gray-800 dark:text-gray-400">{{ $company->rfc }}</span>
+                          <span class="block text-sm text-gray-800 dark:text-gray-400 uppercase">{{ $company->rfc }}</span>
                         </div>
                       </td>
                       <td class="size-px whitespace-nowrap">

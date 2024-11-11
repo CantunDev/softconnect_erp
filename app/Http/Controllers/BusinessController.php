@@ -45,17 +45,21 @@ class BusinessController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $business = Business::findOrFail($id);
+        return view('business.edit', compact('business'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BusinessRequest $request, $id)
     {
-        //
+        $business = Business::findOrFail($id);
+        $business->update($request->all());
+
+        return redirect()->route('business.index');
     }
 
     /**
