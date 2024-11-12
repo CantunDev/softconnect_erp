@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BusinessRequest;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BusinessController extends Controller
 {
@@ -30,7 +31,15 @@ class BusinessController extends Controller
      */
     public function store(BusinessRequest $request)
     {
-        $business = Business::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('business_file') && $request->file('business_file')->isValid()) {
+            $imageName = Str::random(10) . '.' . $request->file('business_file')->getClientOriginalExtension();
+            $request->file('business_file')->storeAs('business', $imageName);
+            $data['business_file'] = $imageName;
+        }
+
+        $business = Business::create($data);
         return redirect()->route('business.index');
     }
 
@@ -57,7 +66,17 @@ class BusinessController extends Controller
     public function update(BusinessRequest $request, $id)
     {
         $business = Business::findOrFail($id);
-        $business->update($request->all());
+        $data = $request->validated();
+
+        if ($request->hasFile('business_file') && $request->file('business_file')->isValid()) {
+            $imageName = Str::random(10) . '.' . $request->file('business_file')->getClientOriginalExtension();
+            $request->file('business_file')->storeAs('business', $imageName);
+            $data['business_file'] = $imageName;
+        } else {
+            $data['business_file'] = $business->business_file;
+        }
+
+        $business->update($data);
 
         return redirect()->route('business.index');
     }

@@ -159,10 +159,17 @@
             @error('business_file')
               <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
             @enderror
+
+            @if ($business->business_file)
+              <div class="mt-4 flex justify-center">
+                <img class="max-w-full h-40 object-cover" src="{{ asset('storage/business/' . $business->business_file) }}"
+                  alt="">
+              </div>
+            @endif
           </div>
 
           <div class="col-span-full">
-            <div class="flex gap-3 items-center">
+            <div class="flex flex-wrap gap-3 items-center">
               <button type="submit"
                 class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
                 Actualizar
