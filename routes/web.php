@@ -3,6 +3,7 @@
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ExpensesCategoriesController;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
@@ -26,9 +27,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('providers', ProvidersController::class);
     Route::resource('expenses_categories', ExpensesCategoriesController::class);
     Route::resource('expenses', ExpensesController::class);
+    Route::resource('payment_method', PaymentMethodController::class);
 
     Route::get('/categories', [ExpensesCategoriesController::class, 'getCategories'])->name('categories.get');
     Route::get('/subcategories/{id}', [ExpensesCategoriesController::class, 'getSubcategories'])->name('subcategories.get');
+
+    Route::post('/fetch-subcategories', [ExpensesController::class, 'fetchSubcategories'])->name('fetchsubcategories');
+    Route::post('/fetch-subsubcategories', [ExpensesController::class, 'fetchSubsubcategories'])->name('fetchsubsubcategories');
+
+
 
 });
 

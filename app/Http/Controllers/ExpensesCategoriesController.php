@@ -13,7 +13,7 @@ class ExpensesCategoriesController extends Controller
      */
     public function index()
     {
-        $expenses_categories = ExpenseCategory::all();
+        $expenses_categories = ExpenseCategory::with('parent','children','subchildren')->where('level',1)->get();
         return view('expenses_categories.index', compact('expenses_categories'));
     }
 
@@ -30,9 +30,35 @@ class ExpensesCategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->all();
-        $expenses_categories = ExpenseCategory::create($request->all());
-        return redirect()->route('expenses_categories.index');
+        // return $request->all();
+        // $expenses_categories = ExpenseCategory::create($request->all());
+        // return redirect()->route('expenses_categories.index');
+
+        // $request->validate([
+        //     'level' => 'required|integer|in:1,2,3',
+        //     'name' => 'required|string|max:255',
+        //     'parent_category' => 'required_if:level,2,3|exists:expenses_categories,id',
+        //     'parent_subcategory' => 'required_if:level,3|exists:expenses_categories,id'
+        // ]);
+
+        $category = new ExpenseCategory();
+        $category->name = $request->name;
+        $category->level = $request->level;
+
+        if ($request->level == 1) {
+            // Categoría principal
+            $category->parent_id = null;
+        } elseif ($request->level == 2) {
+            // Subcategoría
+            $category->parent_id = $request->parent_category;
+        } elseif ($request->level == 3) {
+            // Sub-subcategoría
+            $category->parent_id = $request->parent_subcategory;
+        }
+        // return $category;
+        $category->save();
+
+        return redirect()->route('expenses_categories.index')->with('success', 'Categoría creada exitosamente.');
     }
 
     /**
