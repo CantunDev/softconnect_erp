@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cheques;
 use App\Models\Provider;
+use Illuminate\Database\DatabaseServiceProvider;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class ProvidersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
+        /*INDEX PARA PROVEEDORES */
         $providers = Provider::all();
         return view('providers.index', compact('providers'));
     }
