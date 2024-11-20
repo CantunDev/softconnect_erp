@@ -48,7 +48,8 @@ class DatabaseService
              "Database" => $database,
              "UID" => "sa",
              "PWD" => "National09",
-             "CharacterSet" => "UTF-8" // Define el conjunto de caracteres a UTF-8
+             "CharacterSet" => "UTF-8",
+             "TrustServerCertificate" => true
          ];
         $conn = sqlsrv_connect($serverName, $connectionInfo); 
         if ($conn === false) {

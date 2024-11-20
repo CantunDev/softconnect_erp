@@ -73,7 +73,7 @@
                                             @foreach ($categories->children as $l => $children)
                                                 @foreach ($children->subchildren as $k => $sub)
                                                 <li>
-                                                {{$i."." . $l+1 . "." . $k = $k+1 }}    {{$sub->name}}
+                                                {{$i."." . $l+1 . "." .$k+1 }}    {{$sub->name}}
                                                 </li>
                                                 @endforeach
                                             @endforeach

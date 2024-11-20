@@ -23,7 +23,9 @@ class ChequesController extends Controller
         $ip = '192.168.193.73';
         $database = 'softrestaurant11';
         $tabla = 'cheques';
-        
+        $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
+        $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);  
+        // return $results;
         if ($request->ajax()){
             $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
             $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);   
