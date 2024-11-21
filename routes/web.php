@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChequesController;
+use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ConnectionSQLController;
 use App\Http\Controllers\ExpensesCategoriesController;
 use App\Http\Controllers\ExpensesController;
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('expenses', ExpensesController::class);
     Route::resource('payment_method', PaymentMethodController::class);
     Route::resource('cheques', ChequesController::class);
+    Route::resource('invoices', InvoicesController::class);
     // Route::group(['prefix' => 'cheques'], function(){
     //     Route::post('get/{ip}/{database}/{table}', ChequesController::class, 'get')->name('cheques.get');
     // });

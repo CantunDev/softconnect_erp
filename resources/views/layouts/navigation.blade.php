@@ -49,6 +49,9 @@
                     <x-nav-link :href="route('providers.index')" :active="request()->routeIs('providers.index')">
                         {{ __('Proveedores') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.index')">
+                        {{ __('Facturas') }}
+                    </x-nav-link>
                     <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownOperations" class="flex items-center justify-between w-full py-2 px-3 text-sm text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
                         Operaciones 
                         <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
