@@ -26,15 +26,18 @@
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-4 py-3">Fecha</th>
-                                    <th scope="col" class="px-4 py-3">Folio Nota </th>
-                                    <th scope="col" class="px-4 py-3">Folio Factura</th>
-                                    <th scope="col" class="px-4 py-3">Proveedor</th>
-                                    <th scope="col" class="px-4 py-3">Metodo de pago</th>
+                                    <th scope="col" class="px-4 py-3">Fecha cuenta</th>
+                                    <th scope="col" class="px-4 py-3">Folio cuenta </th>
+                                    <th scope="col" class="px-4 py-3">Cliente</th>
+                                    <th scope="col" class="px-4 py-3">Correo</th>
+                                    <th scope="col" class="px-4 py-3">Forma pago</th>
+                                    <th scope="col" class="px-4 py-3">Tipo</th>
+                                    <th scope="col" class="px-4 py-3">Fecha factura</th>
+                                    <th scope="col" class="px-4 py-3">Folio factura</th>
                                     <th scope="col" class="px-4 py-3">Subtotal</th>
                                     <th scope="col" class="px-4 py-3">Iva</th>
-                                    <th scope="col" class="px-4 py-3">Descuento</th>
                                     <th scope="col" class="px-4 py-3">Total</th>
+                                    <th scope="col" class="px-4 py-3">Estado</th>
                                     <th scope="col" class="px-4 py-3"></th>
                                 </tr>
                             </thead>
