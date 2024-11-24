@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\DatabaseService;
 use DB;
 use App\Models\InvoiceSfrt;
-use PDO;
-use PDOException;
+use Yajra\DataTables\Facades\DataTables;
 
 class InvoicesController extends Controller
 {
@@ -38,8 +37,10 @@ class InvoicesController extends Controller
             // return response()->json($results);
             // $assigned = AssingRegister::with(['register','operator','unit','status'])->get();
             return DataTables::of($results)
-            ->addIndexColumn()
-            ->rawColumns([])
+                ->addIndexColumn()
+            // ->addColumn('sfolio', function($result){
+            //     return $result['nota'];
+            // })
             ->make(true);
             // ->toJson();
             // ->make(true);
