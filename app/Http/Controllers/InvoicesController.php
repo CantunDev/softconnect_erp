@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\DatabaseService;
 use Illuminate\Http\Request;
+use App\Services\DatabaseService;
+use DB;
+use App\Models\InvoiceSfrt;
 use Yajra\DataTables\Facades\DataTables;
 
-class ChequesController extends Controller
+class InvoicesController extends Controller
 {
     protected $connectService;
 
@@ -20,9 +22,12 @@ class ChequesController extends Controller
      */
     public function index(Request $request)
     {
+        //  return $facturas = InvoiceSfrt::all();
+        //  return $facturas = DB::connection('sqlsrv')->table('facturas')->get(); // Uses SQL Server
+
         $ip = '192.168.193.73';
         $database = 'softrestaurant11';
-        $tabla = 'cheques';
+        $tabla = 'facturas';
         // $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
         // $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);  
         // return $results;
@@ -32,30 +37,16 @@ class ChequesController extends Controller
             // return response()->json($results);
             // $assigned = AssingRegister::with(['register','operator','unit','status'])->get();
             return DataTables::of($results)
-            ->addIndexColumn()
-            ->addColumn('sfolio', function($result){
-                $result = (array) $result; // Convertir en array
-                return $result['seriefolio'] . $result['folio'];
-            })
-            ->rawColumns(['sfolio'])
+                ->addIndexColumn()
+            // ->addColumn('sfolio', function($result){
+            //     return $result['nota'];
+            // })
             ->make(true);
             // ->toJson();
             // ->make(true);
          }
-        return view('cheques.index');
 
-       
-    }
-
-    public function get(Request $request, $ip, $database,$tabla)
-    {
-            $ip = '192.168.193.73';
-            $database = 'softrestaurant11';
-            $tabla = 'cheques';
-            
-            $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
-            $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);   
-            return response()->json($results);
+        return view('invoices.index');
     }
 
     /**

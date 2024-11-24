@@ -20,7 +20,13 @@
   <!-- App Css-->
   <link href="{{ asset('/skote/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+ 
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   @vite(['resources/js/app.js'])
+  
 </head>
 
 <body data-sidebar="dark">
@@ -419,7 +425,9 @@
               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <img class="rounded-circle header-profile-user"
                 src="{{ asset('/skote/assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
-              <span class="d-none d-xl-inline-block ms-1" key="t-henry">Henry</span>
+              <span class="d-none d-xl-inline-block ms-1" key="{{Auth::user()->name}}">
+                <div>{{ Auth::user()->name }}</div>
+              </span>
               <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end">
@@ -517,6 +525,12 @@
               <a href="{{ route('providers.index') }}" class="waves-effect">
                 <i class="bx bx-chat"></i>
                 <span key="t-chat">Proveedores</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('invoices.index') }}" class="waves-effect">
+                <i class="bx bx-chat"></i>
+                <span key="t-chat">Facturas</span>
               </a>
             </li>
 
@@ -861,29 +875,7 @@
     <!-- ============================================================== -->
     <div class="main-content">
 
-      <div class="page-content">
-        <div class="container-fluid">
-
-          <!-- start page title -->
-          <div class="row">
-            <div class="col-12">
-              <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Starter Page</h4>
-
-                <div class="page-title-right">
-                  <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Utility</a></li>
-                    <li class="breadcrumb-item active">Starter Page</li>
-                  </ol>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <!-- end page title -->
-
-        </div> <!-- container-fluid -->
-      </div>
+              @yield('content')
       <!-- End Page-content -->
 
 

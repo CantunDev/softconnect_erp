@@ -97,25 +97,30 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        // 'sqlsrv' => [
-        //     'driver' => 'sqlsrv',
-        //     'url' => env('DB_URL'),
-        //     'host' => env('SECOND_DB_HOST', 'localhost'),
-        //     // 'instance' => env('SECOND_DB_INSTANCE', 'NATIONALSOFT'),  // Especifica la instancia aquí
-        //     // 'port' => env('SECOND_DB_PORT', '1433'),
-        //     'database' => env('SECOND_DB_DATABASE', 'softrestaurant10'),
-        //     'username' => env('SECOND_DB_USERNAME', 'sa'),
-        //     'password' => env('SECOND_DB_PASSWORD', 'National09'),
-        //     'charset' => env('DB_CHARSET', 'utf8'),
-        //     'prefix' => '',
-        //     'prefix_indexes' => true,
-        //     'options' => [
-        //         PDO::SQLSRV_ATTR_DIRECT_QUERY => true,
-        //         PDO::ATTR_TIMEOUT => env('SECOND_DB_TIMEOUT', 30), // Tiempo de espera en segundos
-        //         'ConnectionPooling' => false,
-        //     ],
-
-        // ],
+       'sqlsrv' => [
+            'driver' => 'sqlsrv',
+            // Host con instancia si es necesario
+            'host' => env('DB_SQL_HOST', 'localhost') . (env('DB_SQL_INSTANCE') ? '\\' . env('DB_SQL_INSTANCE') : ''),
+            'port' => env('DB_SQL_PORT', '1433'),
+            'database' => env('DB_SQL_DATABASE', 'forge'),
+            'username' => env('DB_SQL_USERNAME', 'forge'),
+            'password' => env('DB_SQL_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            // 'options' => [
+            //     PDO::ATTR_TIMEOUT => 30, // Tiempo de espera en segundos
+            // ],
+            // 'options' => extension_loaded('pdo_sqlsrv') ? [
+            'options' => [
+                PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_UTF8,
+                PDO::ATTR_TIMEOUT => 120, // Tiempo de espera en segundos
+                // Opciones para certificados o configuraciones específicas
+                'TrustServerCertificate' => true, // Para certificados autofirmados
+                'Encrypt' => FALSE, // Deshabilitar SSL si no es necesario
+            ],
+        ],
+            // ],
         // 'sqlsrv' => [
         //     'driver' => 'sqlsrv',
         //     'url' => env('DB_URL'),
