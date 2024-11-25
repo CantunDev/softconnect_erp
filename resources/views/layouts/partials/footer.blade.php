@@ -4,11 +4,12 @@
       <div class="col-sm-6">
         <script>
           document.write(new Date().getFullYear())
-        </script> © Skote.
+        </script> © Softconnect_ERP
       </div>
       <div class="col-sm-6">
         <div class="text-sm-end d-none d-sm-block">
-          Design & Develop by Themesbrand
+          Desarrollado por <a href="https://jsarturo.netlify.app/" target="_blank">Arturo</a> y <a
+            href="https://cantun.com/" target="_blank">Bernabe</a>.
         </div>
       </div>
     </div>

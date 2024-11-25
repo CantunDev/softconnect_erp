@@ -12,6 +12,12 @@
   <!-- App favicon -->
   <link rel="shortcut icon" href="{{ asset('/skote/assets/images/favicon.ico') }}">
 
+  <!-- DataTables -->
+  <link href="{{ asset('/skote/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+    type="text/css" />
+  <link href="{{ asset('/skote/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+    rel="stylesheet" type="text/css" />
+
   <!-- Bootstrap Css -->
   <link href="{{ asset('/skote/assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet"
     type="text/css" />
@@ -20,13 +26,14 @@
   <!-- App Css-->
   <link href="{{ asset('/skote/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
- 
- 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> --}}
   @vite(['resources/js/app.js'])
-  
 </head>
 
 <body data-sidebar="dark">
@@ -46,9 +53,6 @@
       <div class="page-content">
         <div class="container-fluid">
           @yield('content')
-
-
-
         </div> <!-- container-fluid -->
       </div>
       <!-- End Page-content -->
@@ -70,6 +74,13 @@
   <script src="{{ asset('./skote/assets/libs/node-waves/waves.min.js') }}"></script>
 
   <script src="{{ asset('/skote/assets/js/app.js') }}"></script>
+
+  <!-- Datatables -->
+  <script src="{{ asset('/skote/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('/skote/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('/skote/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('/skote/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+  @yield('js')
 </body>
 
 </html>
