@@ -125,32 +125,36 @@
             </div>
         </div>
 
-   <script>
-        $(document).ready(function(){
-            $('#table_invoices').DataTable({
-                processing: true,
-                serverSide: true,
-                paging: true,
-                ajax: {
-                    url: '{!! route('invoices.index') !!}',
-                },
-                columns: [
-                    // {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}
-                     {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
-                     {data: 'nota', name: 'nota', orderable: false, searchable: false},
-                     {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
-                     {data: 'nota', name: 'nota', orderable: false, searchable: false},
-                     {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
-                     {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
-                     {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false},
-                     {data: 'impuesto', name: 'impuesto', orderable: false, searchable: false},
-                     {data: 'total', name: 'total', orderable: false, searchable: false},
-                     {data: 'tipoesquema', name: 'tipoesquema', orderable: false, searchable: false},
-                     {data: 'formapago', name: 'formapago', orderable: false, searchable: false},
-                     {data: 'nota', name: 'nota', orderable: false, searchable: false},
-                     {data: 'nota', name: 'nota', orderable: false, searchable: false}
-                ],
-            });
+
+@endsection
+
+@section('js')
+<script>
+    $(document).ready(function(){
+        $('#table_invoices').DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            ajax: {
+                url: '{!! route('invoices.index') !!}',
+            },
+            columns: [
+                // {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}
+                 {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
+                 {data: 'nota', name: 'nota', orderable: false, searchable: false},
+                 {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
+                 {data: 'nota', name: 'nota', orderable: false, searchable: false},
+                 {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
+                 {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
+                 {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false},
+                 {data: 'impuesto', name: 'impuesto', orderable: false, searchable: false},
+                 {data: 'total', name: 'total', orderable: false, searchable: false},
+                 {data: 'tipoesquema', name: 'tipoesquema', orderable: false, searchable: false},
+                 {data: 'formapago', name: 'formapago', orderable: false, searchable: false},
+                 {data: 'nota', name: 'nota', orderable: false, searchable: false},
+                 {data: 'nota', name: 'nota', orderable: false, searchable: false}
+            ],
         });
-    </script>
+    });
+</script>
 @endsection

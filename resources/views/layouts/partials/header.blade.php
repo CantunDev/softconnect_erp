@@ -170,7 +170,7 @@
 
     <div class="d-flex">
 
-      <div class="dropdown d-inline-block d-lg-none ms-2">
+      {{-- <div class="dropdown d-inline-block d-lg-none ms-2">
         <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="mdi mdi-magnify"></i>
@@ -188,7 +188,7 @@
             </div>
           </form>
         </div>
-      </div>
+      </div> --}}
 
       {{-- <div class="dropdown d-inline-block">
         <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true"

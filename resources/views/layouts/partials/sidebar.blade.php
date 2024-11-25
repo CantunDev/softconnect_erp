@@ -70,6 +70,13 @@
         </li>
 
         <li>
+          <a href="{{ route('invoices.index') }}" class="waves-effect">
+            <i class="bx bx-receipt"></i>
+            <span key="t-chat">Facturas</span>
+          </a>
+        </li>
+
+        <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-money"></i>
             <span key="t-projects">Operaciones</span>
