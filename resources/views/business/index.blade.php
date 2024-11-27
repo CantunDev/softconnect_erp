@@ -178,18 +178,25 @@
 @endsection
 
 @section('content')
-  <div class="row">
-    <div class="col-12">
-      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-        <h4 class="mb-sm-0 font-size-18">Empresas</h4>
-      </div>
-    </div>
-  </div>
+  @component('components.breadcrumb')
+    @slot('title')
+      Empresas
+    @endslot
+    @slot('bcPrevText')
+      Empresas
+    @endslot
+    @slot('bcPrevLink')
+      {{ route('business.index') }}
+    @endslot
+    @slot('bcActiveText')
+      Listado
+    @endslot
+  @endcomponent
 
   <div class="card">
     <div class="card-body">
       <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('business.create') }}" class="btn btn-success">
+        <a href="{{ route('business.create') }}" class="btn btn-success d-flex align-items-center gap-1">
           <i class="bx bx-plus font-size-15"></i> Nueva empresa
         </a>
       </div>
