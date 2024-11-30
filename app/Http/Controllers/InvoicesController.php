@@ -51,10 +51,13 @@ class InvoicesController extends Controller
             // return response()->json($results);
             // $assigned = AssingRegister::with(['register','operator','unit','status'])->get();
             return DataTables::of($facturas)
-                ->addIndexColumn()
-            // ->addColumn('sfolio', function($result){
-            //     return $result['nota'];
-            // })
+                // ->addIndexColumn()
+                ->addColumn('sfrtFolioInvoice', function($result){
+                    return $result->serie.$result->folio;
+                })
+                ->addColumn('sfrtCustomer', function($result){
+                    return $result->customer->nombre;
+                })
             ->make(true);
             // ->toJson();
             // ->make(true);
