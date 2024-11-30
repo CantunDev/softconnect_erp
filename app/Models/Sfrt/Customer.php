@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Sfrt;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InvoiceSfrt extends Model
+class Customer extends Model
 {
     use HasFactory;
 
     protected $connection = 'sqlsrv'; 
-    protected $table = 'facturas';
+    protected $table = 'clientes';
     public $timestamps = false;
 
      /**
