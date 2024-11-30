@@ -12,6 +12,9 @@ class Invoice extends Model
     
     protected $connection = 'sqlsrv'; 
     protected $table = 'facturas';
+    protected $casts = [
+        'fecha' => 'datetime',
+    ];
     public $timestamps = false;
 
      /**
@@ -24,8 +27,16 @@ class Invoice extends Model
         (new static())->setConnection($connectionName);
     }
 
+
+    public function getNotaProcesadoAttribute()
+    {
+        $nota = $this->nota ?? '';
+        $notaProcesado = str_replace('Folios: P', '', $nota);
+        return trim($notaProcesado); 
+    }
+
     /**
-     * Get the user that owns the Invoice
+     * Get the customers that owns the Invoice
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -33,4 +44,18 @@ class Invoice extends Model
     {
         return $this->belongsTo(Customer::class, 'idcliente', 'idcliente');
     }
+
+    /**
+     * Get the cheques that owns the Invoice
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function cheques(): BelongsTo
+    {
+        return $this->belongsTo(Cheques::class, 'notaProcesado', 'numcheque');
+                    // ->where('numcheque', 'LIKE', '%$valor%');
+    }
+
+
+
 }

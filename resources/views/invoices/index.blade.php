@@ -140,12 +140,12 @@
             },
             columns: [
                 // {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}
-                 {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
+                 {data: 'sfrtNotaDate', name: 'sfrtNotaDate', orderable: false, searchable: false},
                  {data: 'nota', name: 'nota', orderable: false, searchable: false},
                  {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
                  {data: 'sfrtFolioInvoice', name: 'sfrtFolioInvoice', orderable: false, searchable: false},
                  {data: 'sfrtCustomer', name: 'sfrtCustomer', orderable: false, searchable: false},
-                 {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
+                 {data: 'sfrtCustomerEmail', name: 'sfrtCustomerEmail', orderable: false, searchable: false},
                  {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false},
                  {data: 'impuesto', name: 'impuesto', orderable: false, searchable: false},
                  {data: 'total', name: 'total', orderable: false, searchable: false},

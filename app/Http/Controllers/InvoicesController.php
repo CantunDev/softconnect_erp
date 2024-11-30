@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\DatabaseService;
 use Illuminate\Support\Facades\DB;
-use App\Models\InvoiceSfrt;
 use App\Models\Sfrt\Invoice;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Config;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class InvoicesController extends Controller
 {
@@ -37,7 +38,7 @@ class InvoicesController extends Controller
         Config::set('database.connections.sqlsrv.host', $ip);
         Config::set('database.connections.sqlsrv.database', $database);
         DB::purge('sqlsrv');
-        InvoiceSfrt::setDynamicConnection('sqlsrv');
+        //InvoiceSfrt::setDynamicConnection('sqlsrv');
 
         // $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
         // $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);  
@@ -52,12 +53,22 @@ class InvoicesController extends Controller
             // $assigned = AssingRegister::with(['register','operator','unit','status'])->get();
             return DataTables::of($facturas)
                 // ->addIndexColumn()
+                ->addColumn('sfrtNotaDate', function($result){
+                    return $result->fecha->format('d-m-Y');
+                })
                 ->addColumn('sfrtFolioInvoice', function($result){
                     return $result->serie.$result->folio;
                 })
                 ->addColumn('sfrtCustomer', function($result){
-                    return $result->customer->nombre;
+                    return Str::limit($result->customer->nombre,20, '...');
                 })
+                ->addColumn('sfrtCustomerEmail', function($result){
+                    return Str::limit($result->customer->email,15, '...');
+                })
+                ->editColumn('fecha', function($result){
+                    return $result->fecha->format('d-m-Y');
+                })
+               
             ->make(true);
             // ->toJson();
             // ->make(true);
