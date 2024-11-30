@@ -47,8 +47,7 @@ class InvoicesController extends Controller
             // $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
             // $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);   
             // $facturas = InvoiceSfrt::paginate(10);
-            $facturas = Invoice::query(); // Esto te permitirá usar la paginación de DataTables
-
+            $facturas = Invoice::query()->sinCancelados();
             // return response()->json($results);
             // $assigned = AssingRegister::with(['register','operator','unit','status'])->get();
             return DataTables::of($facturas)

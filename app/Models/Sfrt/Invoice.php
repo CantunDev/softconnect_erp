@@ -56,6 +56,9 @@ class Invoice extends Model
                     // ->where('numcheque', 'LIKE', '%$valor%');
     }
 
-
+    public function scopeSinCancelados($query)
+    {
+        return $query->whereNull('usuariocancelo');
+    }
 
 }
