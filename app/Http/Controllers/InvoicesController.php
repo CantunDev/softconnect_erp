@@ -25,7 +25,6 @@ class InvoicesController extends Controller
      */
     public function index(Request $request)
     {
-
         // try {
         //     DB::connection()->getPdo();
         //     return "Conexión exitosa a la base de datos: " . DB::connection('sqlsrv')->getDatabaseName();
@@ -33,8 +32,8 @@ class InvoicesController extends Controller
         //     return "Error en la conexión: " . $e->getMessage();
         // }
         //  return $facturas = DB::connection('sqlsrv')->table('facturas')->paginate(100); // Uses SQL Server
-        $ip = '192.168.193.73\NATIONALSOFT';
-        $database = 'softrestaurant11';
+        $ip = '192.168.193.29\NATIONALSOFT';
+        $database = 'softrestaurant10';
         Config::set('database.connections.sqlsrv.host', $ip);
         Config::set('database.connections.sqlsrv.database', $database);
         DB::purge('sqlsrv');
@@ -53,7 +52,8 @@ class InvoicesController extends Controller
             return DataTables::of($facturas)
                 // ->addIndexColumn()
                 ->addColumn('sfrtNotaDate', function($result){
-                    return $result->fecha->format('d-m-Y');
+                    //  return $result->notaprocesado;
+                    return $result->cheques && $result->cheques->fecha ? $result->cheques->fecha->format('d-m-Y') : '' ;
                 })
                 ->addColumn('sfrtFolioInvoice', function($result){
                     return $result->serie.$result->folio;
@@ -62,15 +62,26 @@ class InvoicesController extends Controller
                     return Str::limit($result->customer->nombre,20, '...');
                 })
                 ->addColumn('sfrtCustomerEmail', function($result){
-                    return Str::limit($result->customer->email,15, '...');
+                    return '<span class="badge badge-soft-primary">'.Str::limit($result->customer->email,15, '...') .'</span>';
+                })
+                ->editColumn('formapago', function($result){
+                    return $result->FormaDePagoTexto;
+                })
+                ->editColumn('idmetodopago_SAT', function($result){
+                    $opciones = '';
+                    if ($result->idmetodopago_SAT == 'PUE') {
+                        $opciones .= '<span class="badge bg-success">' . $result->idmetodopago_SAT . '</span>';
+                    } else {
+                        $opciones .=  '<span class="badge bg-warning">' . $result->idmetodopago_SAT . '</span>';
+                    }
+                    return $opciones;
+
                 })
                 ->editColumn('fecha', function($result){
                     return $result->fecha->format('d-m-Y');
                 })
-               
-            ->make(true);
-            // ->toJson();
-            // ->make(true);
+                ->rawColumns(['sfrtCustomerEmail','idmetodopago_SAT'])
+                ->make(true);
          }
 
         return view('invoices.index');

@@ -12,6 +12,9 @@ class Cheques extends Model
     protected $connection = 'sqlsrv'; 
     protected $table = 'cheques';
     public $timestamps = false;
+    protected $casts = [
+        'fecha' => 'datetime',
+    ];
 
      /**
      * Establece dinámicamente la conexión de base de datos.

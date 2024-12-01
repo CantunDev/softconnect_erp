@@ -15,6 +15,8 @@ class Invoice extends Model
     protected $casts = [
         'fecha' => 'datetime',
     ];
+    protected $appends = ['NotaProcesado'];
+
     public $timestamps = false;
 
      /**
@@ -31,8 +33,58 @@ class Invoice extends Model
     public function getNotaProcesadoAttribute()
     {
         $nota = $this->nota ?? '';
-        $notaProcesado = str_replace('Folios: P', '', $nota);
-        return trim($notaProcesado); 
+        $serie = Cheques::first()->seriefolio ?? '';
+        if ($serie) {
+            $notaProcesado = str_replace('Folios: ' . $serie, '', $nota);
+        } else {
+            $notaProcesado = str_replace('Folios: ', '', $nota);
+        }
+        return trim($notaProcesado);
+    }
+    
+    public function scopeSinCancelados($query)
+    {
+        $serie = $this->serie ?? '';  
+        return $query->where('nombre_emisor', '!=', '')
+                 ->where(function($query) use ($serie) {
+                    $nota = Cheques::first()->seriefolio ?? '';
+                        if ($nota === $serie) {
+                         $query->where('nota', 'like', 'Folios: ' . $serie . '%');
+                        } elseif (!is_null($nota)) {
+                         $query->Where('nota', 'like', 'Folios: '.$nota. '%'); 
+                        }else{
+                          $query->where('nota', 'not like', 'Folios: %');
+                        }
+                 });
+    }
+
+    public function getFormaDePagoTextoAttribute()
+    {
+        $formasDePago = [
+            '01' => 'Efectivo',
+            '02' => 'Cheque nominativo',
+            '03' => 'Transferencia electrónica de fondos',
+            '04' => 'Tarjeta de crédito',
+            '05' => 'Monedero electrónico',
+            '06' => 'Dinero electrónico',
+            '08' => 'Vales de despensa',
+            '12' => 'Dación en pago',
+            '13' => 'Pago por subrogación',
+            '14' => 'Pago por consignación',
+            '15' => 'Condonación',
+            '17' => 'Compensación',
+            '23' => 'Novación',
+            '24' => 'Confusión',
+            '25' => 'Remisión de deuda',
+            '26' => 'Prescripción o caducidad',
+            '27' => 'A satisfacción del acreedor',
+            '28' => 'Tarjeta de débito',
+            '29' => 'Tarjeta de servicios',
+            '30' => 'Aplicación de anticipos',
+            '99' => 'Por definir'
+        ];
+        return $formasDePago[$this->formapago] ?? 'Código no válido';
+
     }
 
     /**
@@ -52,13 +104,7 @@ class Invoice extends Model
      */
     public function cheques(): BelongsTo
     {
-        return $this->belongsTo(Cheques::class, 'notaProcesado', 'numcheque');
-                    // ->where('numcheque', 'LIKE', '%$valor%');
-    }
+        return $this->belongsTo(Cheques::class, 'NotaProcesado', 'numcheque');
 
-    public function scopeSinCancelados($query)
-    {
-        return $query->whereNull('usuariocancelo');
     }
-
 }
