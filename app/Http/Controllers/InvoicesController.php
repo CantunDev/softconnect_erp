@@ -32,12 +32,14 @@ class InvoicesController extends Controller
         //     return "Error en la conexión: " . $e->getMessage();
         // }
         //  return $facturas = DB::connection('sqlsrv')->table('facturas')->paginate(100); // Uses SQL Server
-        $ip = '192.168.193.29\NATIONALSOFT';
-        $database = 'softrestaurant10';
+        $ip = '192.168.193.73\NATIONALSOFT';
+        $database = 'softrestaurant11';
         Config::set('database.connections.sqlsrv.host', $ip);
         Config::set('database.connections.sqlsrv.database', $database);
         DB::purge('sqlsrv');
         //InvoiceSfrt::setDynamicConnection('sqlsrv');
+        $mes = Carbon::now()->month; // Obtiene el mes actual
+        $mes = Carbon::createFromFormat('Y-m', '2024-11')->month; // Mes de noviembre de 2024
 
         // $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
         // $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);  
@@ -46,7 +48,7 @@ class InvoicesController extends Controller
             // $columnas = $request->input('columnas') ? explode(',', $request->input('columnas')) : ['*'];
             // $results = $this->connectService->ejecutarConsultaDinamica($ip, $database, $tabla, $columnas);   
             // $facturas = InvoiceSfrt::paginate(10);
-            $facturas = Invoice::query()->sinCancelados();
+            $facturas = Invoice::query()->sinCancelados()->whereMonth('fecha', $mes) ;
             // return response()->json($results);
             // $assigned = AssingRegister::with(['register','operator','unit','status'])->get();
             return DataTables::of($facturas)
