@@ -52,14 +52,9 @@ class Invoice extends Model
                 $nota
             );
         } else {
-            // Si no hay serie, eliminar cualquier "Folios: ..." o "Factura parcial del ..."
-            $notaProcesado = preg_replace(
-                ["/Folios: .+/", "/ Factura parcial del .*$/"], 
-                '', 
-                $nota
-            );
-        }
-        
+            $notaProcesado = str_replace('Folios: (.*)$/', '', $nota);
+            $notaProcesado = str_replace('Factura parcial del (.*)$/', '', $notaProcesado);
+        }       
         // Eliminar cualquier texto residual que no sea números y comas
         $notaProcesado = preg_replace("/[^0-9,]/", '', $notaProcesado);
         
@@ -74,22 +69,6 @@ class Invoice extends Model
         
 
     }
-    
-        // public function scopeSinCancelados($query)
-        // {
-        //     $serie = $this->serie ?? '';  
-        //     return $query->where('nombre_emisor', '!=', '')
-        //             ->where(function($query) use ($serie) {
-        //                 $nota = Cheques::first()->seriefolio ?? '';
-        //                     if ($nota === $serie) {
-        //                     $query->where('nota', 'like', 'Folios: ' . $serie . '%');
-        //                     } elseif (!is_null($nota)) {
-        //                     $query->Where('nota', 'like', 'Folios: '.$nota. '%'); 
-        //                     }else{
-        //                     $query->where('nota', 'not like', 'Folios: %');
-        //                     }
-        //             });
-        // }
 
     public function scopeSinCancelados($query)
     {

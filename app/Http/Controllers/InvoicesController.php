@@ -54,7 +54,7 @@ class InvoicesController extends Controller
             return DataTables::of($facturas)
                 // ->addIndexColumn()
                 ->addColumn('sfrtNotaDate', function($result){
-                    //  return $result->notaprocesado;
+                    // return $result->notaprocesado;
                     return $result->cheques && $result->cheques->fecha ? $result->cheques->fecha->format('d-m-Y') : '' ;
                 })
                 ->addColumn('sfrtFolioInvoice', function($result){
