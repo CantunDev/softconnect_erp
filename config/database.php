@@ -97,10 +97,28 @@ return [
             'sslmode' => 'prefer',
         ],
 
-       'sqlsrv' => [
+        // 'sqlsrv' => [
+        //     'driver' => 'sqlsrv',
+        //     //'host' => env('DB_SQL_HOST', 'localhost') . (env('DB_INSTANCE') ? '\\' . env('DB_INSTANCE') : ''),
+        //     'host' => env('DB_SQL_HOST', 'localhost'),
+        //     'port' => env('DB_SQL_PORT', '1433'), //49771
+        //     'database' => env('DB_SQL_DATABASE', 'forge'),
+        //     'username' => env('DB_SQL_USERNAME', 'forge'),
+        //     'password' => env('DB_SQL_PASSWORD', ''),
+        //     'charset' => 'utf8',
+        //     'prefix' => '',
+        //     'prefix_indexes' => true,
+        //     'options' => extension_loaded('pdo_sqlsrv') ? [
+        //         PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_UTF8,
+        //         PDO::ATTR_TIMEOUT => 30, // Tiempo de espera en segundos
+        //         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Manejar excepciones correctamente
+        //         'TrustServerCertificate' => true, // Para certificados autofirmados
+        //         'Encrypt' =>false, // Habilitar o deshabilitar SSL
+        //     ] : [],
+        // ],
+        'sqlsrv' => [
             'driver' => 'sqlsrv',
-            // Host con instancia si es necesario
-            'host' => env('DB_SQL_HOST', 'localhost') . (env('DB_SQL_INSTANCE') ? '\\' . env('DB_SQL_INSTANCE') : ''),
+            'host' => env('DB_SQL_HOST', 'localhost'),
             'port' => env('DB_SQL_PORT', '1433'),
             'database' => env('DB_SQL_DATABASE', 'forge'),
             'username' => env('DB_SQL_USERNAME', 'forge'),
@@ -108,33 +126,9 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            // 'options' => [
-            //     PDO::ATTR_TIMEOUT => 30, // Tiempo de espera en segundos
-            // ],
-            // 'options' => extension_loaded('pdo_sqlsrv') ? [
-            'options' => [
-                PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_UTF8,
-                PDO::ATTR_TIMEOUT => 120, // Tiempo de espera en segundos
-                // Opciones para certificados o configuraciones específicas
-                'TrustServerCertificate' => true, // Para certificados autofirmados
-                'Encrypt' => FALSE, // Deshabilitar SSL si no es necesario
-            ],
+            'encrypt' => env('DB_ENCRYPT', 'no'), // Cambiar a 'yes' si se requiere conexión cifrada
+            'trust_server_certificate' => env('DB_TRUST_CERTIFICATE', true),
         ],
-            // ],
-        // 'sqlsrv' => [
-        //     'driver' => 'sqlsrv',
-        //     'url' => env('DB_URL'),
-        //     'host' => env('DB_HOST', 'localhost'),
-        //     'port' => env('DB_PORT', '1433'),
-        //     'database' => env('DB_DATABASE', 'laravel'),
-        //     'username' => env('DB_USERNAME', 'root'),
-        //     'password' => env('DB_PASSWORD', ''),
-        //     'charset' => env('DB_CHARSET', 'utf8'),
-        //     'prefix' => '',
-        //     'prefix_indexes' => true,
-        //     // 'encrypt' => env('DB_ENCRYPT', 'yes'),
-        //     // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
-        // ],
 
     ],
 

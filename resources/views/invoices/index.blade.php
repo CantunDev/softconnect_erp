@@ -87,7 +87,7 @@
                                                 <th scope="col">Forma Pago</th>
                                                 <th scope="col">Tipo</th>
                                                 <th scope="col">Estado</th>
-                                                <th scope="col"></th> 
+                                                {{-- <th scope="col"></th> --}}
                                             </tr>
                                         </thead>
                                     </table>
@@ -140,19 +140,19 @@
             },
             columns: [
                 // {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}
-                 {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
+                 {data: 'sfrtNotaDate', name: 'sfrtNotaDate', orderable: false, searchable: false},
                  {data: 'nota', name: 'nota', orderable: false, searchable: false},
                  {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
-                 {data: 'nota', name: 'nota', orderable: false, searchable: false},
-                 {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
-                 {data: 'idcliente', name: 'idcliente', orderable: false, searchable: false},
-                 {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false},
-                 {data: 'impuesto', name: 'impuesto', orderable: false, searchable: false},
-                 {data: 'total', name: 'total', orderable: false, searchable: false},
-                 {data: 'tipoesquema', name: 'tipoesquema', orderable: false, searchable: false},
+                 {data: 'sfrtFolioInvoice', name: 'sfrtFolioInvoice', orderable: false, searchable: false},
+                 {data: 'sfrtCustomer', name: 'sfrtCustomer', orderable: false, searchable: false},
+                 {data: 'sfrtCustomerEmail', name: 'sfrtCustomerEmail', orderable: false, searchable: false},
+                 {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false, render:function(data){return '$'+data}},
+                 {data: 'impuesto', name: 'impuesto', orderable: false, searchable: false, render:function(data){return '$'+data}},
+                 {data: 'total', name: 'total', orderable: false, searchable: false, render:function(data){return '$'+data}},
                  {data: 'formapago', name: 'formapago', orderable: false, searchable: false},
+                 {data: 'idmetodopago_SAT', name: 'idmetodopago_SAT', orderable: false, searchable: false},
                  {data: 'nota', name: 'nota', orderable: false, searchable: false},
-                 {data: 'nota', name: 'nota', orderable: false, searchable: false}
+                //  {data: 'nota', name: 'nota', orderable: false, searchable: false}
             ],
         });
     });
