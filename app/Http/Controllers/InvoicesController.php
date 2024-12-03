@@ -54,12 +54,14 @@ class InvoicesController extends Controller
             return DataTables::of($facturas)
                 // ->addIndexColumn()
                 ->addColumn('sfrtNotaDate', function($result){
-                    // return $result->notaprocesado;
-                    return $result->cheques && $result->cheques->fecha ? $result->cheques->fecha->format('d-m-Y') : '' ;
+                    // return $result->nota;
+                    return '
+                    <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'. $result->nota .'</a></h5>
+                    <p class="text-muted mb-0">'. $result->cheques->fecha->format('d-m-Y') .'</p>';
                 })
-                ->addColumn('sfrtFolioInvoice', function($result){
-                    return $result->serie.$result->folio;
-                })
+                // ->addColumn('sfrtFolioInvoice', function($result){
+                //     return $result->serie.$result->folio;
+                // })
                 ->addColumn('sfrtCustomer', function($result){
                     return Str::limit($result->customer->nombre,20, '...');
                 })
@@ -80,9 +82,11 @@ class InvoicesController extends Controller
 
                 })
                 ->editColumn('fecha', function($result){
-                    return $result->fecha->format('d-m-Y');
+                    return '
+                    <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.$result->serie.$result->folio.'</a></h5>
+                    <p class="text-muted mb-0">'. $result->fecha->format('d-m-Y') .'</p>';
                 })
-                ->rawColumns(['sfrtCustomerEmail','idmetodopago_SAT'])
+                ->rawColumns(['sfrtNotaDate','sfrtCustomerEmail','idmetodopago_SAT','fecha'])
                 ->make(true);
          }
 
