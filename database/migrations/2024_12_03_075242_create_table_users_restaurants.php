@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users_restaurants', function (Blueprint $table) {
-            //
+        Schema::create('users_restaurants', function (Blueprint $table) {
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users_restaurants', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('business');
     }
 };
