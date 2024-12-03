@@ -75,10 +75,8 @@
                                     <table id="table_invoices" class="table align-middle dt-responsive nowrap w-100 table-check" id="job-list">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Fecha Cuenta</th>
-                                                <th scope="col">Folio Cuenta</th>
-                                                <th scope="col">Fecha Factura</th>
-                                                <th scope="col">Folio Factura</th>
+                                                <th scope="col">Cuenta</th>
+                                                <th scope="col">Factura</th>
                                                 <th scope="col">Cliente</th>
                                                 <th scope="col">Correo</th>
                                                 <th scope="col">Subtotal</th>
@@ -141,9 +139,9 @@
             columns: [
                 // {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}
                  {data: 'sfrtNotaDate', name: 'sfrtNotaDate', orderable: false, searchable: false},
-                 {data: 'nota', name: 'nota', orderable: false, searchable: false},
+                //  {data: 'nota', name: 'nota', orderable: false, searchable: false},
                  {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
-                 {data: 'sfrtFolioInvoice', name: 'sfrtFolioInvoice', orderable: false, searchable: false},
+                //  {data: 'sfrtFolioInvoice', name: 'sfrtFolioInvoice', orderable: false, searchable: false},
                  {data: 'sfrtCustomer', name: 'sfrtCustomer', orderable: false, searchable: false},
                  {data: 'sfrtCustomerEmail', name: 'sfrtCustomerEmail', orderable: false, searchable: false},
                  {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false, render:function(data){return '$'+data}},
