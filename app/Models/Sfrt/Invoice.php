@@ -5,6 +5,7 @@ namespace App\Models\Sfrt;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Sfrt\Cheques;
 
 class Invoice extends Model
 {
