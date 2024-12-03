@@ -19,6 +19,7 @@
         <script src="../../media/js/dataTables.tailwindcss.js"></script>
         <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js">
         <!-- Scripts -->
+        
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
