@@ -57,7 +57,7 @@
           <ul class="sub-menu" aria-expanded="false">
             <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
             <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
-            <li><a href="#" key="t-p-overview">Usuarios</a></li>
+            <li><a href="{{ route('users.index') }}" key="t-p-overview">Usuarios</a></li>
             <li><a href="#" key="t-create-new">Roles y permisos</a></li>
           </ul>
         </li>

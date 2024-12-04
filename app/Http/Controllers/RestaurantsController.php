@@ -16,8 +16,8 @@ class RestaurantsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $providers = Restaurant::all();
-            return DataTables::of($providers)
+            $restaurant = Restaurant::all();
+            return DataTables::of($restaurant)
                 ->addIndexColumn()
                 ->addColumn('action', function($result) {
                     $buttons = [

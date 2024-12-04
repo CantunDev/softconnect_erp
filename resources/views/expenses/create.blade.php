@@ -26,7 +26,7 @@
                             <select id="provider_id" name="provider_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option selected disabled>Selecciona un proveedor </option>
                                     @foreach ($providers as $provider)
-                                        <option value="{{$provider->id}}"> {{$provider->name}} </option>
+                                        <option value="1"> {{$provider->nombre}} </option>
                                         
                                     @endforeach                                                                                     
                             </select>
@@ -40,16 +40,18 @@
                             <label for="payment_method_id" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Metodo de pago</label>
                             <select id="payment_method_id" name="payment_method_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option selected disabled>Selecciona un metodo pago</option>
-                                    {{-- @foreach ($companies as $company)
-                                        <option value="{{$company->id}}"> {{$company->name}} </option>
-                                        
-                                    @endforeach --}}
+                                    @foreach ($payment_method as $payment_m)
+                                        <option value="{{$payment_m->id}}"> {{$payment_m->name}} </option>   
+                                    @endforeach
                             </select>
                         </div>
 
                         <div class="col-start-2 col-span-1 py-8">
                             <label for="subtotal" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Subtotal</label>
                             <input type="text" id="subtotal" name="subtotal" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="50" required />
+                            <input type="hidden" id="user_id" name="user_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="{{Auth::user()->id}}" required />
+                            <input type="hidden" id="restaurant_id" name="restaurant_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="{{Auth::user()->id}}" required />
+                            <input type="hidden" id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="{{Auth::user()->id}}" required />
                         </div>
                         <div class="col-span-1 py-8">
                             <label for="tax" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Iva</label>

@@ -2,37 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sfrt\Provider;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Config;
-use Carbon\Carbon;
 
-class ProvidersController extends Controller
+class UsersController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        /*INDEX PARA PROVEEDORES */
-        // $providers = Provider::all();
-        $ip = '192.168.193.73\NATIONALSOFT';
-        $database = 'softrestaurant11';
-        Config::set('database.connections.sqlsrv.host', $ip);
-        Config::set('database.connections.sqlsrv.database', $database);
-        DB::purge('sqlsrv');
-        $mes = Carbon::createFromFormat('Y-m', '2024-11')->month; // Mes de noviembre de 2024
-
         if ($request->ajax()){
-            $providers = Provider::query();
-            return DataTables::of($providers)
+            $users = User::all();
+            return DataTables::of($users)
                 ->addIndexColumn()
-                ->addColumn('name', function($result){
-                    return $name = '
-                    <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.$result->nombre.'</a></h5>
-                    <p class="text-muted mb-0">'.$result->razonsocial.'</p>';
-                
-                })
                 ->addColumn('action', function($result) {
                     $buttons = [
                         'view' => [
@@ -74,18 +58,10 @@ class ProvidersController extends Controller
                 
                     return $output;
                 })
-                ->addColumn('purchases', function($result){
-                    return $result->purchases->count();
-                
-                }) 
-                ->addColumn('average', function($result){
-                    return round( $result->purchases->avg('total'),2) ?? 0.0;
-                
-                }) 
-                ->rawColumns(['name','action'])
+                ->rawColumns(['action'])
                 ->make(true);
          }
-        return view('providers.index');
+        return view('users.index');
     }
 
     /**
@@ -93,7 +69,7 @@ class ProvidersController extends Controller
      */
     public function create()
     {
-        return view('providers.create');
+        return view('users.create');
     }
 
     /**
@@ -101,8 +77,16 @@ class ProvidersController extends Controller
      */
     public function store(Request $request)
     {
-        $provider = Provider::create($request->all());
-        return redirect()->route('providers.index');
+        $data = $request->validated();
+
+        if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
+            $imageName = Str::random(10) . '.' . $request->file('restuarnt_file')->getClientOriginalExtension();
+            $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
+            $data['restuarnt_file'] = $imageName;
+        }
+
+        $restaurant = Restaurant::create($data);
+        return redirect()->route('restaurants.index');
     }
 
     /**
@@ -116,27 +100,24 @@ class ProvidersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Provider $provider)
+    public function edit(string $id)
     {
-        return view('providers.edit', compact('provider'));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Provider $provider)
+    public function update(Request $request, string $id)
     {
-        $provider->update($request->all());
-        return redirect()->route('providers.index');
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(string $id)
     {
-        $provider = Provider::findOrFail($request->id);
-        $provider->delete();
-        return redirect()->route('providers.index');   
+        //
     }
 }

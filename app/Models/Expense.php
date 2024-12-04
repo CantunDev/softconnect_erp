@@ -21,9 +21,11 @@ class Expense extends Model
         'discount',
         'amount',
         'type',
+        'user_id',
+        'restaurant_id',
         'subtype',
         'sub_subtype',
         'description',
         'status'
-    ]
+    ];
 }

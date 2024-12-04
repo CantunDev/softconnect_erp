@@ -66,88 +66,92 @@
             </div>
         </section>
     </x-slot>
-    <script>
-        $(document).ready(function() {
-            $('#level').on('change', function() {
-                const selectedLevel = $(this).val();
-                const parentCategoryContainer = $('#parent-category-container');
-                const parentSubcategoryContainer = $('#parent-subcategory-container');
-                const parentSelect = $('#parent_category');
-                const parentSubcategorySelect = $('#parent_subcategory');
-    
-                // Ocultar y limpiar los contenedores y selects adicionales
-                parentCategoryContainer.addClass('hidden');
-                parentSubcategoryContainer.addClass('hidden');
-                parentSelect.empty().append('<option value="" selected>Selecciona una categoría</option>');
-                parentSubcategorySelect.empty().append('<option value="" selected>Selecciona una subcategoría</option>');
-    
-                if (selectedLevel === '2') { // Subcategoría
-                    // Mostrar el contenedor de Categoría Padre
-                    parentCategoryContainer.removeClass('hidden');
-                    // Cargar las categorías de nivel 1
-                    $.ajax({
-                        url: "{{ route('categories.get') }}",
-                        method: 'GET',
-                        success: function(data) {
-                            parentSelect.append('<option value="">Selecciona una categoría</option>');
-                            $.each(data, function(index, category) {
-                                parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
-                            });
-                        },
-                        error: function() {
-                            alert('Error al cargar las categorías.');
-                        }
-                    });
-                } else if (selectedLevel === '3') { // Sub-subcategoría
-                    // Mostrar ambos contenedores
-                    parentCategoryContainer.removeClass('hidden');
-                    parentSubcategoryContainer.removeClass('hidden');
-                    // Cargar las categorías de nivel 1
-                    $.ajax({
-                        url: "{{ route('categories.get') }}",
-                        method: 'GET',
-                        success: function(data) {
-                            parentSelect.append('<option value="">Selecciona una categoría</option>');
-                            $.each(data, function(index, category) {
-                                parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
-                            });
-                        },
-                        error: function() {
-                            alert('Error al cargar las categorías.');
-                        }
-                    });
-    
-                    // Remover cualquier listener previo para evitar duplicación
-                    parentSelect.off('change').on('change', function() {
-                        const selectedCategoryId = $(this).val();
-                        parentSubcategorySelect.empty().append('<option value="" selected>Selecciona una subcategoría</option>');
-    
-                        if (selectedCategoryId) {
-                            $.ajax({
-                                url: "{{ route('subcategories.get', ':id') }}".replace(':id', selectedCategoryId),
 
-                                method: 'GET',
-                                success: function(data) {
-                                    parentSubcategorySelect.append('<option value="">Selecciona una subcategoría</option>');
-                                    $.each(data, function(index, subcategory) {
-                                        parentSubcategorySelect.append(`<option value="${subcategory.id}">${subcategory.name}</option>`);
-                                    });
-                                },
-                                error: function() {
-                                    alert('Error al cargar las subcategorías.');
-                                }
-                            });
-                        }
-                    });
-    
-                } else { // Categoría
-                    // Ocultar los contenedores adicionales
-                    parentCategoryContainer.addClass('hidden');
-                    parentSubcategoryContainer.addClass('hidden');
-                }
-            });
-        });
-    </script>
-    
     
 </x-app-layout>
+@section('js')
+    
+<script>
+    $(document).ready(function() {
+        $('#level').on('change', function() {
+            const selectedLevel = $(this).val();
+            const parentCategoryContainer = $('#parent-category-container');
+            const parentSubcategoryContainer = $('#parent-subcategory-container');
+            const parentSelect = $('#parent_category');
+            const parentSubcategorySelect = $('#parent_subcategory');
+
+            // Ocultar y limpiar los contenedores y selects adicionales
+            parentCategoryContainer.addClass('hidden');
+            parentSubcategoryContainer.addClass('hidden');
+            parentSelect.empty().append('<option value="" selected>Selecciona una categoría</option>');
+            parentSubcategorySelect.empty().append('<option value="" selected>Selecciona una subcategoría</option>');
+
+            if (selectedLevel === '2') { // Subcategoría
+                // Mostrar el contenedor de Categoría Padre
+                parentCategoryContainer.removeClass('hidden');
+                // Cargar las categorías de nivel 1
+                $.ajax({
+                    url: "{{ route('categories.get') }}",
+                    method: 'GET',
+                    success: function(data) {
+                        parentSelect.append('<option value="">Selecciona una categoría</option>');
+                        $.each(data, function(index, category) {
+                            parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
+                        });
+                    },
+                    error: function() {
+                        alert('Error al cargar las categorías.');
+                    }
+                });
+            } else if (selectedLevel === '3') { // Sub-subcategoría
+                // Mostrar ambos contenedores
+                parentCategoryContainer.removeClass('hidden');
+                parentSubcategoryContainer.removeClass('hidden');
+                // Cargar las categorías de nivel 1
+                $.ajax({
+                    url: "{{ route('categories.get') }}",
+                    method: 'GET',
+                    success: function(data) {
+                        parentSelect.append('<option value="">Selecciona una categoría</option>');
+                        $.each(data, function(index, category) {
+                            parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
+                        });
+                    },
+                    error: function() {
+                        alert('Error al cargar las categorías.');
+                    }
+                });
+
+                // Remover cualquier listener previo para evitar duplicación
+                parentSelect.off('change').on('change', function() {
+                    const selectedCategoryId = $(this).val();
+                    parentSubcategorySelect.empty().append('<option value="" selected>Selecciona una subcategoría</option>');
+
+                    if (selectedCategoryId) {
+                        $.ajax({
+                            url: "{{ route('subcategories.get', ':id') }}".replace(':id', selectedCategoryId),
+
+                            method: 'GET',
+                            success: function(data) {
+                                parentSubcategorySelect.append('<option value="">Selecciona una subcategoría</option>');
+                                $.each(data, function(index, subcategory) {
+                                    parentSubcategorySelect.append(`<option value="${subcategory.id}">${subcategory.name}</option>`);
+                                });
+                            },
+                            error: function() {
+                                alert('Error al cargar las subcategorías.');
+                            }
+                        });
+                    }
+                });
+
+            } else { // Categoría
+                // Ocultar los contenedores adicionales
+                parentCategoryContainer.addClass('hidden');
+                parentSubcategoryContainer.addClass('hidden');
+            }
+        });
+    });
+</script>
+
+@endsection

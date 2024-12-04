@@ -78,13 +78,13 @@
                                                 <th scope="col">Cuenta</th>
                                                 <th scope="col">Factura</th>
                                                 <th scope="col">Cliente</th>
-                                                <th scope="col">Correo</th>
+                                                {{-- <th scope="col">Correo</th> --}}
                                                 <th scope="col">Subtotal</th>
                                                 <th scope="col">IVA</th>
                                                 <th scope="col">Total</th>
                                                 <th scope="col">Forma Pago</th>
                                                 <th scope="col">Tipo</th>
-                                                <th scope="col">Estado</th>
+                                                {{-- <th scope="col">Estado</th> --}}
                                                 {{-- <th scope="col"></th> --}}
                                             </tr>
                                         </thead>
@@ -143,13 +143,13 @@
                  {data: 'fecha', name: 'fecha', orderable: false, searchable: false},
                 //  {data: 'sfrtFolioInvoice', name: 'sfrtFolioInvoice', orderable: false, searchable: false},
                  {data: 'sfrtCustomer', name: 'sfrtCustomer', orderable: false, searchable: false},
-                 {data: 'sfrtCustomerEmail', name: 'sfrtCustomerEmail', orderable: false, searchable: false},
+                //  {data: 'sfrtCustomerEmail', name: 'sfrtCustomerEmail', orderable: false, searchable: false},
                  {data: 'subtotal', name: 'subtotal', orderable: false, searchable: false, render:function(data){return '$'+data}},
                  {data: 'impuesto', name: 'impuesto', orderable: false, searchable: false, render:function(data){return '$'+data}},
                  {data: 'total', name: 'total', orderable: false, searchable: false, render:function(data){return '$'+data}},
                  {data: 'formapago', name: 'formapago', orderable: false, searchable: false},
                  {data: 'idmetodopago_SAT', name: 'idmetodopago_SAT', orderable: false, searchable: false},
-                 {data: 'nota', name: 'nota', orderable: false, searchable: false},
+                //  {data: 'nota', name: 'nota', orderable: true, searchable: true},
                 //  {data: 'nota', name: 'nota', orderable: false, searchable: false}
             ],
         });

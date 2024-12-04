@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
 use App\Models\ExpenseCategory;
-use App\Models\Provider;
+use App\Models\PaymentMethod;
+use App\Models\Sfrt\Provider as SfrtProvider;
 use Illuminate\Http\Request;
 
 class ExpensesController extends Controller
@@ -21,10 +23,11 @@ class ExpensesController extends Controller
      */
     public function create()
     {
-        $providers = Provider::all();
+        $providers = SfrtProvider::all();
+        $payment_method = PaymentMethod::all();
         $categories = ExpenseCategory::where('level',1)
                                     ->get(["name", "id"]);
-        return view('expenses.create', compact('providers','categories'));
+        return view('expenses.create', compact('providers','categories','payment_method'));
     }
 
     /**
@@ -32,7 +35,9 @@ class ExpensesController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->all();
+        // return $request->all();
+        $expense = Expense::create($request->all());
+        return view('expenses.index');
     }
 
     /**

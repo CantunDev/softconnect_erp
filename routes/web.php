@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
+use App\Http\Controllers\UsersController;
 use App\Models\Cheques;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::resource('users', UsersController::class);
     Route::resource('business', BusinessController::class);
     Route::resource('restaurants', RestaurantsController::class);
     Route::resource('providers', ProvidersController::class);
