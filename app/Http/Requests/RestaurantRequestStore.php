@@ -23,6 +23,7 @@ class RestaurantRequestStore extends FormRequest
     {
         return [
             'name' => 'required',
+            'description' => 'nullable',
             'ip' => 'required|ip',
             'database' => 'required',
             'business_file' => 'nullable|image',

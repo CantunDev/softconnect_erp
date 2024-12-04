@@ -81,10 +81,10 @@ class RestaurantsController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
-            $imageName = Str::random(10) . '.' . $request->file('restuarnt_file')->getClientOriginalExtension();
-            $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
-            $data['restuarnt_file'] = $imageName;
+        if ($request->hasFile('restaurant_file') && $request->file('restaurant_file')->isValid()) {
+            $imageName = Str::random(10) . '.' . $request->file('restaurant_file')->getClientOriginalExtension();
+            $request->file('restaurant_file')->storeAs('restaurant', $imageName);
+            $data['restaurant_file'] = $imageName;
         }
 
         $restaurant = Restaurant::create($data);
