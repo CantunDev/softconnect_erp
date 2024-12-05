@@ -16,8 +16,8 @@ class ProvidersController extends Controller
     {
         /*INDEX PARA PROVEEDORES */
         // $providers = Provider::all();
-        $ip = '192.168.193.73\NATIONALSOFT';
-        $database = 'softrestaurant11';
+        $ip = '192.168.193.226\NATIONALSOFT';
+        $database = 'softrestaurant10';
         Config::set('database.connections.sqlsrv.host', $ip);
         Config::set('database.connections.sqlsrv.database', $database);
         DB::purge('sqlsrv');

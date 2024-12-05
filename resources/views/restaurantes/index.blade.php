@@ -67,10 +67,12 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Nombre</th>
+                                                <th scope="col">Empresa</th>
+                                                <th scope="col">Restaurante</th>
                                                 <th scope="col" class="px-4 py-3">Descripcion</th>
+                                                <th scope="col" class="px-4 py-3">Usuarios</th>
                                                 <th scope="col" class="px-4 py-3">Vpn Ip</th>
-                                                <th scope="col" class="px-4 py-3">Base de datos</th>
+                                                {{-- <th scope="col" class="px-4 py-3">Base de datos</th> --}}
                                                 <th scope="col" class="px-4 py-3">Estatus</th>
                                                 <th scope="col" class="px-4 py-3"></th>
                                             </tr>
@@ -89,6 +91,8 @@
         
 @endsection
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function(){
         $('#table_restaurants').DataTable({
@@ -100,14 +104,66 @@
             },
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                {data: 'business', name: 'business', orderable: false, searchable: false},
                 {data: 'name', name: 'name', orderable: false, searchable: false},
                 {data: 'description', name: 'description', orderable: false, searchable: false},
+                {data: 'assigned', name: 'assigned', orderable: false, searchable: false},
                 {data: 'ip', name: 'ip', orderable: false, searchable: false},
-                {data: 'database', name: 'database', orderable: false, searchable: false},
-                {data: 'database', name: 'database', orderable: false, searchable: false},
+                // {data: 'database', name: 'database', orderable: false, searchable: false},
+                // {data: 'database', name: 'database', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
         });
     });
+</script>
+<script>
+    /** DESTROY UNIT*/
+    function btnDelete(id) {
+        Swal.fire({
+            title: "Desea eliminar?",
+            text: "Por favor asegúrese y luego confirme!",
+            icon: 'warning',
+            showCancelButton: !0,
+            confirmButtonText: "¡Sí, borrar!",
+            cancelButtonText: "¡No, cancelar!",
+            reverseButtons: !0
+        }).then(function (e) {
+            if (e.value === true) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: "{{ url('restaurants') }}/" + id, // Ajusta la URL base según tu ruta
+                    data: {
+                        id: id,
+                        _token: '{!! csrf_token() !!}'
+                    },
+                    dataType: 'JSON',
+                    success: function (response) {
+                        console.log(response);
+                        if (response.success === true) {
+                            Swal.fire({
+                                title: "Hecho!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "Hecho!",
+                            });
+                            $('#table_restaurants').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: "Cancelar!",
+                            });
+                        }
+                    }
+                });
+            } else {
+                e.dismiss;
+            }
+        }, function (dismiss) {
+            return false;
+        })
+    }
+    /** DESTROY UNIT*/
 </script>
 @endsection

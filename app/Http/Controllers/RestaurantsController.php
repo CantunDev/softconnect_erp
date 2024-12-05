@@ -19,47 +19,66 @@ class RestaurantsController extends Controller
             $restaurant = Restaurant::all();
             return DataTables::of($restaurant)
                 ->addIndexColumn()
-                ->addColumn('action', function($result) {
-                    $buttons = [
-                        'view' => [
-                            'title' => 'View',
-                            'class' => 'btn-outline-primary',
-                            'icon' => 'mdi-eye-outline',
-                            'href' => '#'
-                        ],
-                        'edit' => [
-                            'title' => 'Edit',
-                            'class' => 'btn-outline-info',
-                            'icon' => 'mdi mdi-pencil',
-                            'href' => '#'
-                        ],
-                        'delete' => [
-                            'title' => 'Delete',
-                            'class' => 'btn-outline-danger',
-                            'icon' => 'mdi-delete-outline',
-                            'href' => '#jobDelete',
-                            'data-toggle' => 'modal'
-                        ]
-                    ];
-                    $output = '<ul class="list-unstyled hstack gap-1 mb-0">';
-                    foreach ($buttons as $key => $button) {
-                        $output .= sprintf(
-                            '<li data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="%s">
-                                <a href="%s" class="btn btn-sm %s" %s>
-                                    <i class="mdi %s"></i>
-                                </a>
-                            </li>',
-                            $button['title'],
-                            $button['href'],
-                            $button['class'],
-                            isset($button['data-toggle']) ? 'data-bs-toggle="' . $button['data-toggle'] . '"' : '',
-                            $button['icon']
-                        );
-                    }
-                    $output .= '</ul>';
-                
-                    return $output;
+                ->addColumn('business', function ($result){
+                    return "Corazon Contento";
                 })
+                ->addColumn('assigned', function($result){
+                    return "Usuarios asignados: 0";
+                })
+                ->addColumn('action', function ($result){
+                    $opciones = '';
+                        // if (Auth::user()->can('read_operators')){
+                            // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
+                        // }
+                        // if (Auth::user()->can('update_operators')){
+                            $opciones .= '<a href="'.route('restaurants.edit', $result->id).'" class="btn btn-sm action-icon icon-dual-warning"><i class="mdi mdi-pencil"></i></a>';
+                        // }
+                        // if (Auth::user()->can('delete_operators')){
+                            $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm action-icon icon-dual-secondary btnDelete"><i class="mdi mdi-delete-empty"></i></button>';
+                        // }
+                    return $opciones;
+                })
+                // ->addColumn('action', function($result) {
+                //     $buttons = [
+                //         'view' => [
+                //             'title' => 'View',
+                //             'class' => 'btn-outline-primary',
+                //             'icon' => 'mdi-eye-outline',
+                //             'href' => '#'
+                //         ],
+                //         'edit' => [
+                //             'title' => 'Edit',
+                //             'class' => 'btn-outline-info',
+                //             'icon' => 'mdi mdi-pencil',
+                //             'href' => route('restaurants.edit', $result->id)
+                //         ],
+                //         'delete' => [
+                //             'title' => 'Delete',
+                //             'class' => 'btn-outline-danger',
+                //             'icon' => 'mdi-delete-outline',
+                //             'href' => '#restaurantDelete',
+                //             'data-toggle' => 'modal'
+                //         ]
+                //     ];
+                //     $output = '<ul class="list-unstyled hstack gap-1 mb-0">';
+                //     foreach ($buttons as $key => $button) {
+                //         $output .= sprintf(
+                //             '<li data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="%s">
+                //                 <a href="%s" class="btn btn-sm %s" %s>
+                //                     <i class="mdi %s"></i>
+                //                 </a>
+                //             </li>',
+                //             $button['title'],
+                //             $button['href'],
+                //             $button['class'],
+                //             isset($button['data-toggle']) ? 'data-bs-toggle="' . $button['data-toggle'] . '"' : '',
+                //             $button['icon']
+                //         );
+                //     }
+                //     $output .= '</ul>';
+                
+                //     return $output;
+                // })
                 ->rawColumns(['action'])
                 ->make(true);
          }
@@ -102,24 +121,49 @@ class RestaurantsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Restaurant $restaurant)
     {
-        //
+        return view('restaurantes.edit', compact('restaurant'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(RestaurantRequestStore $request,$id)
     {
-        //
+        $restaurant = Restaurant::findOrFail($id);
+        $data = $request->validated();
+
+        if ($request->hasFile('restaurant_file') && $request->file('restaurant_file')->isValid()) {
+            $imageName = Str::random(10) . '.' . $request->file('restaurant_file')->getClientOriginalExtension();
+            $request->file('restaurant_file')->storeAs('restaurant', $imageName);
+            $data['restaurant_file'] = $imageName;
+        } else {
+            $data['restaurant_file'] = $restaurant->restaurant_file;
+        }
+
+        $restaurant->update($data);
+
+        return redirect()->route('restaurants.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
-        //
+        $restaurant = Restaurant::findOrFail($id);
+        $dep = $restaurant->delete();
+        if ($dep == 1){
+            $success = true;
+            $message = "Restaurante eliminado";
+        } else {
+            $success = true;
+            $message = "Restaurante no eliminado";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
     }
 }
