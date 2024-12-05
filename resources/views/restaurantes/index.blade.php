@@ -63,18 +63,17 @@
                             </div> --}}
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="table_restaurants" class="table text-center align-middle dt-responsive nowrap w-100 table-check" id="job-list">
+                                    <table id="table_restaurants" class="table table-wrapper text-wrapper text-center align-middle dt-responsive nowrap w-100 table-check" id="job-list">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Empresa</th>
                                                 <th scope="col">Restaurante</th>
-                                                <th scope="col" class="px-4 py-3">Descripcion</th>
-                                                <th scope="col" class="px-4 py-3">Usuarios</th>
-                                                <th scope="col" class="px-4 py-3">Vpn Ip</th>
-                                                {{-- <th scope="col" class="px-4 py-3">Base de datos</th> --}}
-                                                <th scope="col" class="px-4 py-3">Estatus</th>
-                                                <th scope="col" class="px-4 py-3"></th>
+                                                <th scope="col" class=" text-wrapper">Descripcion</th>
+                                                <th scope="col" class="">Usuarios</th>
+                                                <th scope="col" class="">Vpn Ip</th>
+                                                <th scope="col" class="">Estatus</th>
+                                                <th scope="col" class=""></th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -109,15 +108,13 @@
                 {data: 'description', name: 'description', orderable: false, searchable: false},
                 {data: 'assigned', name: 'assigned', orderable: false, searchable: false},
                 {data: 'ip', name: 'ip', orderable: false, searchable: false},
-                // {data: 'database', name: 'database', orderable: false, searchable: false},
-                // {data: 'database', name: 'database', orderable: false, searchable: false},
+                {data: 'status', name: 'status', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
         });
     });
 </script>
 <script>
-    /** DESTROY UNIT*/
     function btnDelete(id) {
         Swal.fire({
             title: "Desea eliminar?",
@@ -131,7 +128,7 @@
             if (e.value === true) {
                 $.ajax({
                     type: 'DELETE',
-                    url: "{{ url('restaurants') }}/" + id, // Ajusta la URL base según tu ruta
+                    url: "{{ url('restaurants') }}/" + id, ,
                     data: {
                         id: id,
                         _token: '{!! csrf_token() !!}'
@@ -164,6 +161,5 @@
             return false;
         })
     }
-    /** DESTROY UNIT*/
 </script>
 @endsection

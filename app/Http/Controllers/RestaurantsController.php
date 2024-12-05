@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
+use function PHPUnit\Framework\isNull;
+
 class RestaurantsController extends Controller
 {
     /**
@@ -16,7 +18,7 @@ class RestaurantsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $restaurant = Restaurant::all();
+            $restaurant = Restaurant::withTrashed();
             return DataTables::of($restaurant)
                 ->addIndexColumn()
                 ->addColumn('business', function ($result){
@@ -31,12 +33,27 @@ class RestaurantsController extends Controller
                             // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
                         // }
                         // if (Auth::user()->can('update_operators')){
-                            $opciones .= '<a href="'.route('restaurants.edit', $result->id).'" class="btn btn-sm action-icon icon-dual-warning"><i class="mdi mdi-pencil"></i></a>';
+                            $opciones .= '<a href="'.route('restaurants.edit', $result->id).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                            
+                            $opciones .= '<a href="'.route('restaurants.edit', $result->id).'" class="btn btn-sm text-primary action-icon icon-dual-warning p-1"><i class="mdi mdi-restore font-size-18"></i></a>';
                         // }
                         // if (Auth::user()->can('delete_operators')){
-                            $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm action-icon icon-dual-secondary btnDelete"><i class="mdi mdi-delete-empty"></i></button>';
+                            $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                            
                         // }
                     return $opciones;
+                })
+                ->addColumn('assigned', function($result){
+                    return "Usuarios asignados: 0";
+                })
+                ->addColumn('status', function($result){
+                    $status = '';
+                    if ($result->trashed()) {
+                        $status .= '<div class="badge font-size-12 badge-soft-danger"> Suspendido </div>';
+                    }else{
+                        $status .= '<div class="badge font-size-12 badge-soft-success"> Activo </div>';
+                    }
+                    return $status;
                 })
                 // ->addColumn('action', function($result) {
                 //     $buttons = [
@@ -79,7 +96,7 @@ class RestaurantsController extends Controller
                 
                 //     return $output;
                 // })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','status'])
                 ->make(true);
          }
         return view('restaurantes.index');
