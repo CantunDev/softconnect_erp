@@ -34,10 +34,10 @@ class RestaurantsController extends Controller
                         // }
                         // if (Auth::user()->can('update_operators')){
                             $opciones .= '<a href="'.route('restaurants.edit', $result->id).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                            
-                            $opciones .= '<a href="'.route('restaurants.edit', $result->id).'" class="btn btn-sm text-primary action-icon icon-dual-warning p-1"><i class="mdi mdi-restore font-size-18"></i></a>';
+                            $opciones .= '<button type="button" onclick="btnRestore('.$result->id.')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
                         // }
                         // if (Auth::user()->can('delete_operators')){
+                            $opciones .= '<button type="button" onclick="btnSuspend('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
                             $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
                             
                         // }
@@ -164,19 +164,53 @@ class RestaurantsController extends Controller
         return redirect()->route('restaurants.index');
     }
 
+    public function suspend($id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+        $suspend = $restaurant->delete();
+        if ($suspend == 1){
+            $success = true;
+            $message = "Restaurante Suspendido";
+        } else {
+            $success = true;
+            $message = "No fue posible suspendet";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
+    }
+
+    public function restore($id)
+    {
+        $restaurant = Restaurant::onlyTrashed($id);
+        $restore = $restaurant->restore();
+        if ($restore == 1){
+            $success = true;
+            $message = "Se restauro correctamene";
+        } else {
+            $success = true;
+            $message = "Restaurante no restaurado";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy( $id)
     {
-        $restaurant = Restaurant::findOrFail($id);
-        $dep = $restaurant->delete();
-        if ($dep == 1){
+        $restaurant = Restaurant::onlyTrashed($id);
+        $delete = $restaurant->forceDelete();
+        if ($delete == 1){
             $success = true;
-            $message = "Restaurante eliminado";
+            $message = "Se elimino permanentemente";
         } else {
             $success = true;
-            $message = "Restaurante no eliminado";
+            $message = "No se ha podido eliminar";
         }
         return response()->json([
             'success' => $success,

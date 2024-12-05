@@ -3,7 +3,6 @@
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChequesController;
 use App\Http\Controllers\InvoicesController;
-use App\Http\Controllers\ConnectionSQLController;
 use App\Http\Controllers\ExpensesCategoriesController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\PaymentMethodController;
@@ -11,7 +10,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\UsersController;
-use App\Models\Cheques;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,8 +34,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('payment_method', PaymentMethodController::class);
     Route::resource('cheques', ChequesController::class);
     Route::resource('invoices', InvoicesController::class);
+
+    Route::prefix('restore')->group( function(){
+        Route::get('/restaurants/{restaurant}', [RestaurantsController::class, 'restore'])->name('restaurants.restore');
+    });
+    Route::prefix('suspend')->group( function(){
+        Route::delete('/restaurants/{restaurant}', [RestaurantsController::class, 'suspend' ])->name('restaurants.suspend');
+        
+    });
     // Route::group(['prefix' => 'cheques'], function(){
-    //     Route::post('get/{ip}/{database}/{table}', ChequesController::class, 'get')->name('cheques.get');
+    //     Route::post('putget/{ip}/{database}/{table}', ChequesController::class, 'get')->name('cheques.get');
     // });
     Route::get('/categories', [ExpensesCategoriesController::class, 'getCategories'])->name('categories.get');
     Route::get('/subcategories/{id}', [ExpensesCategoriesController::class, 'getSubcategories'])->name('subcategories.get');
