@@ -63,8 +63,8 @@ class InvoicesController extends Controller
                 //     return $result->serie.$result->folio;
                 // })
                 ->addColumn('sfrtCustomer', function($result){
-                    return '<h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.Str::limit($result->customer->nombre,20, '...').'</a></h5>
-                            <span class="badge badge-soft-primary">'.Str::limit($result->customer->email,15, '...') .'</span>';
+                    return '<h5 class="text-truncate font-size-14 mb-1" data-toggle="tooltip" data-placement="top" title="'.$result->customer->nombre.'"><a href="javascript: void(0);" class="text-dark">'.Str::limit($result->customer->nombre,15, '...').'</a></h5>
+                            <span class="badge badge-soft-primary" data-toggle="tooltip" data-placement="top" title="'.$result->customer->email.'">'.Str::limit($result->customer->email,15, '...') .'</span>';
                 })
                 ->addColumn('sfrtCustomerEmail', function($result){
                     return '<span class="badge badge-soft-primary">'.Str::limit($result->customer->email,15, '...') .'</span>';
