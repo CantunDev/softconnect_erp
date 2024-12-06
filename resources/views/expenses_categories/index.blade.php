@@ -1,17 +1,17 @@
 @extends('layouts.master')
 @section('title')
-  Cuentas Contables |
+  Categorias |
 @endsection
 @section('content')
   @component('components.breadcrumb')
     @slot('title')
-      Cuentas
+      Categoria gastos
     @endslot
     @slot('bcPrevText')
-      Cuentas
+    Categoria gastos
     @endslot
     @slot('bcPrevLink')
-      {{ route('restaurants.index') }}
+      {{ route('expenses_categories.index') }}
     @endslot
     @slot('bcActiveText')
       Listado
@@ -20,7 +20,7 @@
     <div class="card">
         <div class="card-body border-bottom">
             <div class="d-flex align-items-center">
-                <h5 class="mb-0 card-title flex-grow-1">Lista de cuentas contables </h5>
+                <h5 class="mb-0 card-title flex-grow-1">Categoria de gastos</h5>
                 <div class="flex-shrink-0">
                     <a href="{{route('expenses_categories.create')}}" class="btn btn-primary">Nuevo</a>
                     {{-- <a href="#!" class="btn btn-light"><i class="mdi mdi-refresh"></i></a> --}}
