@@ -6,7 +6,11 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\PaymentMethod;
 use App\Models\Sfrt\Provider as SfrtProvider;
+use App\Models\Sfrt\TypeExpense;
+use DragonCode\Contracts\LangPublisher\Provider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class ExpensesController extends Controller
 {
@@ -23,10 +27,18 @@ class ExpensesController extends Controller
      */
     public function create()
     {
+        $ip = '192.168.193.226\NATIONALSOFT';
+        $database = 'softrestaurant10';
+        Config::set('database.connections.sqlsrv.host', $ip);
+        Config::set('database.connections.sqlsrv.database', $database);
+        DB::purge('sqlsrv');
+
         $providers = SfrtProvider::all();
         $payment_method = PaymentMethod::all();
-        $categories = ExpenseCategory::where('level',1)
-                                    ->get(["name", "id"]);
+        
+        $categories = TypeExpense::query();
+        // $categories = ExpenseCategory::where('level',1)
+        //                             ->get(["name", "id"]);
         return view('expenses.create', compact('providers','categories','payment_method'));
     }
 
@@ -74,10 +86,24 @@ class ExpensesController extends Controller
 
     public function fetchSubcategories(Request $request)
     {
-        $data['subcategories'] = ExpenseCategory::where("parent_id", $request->id)
-                                                 ->where('level',2)   
-                                                 ->get(["name", "id"]);
-        return response()->json($data);
+        // $data['subcategories'] = ExpenseCategory::where("parent_id", $request->id)
+        //                                          ->where('level',2)   
+        //                                          ->get(["name", "id"]);
+        // return response()->json($data);
+        $ip = '192.168.193.226\NATIONALSOFT';
+        $database = 'softrestaurant10';
+        Config::set('database.connections.sqlsrv.host', $ip);
+        Config::set('database.connections.sqlsrv.database', $database);
+        DB::purge('sqlsrv');
+        $tipogastos = TypeExpense::query();
+        $proveedores = Provider::query();
+
+        // return response()->json($data);
+        return response()->json([
+            'tipogastos' => $tipogastos,
+            'proveedores' => $proveedores,
+        ]);
+
     }
 
     public function fetchSubsubcategories(Request $request)

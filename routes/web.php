@@ -37,9 +37,12 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('restore')->group( function(){
         Route::get('/restaurants/{restaurant}', [RestaurantsController::class, 'restore'])->name('restaurants.restore');
+        Route::put('/payment_method/{accounting}', [PaymentMethodController::class, 'restore' ])->name('payment_method.restore');
+
     });
     Route::prefix('suspend')->group( function(){
         Route::delete('/restaurants/{restaurant}', [RestaurantsController::class, 'suspend' ])->name('restaurants.suspend');
+        Route::put('/payment_method/{accounting}', [PaymentMethodController::class, 'suspend' ])->name('payment_method.suspend');
         
     });
     // Route::group(['prefix' => 'cheques'], function(){

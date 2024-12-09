@@ -39,7 +39,7 @@
                       <option value="" selected>Selecciona...</option>
                       <option value="1">Categoría</option>
                       <option value="2">Subcategoría</option>
-                      <option value="3">Sub-subcategoría</option>
+                      {{-- <option value="3">Sub-subcategoría</option> --}}
                     </select>
                     @error('level')
                       <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -48,29 +48,39 @@
 
                   <!-- Selección de Categoría Padre -->
                   <div id="parent-category-container" class="hidden">
-                    <label for="parent_category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la Categoría Padre</label>
-                    <select id="parent_category" name="parent_category" class="form-control">
+                    <label for="parent_category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la Categoría </label>
+                    <select id="Idtipogasto" name="Idtipogasto" class="form-control">
                     </select>
-                    @error('parent_category')
+                    @error('Idtipogasto')
                       <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                   </div>
 
                   <!-- Selección de Subcategoría Padre -->
                   <div id="parent-subcategory-container" class="hidden">
-                    <label for="parent_subcategory" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la Subcategoría Padre</label>
+                    <label for="parent_subcategory" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la Subcategoría</label>
                     <select id="parent_subcategory" name="parent_subcategory" class="form-control">
                     </select>
                     @error('parent_subcategory')
                       <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                   </div>
+                  
+                  <!-- Selección de Proveedor -->
+                  <div id="provider-container" class="hidden">
+                    <label for="idproveedor" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona un Proveedor</label>
+                    <select id="idproveedor" name="idproveedor" class="form-control">
+                    </select>
+                    @error('idproveedor')
+                      <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                  </div>
 
                   <!-- Campo de Nombre -->
                   <div class="w-full">
-                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-                    <input type="text" name="name" id="name" class="form-control" placeholder="Nombre" required>
-                    @error('name')
+                    <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion</label>
+                    <input type="text" name="descripcion" id="descripcion" class="form-control" placeholder="Descripcion" required>
+                    @error('descripcion')
                       <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                   </div>
@@ -95,73 +105,84 @@
         const selectedLevel = $(this).val();
         const parentCategoryContainer = $('#parent-category-container');
         const parentSubcategoryContainer = $('#parent-subcategory-container');
-        const parentSelect = $('#parent_category');
+        const parentProviderContainer = $('#provider-container');
+        const parentSelect = $('#Idtipogasto');
         const parentSubcategorySelect = $('#parent_subcategory');
+        const parentProviderSelect = $('#idproveedor');
 
         // Ocultar y limpiar los contenedores y selects adicionales
         parentCategoryContainer.addClass('hidden');
         parentSubcategoryContainer.addClass('hidden');
+        parentProviderContainer.addClass('hidden');
         parentSelect.empty().append('<option disabled selected>Selecciona</option>');
         parentSubcategorySelect.empty().append('<option disabled selected> Selecciona </option>');
+        parentProviderSelect.empty().append('<option disabled selected> Selecciona </option>');
 
         if (selectedLevel === '2') { // Subcategoría
             // Mostrar el contenedor de Categoría Padre
             parentCategoryContainer.removeClass('hidden');
+            parentProviderContainer.removeClass('hidden');
             // Cargar las categorías de nivel 1
             $.ajax({
                 url: "{{ route('categories.get') }}",
                 method: 'GET',
                 success: function(data) {
-                    parentSelect.append('<option disabled selected>Selecciona</option>');
-                    $.each(data, function(index, category) {
-                        parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
-                    });
+                     parentSelect.append('<option disabled selected>Selecciona</option>');
+                     parentProviderSelect.append('<option disabled selected>Selecciona</option>');
+                     
+                     $.each(data.tipogastos, function(index, tipogastos) {
+                         parentSelect.append(`<option value="${tipogastos.Idtipogasto}">${tipogastos.descripcion}</option>`);
+                      });
+                     $.each(data.proveedores, function(index, proveedores) {
+                          parentProviderSelect.append(`<option value="${proveedores.idproveedor}">${proveedores.nombre}</option>`);
+                      });
+  
                 },
                 error: function() {
                     alert('Error al cargar las categorías.');
                 }
             });
-        } else if (selectedLevel === '3') { // Sub-subcategoría
-            // Mostrar ambos contenedores
-            parentCategoryContainer.removeClass('hidden');
-            parentSubcategoryContainer.removeClass('hidden');
-            // Cargar las categorías de nivel 1
-            $.ajax({
-                url: "{{ route('categories.get') }}",
-                method: 'GET',
-                success: function(data) {
-                    parentSelect.append('<option disabled selected>Selecciona</option>');
-                    $.each(data, function(index, category) {
-                        parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
-                    });
-                },
-                error: function() {
-                    alert('Error al cargar las categorías.');
-                }
-            });
+         } //else if (selectedLevel === '3') { // Sub-subcategoría
+        //     // Mostrar ambos contenedores
+        //     parentCategoryContainer.removeClass('hidden');
+        //     parentSubcategoryContainer.removeClass('hidden');
+        //     // Cargar las categorías de nivel 1
+        //     $.ajax({
+        //         url: "{{ route('categories.get') }}",
+        //         method: 'GET',
+        //         success: function(data) {
+        //             parentSelect.append('<option disabled selected>Selecciona</option>');
+        //             $.each(data, function(index, category) {
+        //                 parentSelect.append(`<option value="${category.id}">${category.name}</option>`);
+        //             });
+        //         },
+        //         error: function() {
+        //             alert('Error al cargar las categorías.');
+        //         }
+        //     });
 
-            // Listener para cargar subcategorías
-            parentSelect.off('change').on('change', function() {
-                const selectedCategoryId = $(this).val();
-                parentSubcategorySelect.empty().append('<option disabled selected>Selecciona</option>');
+        //     // Listener para cargar subcategorías
+        //     parentSelect.off('change').on('change', function() {
+        //         const selectedCategoryId = $(this).val();
+        //         parentSubcategorySelect.empty().append('<option disabled selected>Selecciona</option>');
 
-                if (selectedCategoryId) {
-                    $.ajax({
-                        url: "{{ route('subcategories.get', ':id') }}".replace(':id', selectedCategoryId),
-                        method: 'GET',
-                        success: function(data) {
-                            parentSubcategorySelect.append('<option disabled selected>Selecciona</option>');
-                            $.each(data, function(index, subcategory) {
-                                parentSubcategorySelect.append(`<option value="${subcategory.id}">${subcategory.name}</option>`);
-                            });
-                        },
-                        error: function() {
-                            alert('Error al cargar las subcategorías.');
-                        }
-                    });
-                }
-            });
-        }
+        //         if (selectedCategoryId) {
+        //             $.ajax({
+        //                 url: "{{ route('subcategories.get', ':id') }}".replace(':id', selectedCategoryId),
+        //                 method: 'GET',
+        //                 success: function(data) {
+        //                     parentSubcategorySelect.append('<option disabled selected>Selecciona</option>');
+        //                     $.each(data, function(index, subcategory) {
+        //                         parentSubcategorySelect.append(`<option value="${subcategory.id}">${subcategory.name}</option>`);
+        //                     });
+        //                 },
+        //                 error: function() {
+        //                     alert('Error al cargar las subcategorías.');
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
     });
 });
 
