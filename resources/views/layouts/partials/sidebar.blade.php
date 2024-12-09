@@ -57,7 +57,7 @@
           <ul class="sub-menu" aria-expanded="false">
             <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
             <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
-            <li><a href="#" key="t-p-overview">Usuarios</a></li>
+            <li><a href="{{ route('users.index') }}" key="t-p-overview">Usuarios</a></li>
             <li><a href="#" key="t-create-new">Roles y permisos</a></li>
           </ul>
         </li>
@@ -83,7 +83,7 @@
           </a>
           <ul class="sub-menu" aria-expanded="false">
             <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a></li>
-            <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de pagos</a></li>
+            <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de gastos</a></li>
             <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
           </ul>
         </li>

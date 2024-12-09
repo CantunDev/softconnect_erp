@@ -32,8 +32,8 @@ class InvoicesController extends Controller
         //     return "Error en la conexión: " . $e->getMessage();
         // }
         //  return $facturas = DB::connection('sqlsrv')->table('facturas')->paginate(100); // Uses SQL Server
-        $ip = '192.168.193.73\NATIONALSOFT';
-        $database = 'softrestaurant11';
+        $ip = '192.168.193.29\NATIONALSOFT';
+        $database = 'softrestaurant10';
         Config::set('database.connections.sqlsrv.host', $ip);
         Config::set('database.connections.sqlsrv.database', $database);
         DB::purge('sqlsrv');
@@ -63,7 +63,8 @@ class InvoicesController extends Controller
                 //     return $result->serie.$result->folio;
                 // })
                 ->addColumn('sfrtCustomer', function($result){
-                    return Str::limit($result->customer->nombre,20, '...');
+                    return '<h5 class="text-truncate font-size-14 mb-1" data-toggle="tooltip" data-placement="top" title="'.$result->customer->nombre.'"><a href="javascript: void(0);" class="text-dark">'.Str::limit($result->customer->nombre,15, '...').'</a></h5>
+                            <span class="badge badge-soft-primary" data-toggle="tooltip" data-placement="top" title="'.$result->customer->email.'">'.Str::limit($result->customer->email,15, '...') .'</span>';
                 })
                 ->addColumn('sfrtCustomerEmail', function($result){
                     return '<span class="badge badge-soft-primary">'.Str::limit($result->customer->email,15, '...') .'</span>';
@@ -86,7 +87,7 @@ class InvoicesController extends Controller
                     <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.$result->serie.$result->folio.'</a></h5>
                     <p class="text-muted mb-0">'. $result->fecha->format('d-m-Y') .'</p>';
                 })
-                ->rawColumns(['sfrtNotaDate','sfrtCustomerEmail','idmetodopago_SAT','fecha'])
+                ->rawColumns(['sfrtNotaDate','sfrtCustomer','sfrtCustomerEmail','idmetodopago_SAT','fecha'])
                 ->make(true);
          }
 

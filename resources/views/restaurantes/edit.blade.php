@@ -1,11 +1,11 @@
 @extends('layouts.master')
 @section('title')
-    Nuevo Restaurante
+    Actualizar Restaurante
 @endsection
 @section('content')
     @component('components.breadcrumb')
       @slot('title')
-        Nuevo Restaurante
+        Actualizar Restaurante 
       @endslot
       @slot('bcPrevText')
         Restaurante
@@ -14,19 +14,19 @@
         {{ route('restaurants.index') }}
       @endslot
       @slot('bcActiveText')
-        Nueva Restaurante
+        Editar Restaurante
       @endslot
     @endcomponent
     
   <div class="card">
     <div class="card-body">
-      <form class="row g-3" action="{{ route('restaurants.store') }}" method="POST" enctype="multipart/form-data">
+      <form class="row g-3" action="{{ route('restaurants.update', $restaurant->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @method('POST')
+        @method('PUT')
         <div class="col-sm-6 col-lg-4">
           <label for="inputName" class="form-label">Nombre</label>
           <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" id="inputName"
-            placeholder="Ej: Nombre Restaurante" value="{{ old('name') }}">
+            value="{{$restaurant->name}}" value="{{ old('name') }}">
           @error('name')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
@@ -35,7 +35,7 @@
         <div class="col-sm-8 col-lg-8">
           <label for="inputBusinessName" class="form-label">Descripcion</label>
           <input name="description" type="text" class="form-control @error('description') is-invalid @enderror"
-            id="inputDescription" placeholder="Ej: Servidor Principal" value="{{ old('description') }}">
+            id="inputDescription" value="{{$restaurant->description}}" value="{{ old('description') }}">
           @error('description')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
@@ -43,7 +43,7 @@
 
         <div class="col-sm-6 col-md-3 col-lg-4">
           <label for="inputIp" class="form-label">Vpn Ip</label>
-          <input name="ip" type="text" placeholder="Ej: 192.XXX.XXX.XXX" class="form-control text-uppercase @error('ip') is-invalid @enderror"
+          <input name="ip" type="text" value="{{$restaurant->ip}}" class="form-control text-uppercase @error('ip') is-invalid @enderror"
             id="inputIp" value="{{ old('ip') }}">
           @error('ip')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -53,7 +53,7 @@
         <div class="col-sm-6 col-md-4">
           <label for="inputDatabase" class="form-label">Base de Datos</label>
           <input type="text" name="database" id="inputDatabase"
-            class="form-control @error('database') is-invalid @enderror" value="{{ old('database') }}">
+            class="form-control @error('database') is-invalid @enderror" value="{{ $restaurant->database }}">
           @error('database')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
