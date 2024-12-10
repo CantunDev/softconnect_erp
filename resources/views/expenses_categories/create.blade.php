@@ -49,7 +49,7 @@
                   <!-- Selección de Categoría Padre -->
                   <div id="parent-category-container" class="hidden">
                     <label for="parent_category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la Categoría </label>
-                    <select id="Idtipogasto" name="Idtipogasto" class="form-control">
+                    <select id="Idtipogasto" name="idtipogasto" class="form-control">
                     </select>
                     @error('Idtipogasto')
                       <span class="text-red-500 text-sm">{{ $message }}</span>
