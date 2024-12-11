@@ -38,7 +38,7 @@
                             <th scope="col" class=" text-wrapper">Moneda</th>
                             <th scope="col" class="">Cambio</th>
                             <th scope="col" class="">Estatus</th>
-                            <th scope="col" class=""></th>
+                            <th scope="col" class="">Opciones</th>
                         </tr>
                     </thead>
                 </table>
@@ -52,22 +52,33 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function(){
-        $('#table_accountings').DataTable({
-            processing: true,
-            serverSide: true,
-            paging: true,
-            ajax: {
-                url: '{!! route('payment_method.index') !!}',
+        $.ajax({
+            url: '{!! route('payment_method.index') !!}',
+            type: 'GET',
+            success: function (response) {
+                if (response.data) { // Asegúrate de que la respuesta tenga datos
+                    $('#table_accountings').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        paging: true,
+                        data: response.data,
+                        columns: [
+                            {data: 'idcuentacontable', name: 'idcuentacontable', orderable: false, searchable: false},
+                            {data: 'descripcion', name: 'descripcion', orderable: false, searchable: false},
+                            {data: 'tipo', name: 'tipo ', orderable: false, searchable: false},
+                            {data: 'moneda', name: 'moneda', orderable: false, searchable: false},
+                            {data: 'tipodecambio', name: 'tipodecambio', orderable: false, searchable: false},
+                            {data: 'status', name: 'status', orderable: false, searchable: false},
+                            {data: 'action', name: 'action', orderable: false, searchable: false}
+                        ],
+                    });
+                } else {
+                    console.error('No se encontraron datos en la respuesta');
+                }
             },
-            columns: [
-                {data: 'idcuentacontable', name: 'idcuentacontable', orderable: false, searchable: false},
-                {data: 'descripcion', name: 'descripcion', orderable: false, searchable: false},
-                {data: 'tipo', name: 'tipo ', orderable: false, searchable: false},
-                {data: 'moneda', name: 'moneda', orderable: false, searchable: false},
-                {data: 'tipodecambio', name: 'tipodecambio', orderable: false, searchable: false},
-                {data: 'status', name: 'status', orderable: false, searchable: false},
-                {data: 'action', name: 'action', orderable: false, searchable: false}
-            ],
+            error: function (error) {
+                console.error('Error al cargar los datos:', error);
+            }
         });
     });
 </script>
