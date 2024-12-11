@@ -101,7 +101,13 @@ class ExpensesCategoriesController extends Controller
             return redirect()->route('expenses_categories.index');
         } elseif ($request->level == 2) {
             // Subcategoría
-            return redirect()->route('expenses_categories.index');
+            //  return $request->all();
+            $subtipogasto = SubtypeExpense::crearConNuevoId([
+                'descripcion' => $request->descripcion,
+                'idtipogasto' => $request->idtipogasto,
+                'idproveedor' => $request->has('idproveedor') ? $request->idproveedor : null,
+            ]);
+             return redirect()->route('expenses_categories.index');
         } 
 
         return redirect()->route('expenses_categories.index')->with('success', 'Categoría creada exitosamente.');
