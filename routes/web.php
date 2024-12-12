@@ -5,6 +5,7 @@ use App\Http\Controllers\ChequesController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ExpensesCategoriesController;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\FetchDataController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
@@ -48,13 +49,19 @@ Route::middleware('auth')->group(function () {
     // Route::group(['prefix' => 'cheques'], function(){
     //     Route::post('putget/{ip}/{database}/{table}', ChequesController::class, 'get')->name('cheques.get');
     // });
-    Route::get('/categories', [ExpensesCategoriesController::class, 'getCategories'])->name('categories.get');
-    Route::get('/subcategories/{id}', [ExpensesCategoriesController::class, 'getSubcategories'])->name('subcategories.get');
+    // Route::get('/categories', [ExpensesCategoriesController::class, 'getCategories'])->name('categories.get');
+    // Route::get('/subcategories/{id}', [ExpensesCategoriesController::class, 'getSubcategories'])->name('subcategories.get');
 
-    Route::post('/fetch-subcategories', [ExpensesController::class, 'fetchSubcategories'])->name('fetchsubcategories');
-    Route::post('/fetch-subsubcategories', [ExpensesController::class, 'fetchSubsubcategories'])->name('fetchsubsubcategories');
+    // Route::post('/fetch-subcategories', [ExpensesController::class, 'fetchSubcategories'])->name('fetch.subcategories');
+    // Route::post('/fetch-subsubcategories', [ExpensesController::class, 'fetchSubsubcategories'])->name('fetch.subsubcategories');
 
     // Route::get('connection/{ip}/{database}/{table}', [ConnectionSQLController::class, 'connection'])->name('connectionsqlsrv');
+    Route::prefix('fetch')->group( function(){
+        Route::get('/categories', [FetchDataController::class, 'getCategories'])->name('categories.get');
+        Route::get('/subcategories/{id}', [FetchDataController::class, 'getSubcategories'])->name('subcategories.get');
+        Route::get('/restaurantes/{id}', [FetchDataController::class, 'getRestaurantes'])->name('restaurantes.get');
+
+    });
 
 });
 
