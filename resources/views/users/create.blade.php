@@ -1,98 +1,149 @@
-<x-app-layout>
-    <div class="py-10">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <form action="{{ route('restaurants.store') }}" method="POST" class="dark:bg-gray-800 rounded-xl p-5"
-          enctype="multipart/form-data">
+@extends('layouts.master')
+@section('content')
+
+  @component('components.breadcrumb')
+    @slot('title')
+      Nueva usuario
+    @endslot
+    @slot('bcPrevText')
+      Usuario
+    @endslot
+    @slot('bcPrevLink')
+      {{ route('users.index') }}
+    @endslot
+    @slot('bcActiveText')
+      Nueva usuario
+    @endslot
+  @endcomponent
+
+  <div class="card">
+    <div class="card-body">
+      <form class="row g-3" action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('POST')
+        <div class="col-sm-6 col-lg-4">
+          <label for="inputName" class="form-label">Nombre</label>
+          <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" id="inputName"
+            placeholder="Nombre" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+          <label for="inputBusinessName" class="form-label">A. Paterno</label>
+          <input name="business_name" type="text" class="form-control @error('business_name') is-invalid @enderror"
+            id="inputBusinessName" placeholder="Apellido" value="{{ old('business_name') }}">
+          @error('business_name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+          <label for="inputRfc" class="form-label">A. Materno</label>
+          <input name="rfc" type="text" class="form-control @error('rfc') is-invalid @enderror"
+            id="inputRfc" placeholder="Apellido" value="{{ old('rfc') }}">
+          @error('rfc')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="col-sm-6 col-md-3 col-lg-2">
+          <label for="inputPhone" class="form-label">Teléfono</label>
+          <input name="telephone" type="tel" class="form-control @error('telephone') is-invalid @enderror"
+            id="inputPhone" minlength="10" maxlength="15" placeholder="Ej: 9380000000" value="{{ old('telephone') }}">
+          @error('telephone')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+          <label for="inputEmail" class="form-label">Correo electrónico</label>
+          <input type="email" name="email" id="inputEmail"
+            class="form-control text-lowercase @error('email') is-invalid @enderror"
+            placeholder="softconnect_erp@mail.com" value="{{ old('email') }}">
+          @error('email')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="col-lg-4">
+          <label for="inputLogo" class="form-label">Imagen <span class="fw-normal text-muted">(opcional)</span></label>
+          <input type="file" name="business_file" accept=".jpg,.jpeg,.png" id="inputLogo"
+            class="form-control @error('business_file') is-invalid @enderror">
+          @error('business_file')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="col-12 mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Registrar</button>
+          <a class="btn btn-outline-secondary" href="{{ route('business.index') }}">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">Seleccina tu empresa</h4>
+        <form class="row g-3" action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
           @csrf
           @method('POST')
-          <h1 class="text-white text-2xl mb-3 font-semibold">Nuevo Usuario </h1>
-  
-          <div class="grid gap-4 grid-cols-12">
-            <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-              <label for="inputName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-              <input type="text" name="name" id="inputName"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="" value="{{ old('name') }}">
-              @error('name')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
+      
+          <div class="col-sm-6 col-md-3 col-lg-6">
+            <select class="form-control" name="business_id" id="business_id">
+              <option disabled selected>Selecciona una opcion</option>
+              @foreach ($business as $bs)
+                <option value="{{$bs->id}}">{{$bs->business_name}}</option>  
+              @endforeach
+            </select>
+              @error('business_id')
+                <div class="invalid-feedback">{{ $message }}</div>
               @enderror
-            </div>
-            <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-              <label for="inputName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ap. Paterno</label>
-              <input type="text" name="lastname" id="inputName"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="" value="{{ old('lastname') }}">
-              @error('lastname')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-              @enderror
-            </div>
-            <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-              <label for="inputName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ap. Materno</label>
-              <input type="text" name="surename" id="inputName"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="" value="{{ old('surename') }}">
-              @error('name')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-              @enderror
-            </div>
-  
-            <div class="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-3">
-              <label for="inputDescription"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Telefono</label>
-              <input type="text" name="phone" id="inputDescription"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="" value="{{ old('phone') }}">
-              @error('phone')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-              @enderror
-            </div>
-            <div class="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-3">
-              <label for="inputDescription"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo</label>
-              <input type="text" name="email" id="inputDescription"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="" value="{{ old('email') }}">
-              @error('email')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-              @enderror
-            </div>
-    
-            <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
-              <label for="inputIp" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contrasena</label>
-              <input type="password" name="password" id="inputBusinessLine"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="********" value="">
-              @error('password')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-              @enderror
-            </div>
-  
-            <div class="col-span-12 lg:col-span-4">
-              <label for="inputLogo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Imagen <span class="dark:text-gray-500">(opcional)</span>
-              </label>
-              <input type="file" name="user_file" accept=".jpg,.jpeg,.png" id="inputLogo"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-              @error('user_file')
-                <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-              @enderror
-            </div>
-  
-            <div class="col-span-full">
-              <div class="flex gap-3 items-center">
-                <button type="submit"
-                  class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
-                  Registrar
-                </button>
-                <a href="{{ route('users.index') }}" type="button"
-                  class="text-gray-700 hover:text-white border border-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:hover:bg-gray-500 dark:focus:ring-gray-700">
-                  Cancelar
-                </a>
+          </div>    
+          <div class="col-sm-6 col-md-3 col-lg-6">
+              <h4 class="card-title mb-4">Selecciona tu restaurante</h4>
+              <div class="table-responsive">
+                  <table class="table table-nowrap align-middle mb-0">
+                      <tbody>
+                          <tr>
+                              <td style="width: 40px;">
+                                  <div class="form-check font-size-16">
+                                      <input class="form-check-input" type="checkbox" id="upcomingtaskCheck01">
+                                      <label class="form-check-label" for="upcomingtaskCheck01"></label>
+                                  </div>
+                              </td>     
+                              <td>
+                                  <div class="avatar-group">
+                                      <div class="avatar-group-item">
+                                          <a href="javascript: void(0);" class="d-inline-block">
+                                              <img src="{{ URL::asset('/assets/images/users/avatar-4.jpg') }}" alt="" class="rounded-circle avatar-xs">
+                                          </a>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td>
+                                <h5 class="text-truncate font-size-14 m-0"><a href="#" class="text-dark">Create a
+                                        Skote Dashboard UI</a></h5>
+                              </td>
+                              <td>
+                                  <div class="text-center">
+                                      <span
+                                          class="badge rounded-pill badge-soft-secondary font-size-11">Waiting</span>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
               </div>
-            </div>
+          </div>    
+          <div class="col-12 mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <a class="btn btn-outline-secondary" href="{{ route('business.index') }}">Cancelar</a>
           </div>
         </form>
-      </div>
     </div>
-  </x-app-layout>
-  
+  </div>
+
+@endsection

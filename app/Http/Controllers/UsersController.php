@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -69,7 +70,8 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $business = Business::all();
+        return view('users.create', compact('business'));
     }
 
     /**
