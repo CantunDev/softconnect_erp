@@ -79,7 +79,15 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->all();
+        // return $request->all();
+        $user = new User($request->all());
+        if ($request->has('photo_user')) {
+            $photo = $request->file('photo_user');
+            $avatar =  $user->email.'.'.$photo->getClientOriginalExtension();
+            $path = public_path('/assets/images/users/');
+            $photo_user = $path . $avatar;
+            Image::make($photo)->resize(150, 150)->save($photo_user);
+        }
         // $data = $request->validated();
 
         // if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
