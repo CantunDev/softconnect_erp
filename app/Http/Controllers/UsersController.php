@@ -18,11 +18,36 @@ class UsersController extends Controller
             $users = User::all();
             return DataTables::of($users)
                 ->addIndexColumn()
+                ->addColumn('user', function($result){
+                    $imageUrl = $result->restaurant_file ? !is_null($result->restaurant_file):
+                    'https://avatar.oxro.io/avatar.svg?name='.$result->fullname.'&caps=3&bold=true';
+                    $data = '<div class="d-flex align-items-center">';
+                    $data .= '<img src="'.$imageUrl.'" alt="" class="rounded-circle avatar-xs">';
+                    $data .= '<div class="ms-3">';
+                    $data .= '<h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.$result->fullname.'</a></h5>';
+                    $data .= '<p class="text-muted mb-0">'.$result->email.'</p>';
+                    $data .= '</div>';
+                    $data .= '</div>';
+                    
+                    return $data;
+                })
                 ->addColumn('business', function($result){
-                    return $result->business->count();
+                    return $result->business && $result->business->count() > 0 
+                    ? $result->business->count() 
+                    : 'Sin empresas';
                 })
                 ->addColumn('restaurants', function($result){
-                    return $result->restaurants->count();
+                    return $result->restaurants && $result->restaurants->count() > 0 
+                    ? $result->restaurants->count() 
+                    : 'Sin restaurantes';
+
+                    // if ($result->subtype?->isNotEmpty()) {
+                    //     $items = $result->subtype->map(function ($subtype) {
+                    //         return '<li>' . e($subtype->descripcion) . '</li>';
+                    //     })->join('');
+                    //     return '<ol>' . $items . '</ol>';
+                    // }
+                    // return 'Sin subtipos';
                 })
                 ->addColumn('status', function($result){
                     $status = '';
@@ -33,48 +58,23 @@ class UsersController extends Controller
                     }
                     return $status;
                 })
-                ->addColumn('action', function($result) {
-                    $buttons = [
-                        'view' => [
-                            'title' => 'View',
-                            'class' => 'btn-outline-primary',
-                            'icon' => 'mdi-eye-outline',
-                            'href' => '#'
-                        ],
-                        'edit' => [
-                            'title' => 'Edit',
-                            'class' => 'btn-outline-info',
-                            'icon' => 'mdi mdi-pencil',
-                            'href' => '#'
-                        ],
-                        'delete' => [
-                            'title' => 'Delete',
-                            'class' => 'btn-outline-danger',
-                            'icon' => 'mdi-delete-outline',
-                            'href' => '#jobDelete',
-                            'data-toggle' => 'modal'
-                        ]
-                    ];
-                    $output = '<ul class="list-unstyled hstack gap-1 mb-0">';
-                    foreach ($buttons as $key => $button) {
-                        $output .= sprintf(
-                            '<li data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="%s">
-                                <a href="%s" class="btn btn-sm %s" %s>
-                                    <i class="mdi %s"></i>
-                                </a>
-                            </li>',
-                            $button['title'],
-                            $button['href'],
-                            $button['class'],
-                            isset($button['data-toggle']) ? 'data-bs-toggle="' . $button['data-toggle'] . '"' : '',
-                            $button['icon']
-                        );
-                    }
-                    $output .= '</ul>';
-
-                    return $output;
+                ->addColumn('action', function ($result){
+                    $opciones = '';
+                        // if (Auth::user()->can('read_operators')){
+                            // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
+                        // }
+                        // if (Auth::user()->can('update_operators')){
+                            $opciones .= '<a href="'.route('users.edit', $result->id).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                            $opciones .= '<button type="button" onclick="btnRestore('.$result->id.')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
+                        // }
+                        // if (Auth::user()->can('delete_operators')){
+                            $opciones .= '<button type="button" onclick="btnSuspend('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
+                            $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                            
+                        // }
+                    return $opciones;
                 })
-                ->rawColumns(['action','status'])
+                ->rawColumns(['user','action','status'])
                 ->make(true);
          }
         return view('users.index');
@@ -131,9 +131,9 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        return $user;
     }
 
     /**

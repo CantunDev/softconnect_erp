@@ -53,6 +53,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return "{$this->name} {$this->lastname} {$this->surname}";
+    }
+
+    /**
      * The business that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

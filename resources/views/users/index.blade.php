@@ -63,16 +63,16 @@
                             </div> --}}
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="table_users" class="table text-center align-middle dt-responsive nowrap w-100 table-check" id="job-list">
-                                        <thead>
+                                        <table  id="table_users" class="table align-middle table-nowrap table-hover">
+                                            <thead class="table-light">
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Nombre</th>
-                                                <th scope="col" class="px-4 py-3">Empresas</th>
-                                                <th scope="col" class="px-4 py-3">Restaurantes</th>
-                                                <th scope="col" class="px-4 py-3">Roles</th>
-                                                <th scope="col" class="px-4 py-3">Estatus</th>
-                                                <th scope="col" class="px-4 py-3"></th>
+                                                <th scope="col">Empresas</th>
+                                                <th scope="col">Restaurantes</th>
+                                                <th scope="col">Roles</th>
+                                                <th scope="col">Estatus</th>
+                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -100,9 +100,10 @@
             },
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'name', name: 'name', orderable: false, searchable: false},  
+                {data: 'user', name: 'user', orderable: false, searchable: false},  
                 {data: 'business', name: 'business', orderable: false, searchable: false},
                 {data: 'restaurants', name: 'restaurants', orderable: false, searchable: false},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'status', name: 'status', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
