@@ -17,13 +17,13 @@
 
     <div class="card">
         <div class="card-body">
-            <form id="create_users" class="row g-3" action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="create_users" class="row g-3" action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('POST')
+                @method('PUT')
                 <div class="col-sm-6 col-lg-4">
                     <label for="inputName" class="form-label">Nombre</label>
                     <input name="name" type="text" class="form-control @error('name') is-invalid @enderror"
-                        id="inputName" placeholder="Nombre" value="{{ old('name') }}">
+                        id="inputName" placeholder="Nombre" value="{{ $user->name }}">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -33,7 +33,7 @@
                     <label for="inputBusinessName" class="form-label">A. Paterno</label>
                     <input name="lastname" type="text"
                         class="form-control @error('lastname ') is-invalid @enderror" id="inputBusinessName"
-                        placeholder="Apellido" value="{{ old('lastname ') }}">
+                        placeholder="Apellido" value="{{ $user->lastname }}">
                     @error('lastname ')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -42,7 +42,7 @@
                 <div class="col-sm-6 col-lg-4">
                     <label for="inputRfc" class="form-label">A. Materno</label>
                     <input name="surname" type="text" class="form-control @error('surname') is-invalid @enderror"
-                        id="surname" placeholder="Apellido" value="{{ old('surname') }}">
+                        id="surname" placeholder="Apellido" value="{{ $user->surname }}">
                     @error('surname')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -52,7 +52,7 @@
                     <label for="inputPhone" class="form-label">Teléfono</label>
                     <input name="phone" type="tel" class="form-control @error('phone') is-invalid @enderror"
                         id="inputPhone" minlength="10" maxlength="15" placeholder="Ej: 9380000000"
-                        value="{{ old('phone') }}">
+                        value="{{ $user->phone }}">
                     @error('phone')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -62,7 +62,7 @@
                     <label for="inputEmail" class="form-label">Correo electrónico</label>
                     <input type="email" name="email" id="inputEmail"
                         class="form-control text-lowercase @error('email') is-invalid @enderror"
-                        placeholder="softconnect_erp@mail.com" value="{{ old('email') }}">
+                        placeholder="softconnect_erp@mail.com" value="{{ $user->email }}">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -89,7 +89,8 @@
                     <select class="form-control" name="business_id" id="business_id">
                         <option disabled selected>Selecciona una opcion</option>
                         @foreach ($business as $bs)
-                            <option value="{{ $bs->id }}">{{ $bs->business_name }}</option>
+                        <option value="{{ $bs->id }}" {{ in_array($bs->id, $user->business->pluck('id')->toArray()) ? 'selected' : '' }}>
+                            {{ $bs->business_name }}</option>
                         @endforeach
                     </select>
                     @error('business_id')
@@ -115,81 +116,87 @@
     </div>
 @endsection
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $('#business_id').on('change', function() {
-                var businessId = $(this).val();
-                $('#restaurants-body').empty();
-                if (businessId) {
-                    $.ajax({
-                        url: "{{ route('restaurants.get', ':id') }}".replace(':id', businessId),
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.length > 0) {
-                                $.each(data, function(index, restaurants) {
-                                    var imageUrl = restaurants.restaurants
-                                        .restaurant_file ?
-                                        `/path/to/restaurants/files/${restaurants.restaurants.restaurants_file}` :
-                                        `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurants.restaurants.name)}&caps=3&bold=true`;
-
-                                    var row = `
-                                  <tr>
-                                      <td style="width: 40px;">
-                                          <div class="form-check font-size-16">
-                                              <input type="checkbox" name="restaurant_ids[]" value="${ restaurants.restaurants.id }" id="restaurantCheck${ restaurants.restaurants.id }">
-                                              <label class="form-check-label" for="restaurantCheck${restaurants.restaurants.id}"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <div class="avatar-group">
-                                              <div class="avatar-group-item">
-                                                  <a href="javascript: void(0);" class="d-inline-block">
-                                                      <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
-                                                  </a>
-                                              </div>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 m-0"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
-                                      </td>
-                                  </tr>`;
-                                    $('#restaurants-body').append(row);
-                                });
-                            } else {
-                                $('#restaurants-body').append(
-                                    '<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>'
-                                    );
-                            }
-                        },
-                        error: function() {
-                            alert('Error al cargar los restaurantes.');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-    <script>
-      $('#create_users').on('submit', function (e) {
-        e.preventDefault(); 
-        var seleccionados = [];
-          $('input[name="restaurant_ids[]"]:checked').each(function () {
-              seleccionados.push($(this).val());
-          });
-        // console.log('Seleccionados:', seleccionados);
-        if (seleccionados.length === 0) {
-            alert('Debe seleccionar al menos un restaurante.');
-            return; 
+<script>
+    $(document).ready(function () {
+        var businessId = $('#business_id').val(); 
+        if (businessId) {
+            fetchRestaurants(businessId);
         }
-        $('#restaurant_ids_field').remove();
-        $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'restaurant_ids') 
-            .attr('id', 'restaurant_ids_field')
-            .val(seleccionados.join(','))
-            .appendTo('#create_users'); 
-        this.submit();
+        $('#business_id').change(function () {
+            var selectedBusinessId = $(this).val();
+            $('#restaurants-body').empty();
+            fetchRestaurants(selectedBusinessId);
         });
-    </script>
+    });
+
+    function fetchRestaurants(businessId) {
+    $.ajax({
+        url: "{{ route('restaurants.get', ':id') }}".replace(':id', businessId),
+        type: "GET",
+        data: { business_id: businessId },
+        success: function(data) {
+            if (data.length > 0) {
+                $.each(data, function(index, restaurants) {
+                    var imageUrl = restaurants.restaurants.restaurant_file ?
+                        `/path/to/restaurants/files/${restaurants.restaurants.restaurants_file}` :
+                        `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurants.restaurants.name)}&caps=3&bold=true`;
+                    var userRestaurantIds = @json($user->restaurants->pluck('id')->toArray());
+
+                    var row = `
+                        <tr>
+                            <td style="width: 10px;">
+                                <div class="form-check font-size-16">
+                                    <input type="checkbox" name="restaurant_ids[]" value="${restaurants.restaurants.id}" id="restaurantCheck${restaurants.restaurants.id}"
+                                    ${userRestaurantIds.includes(restaurants.restaurants.id) ? 'checked' : ''}>
+                                    <label class="form-check-label" for="restaurantCheck${restaurants.restaurants.id}"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-group-item me-2">
+                                        <a href="javascript: void(0);" class="d-inline-block">
+                                            <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
+                                        </a>
+                                    </div>
+                                    <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
+                                </div>
+                            </td>
+                        </tr>`;
+
+                    $('#restaurants-body').append(row);
+                });
+            } else {
+                $('#restaurants-body').append('<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>');
+            }
+        },
+        error: function() {
+            alert('Error al cargar los restaurantes.');
+        }
+    });
+}
+
+</script>
+<script>
+    $('#create_users').on('submit', function (e) {
+      e.preventDefault(); 
+      var seleccionados = [];
+        $('input[name="restaurant_ids[]"]:checked').each(function () {
+            seleccionados.push($(this).val());
+        });
+      // console.log('Seleccionados:', seleccionados);
+      if (seleccionados.length === 0) {
+          alert('Debe seleccionar al menos un restaurante.');
+          return; 
+      }
+      $('#restaurant_ids_field').remove();
+      $('<input>')
+          .attr('type', 'hidden')
+          .attr('name', 'restaurant_ids') 
+          .attr('id', 'restaurant_ids_field')
+          .val(seleccionados.join(','))
+          .appendTo('#create_users'); 
+      this.submit();
+      });
+  </script>
+
 @endsection

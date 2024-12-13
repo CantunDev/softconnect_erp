@@ -142,16 +142,14 @@
                                           </div>
                                       </td>
                                       <td>
-                                          <div class="avatar-group">
-                                              <div class="avatar-group-item">
-                                                  <a href="javascript: void(0);" class="d-inline-block">
-                                                      <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
-                                                  </a>
-                                              </div>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 m-0"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-group-item me-2">
+                                                <a href="javascript: void(0);" class="d-inline-block">
+                                                    <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
+                                                </a>
+                                            </div>
+                                            <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
+                                        </div>
                                       </td>
                                   </tr>`;
                                     $('#restaurants-body').append(row);

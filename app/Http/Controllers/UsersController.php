@@ -131,17 +131,27 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        return $user;
+        $business = Business::all();
+        $user = User::with(['business','restaurants'])->findOrFail($id);
+        return view('users.edit', compact('user','business'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,$id)
     {
-        //
+        // return $request->all();
+        $user_find = User::findOrFail($id);
+        $user = $user_find->update($request->all());
+        $user_find->business()->sync($request->business_id);
+        $restaurantIds = explode(',', $request->restaurant_ids);
+        $user_find->restaurants()->sync($restaurantIds);
+
+        // $restaurant = Restaurant::create($data);
+        return redirect()->route('users.index');
     }
 
     /**
