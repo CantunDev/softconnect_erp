@@ -176,10 +176,10 @@
               seleccionados.push($(this).val());
           });
         // console.log('Seleccionados:', seleccionados);
-        if (seleccionados.length === 0) {
-            alert('Debe seleccionar al menos un restaurante.');
-            return; 
-        }
+        // if (seleccionados.length === 0) {
+        //     alert('Debe seleccionar al menos un restaurante.');
+        //     return; 
+        // }
         $('#restaurant_ids_field').remove();
         $('<input>')
             .attr('type', 'hidden')

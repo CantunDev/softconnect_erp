@@ -15,7 +15,7 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $users = User::all();
+            $users = User::withTrashed();
             return DataTables::of($users)
                 ->addIndexColumn()
                 ->addColumn('user', function($result){
@@ -28,17 +28,17 @@ class UsersController extends Controller
                     $data .= '<p class="text-muted mb-0">'.$result->email.'</p>';
                     $data .= '</div>';
                     $data .= '</div>';
-                    
+
                     return $data;
                 })
                 ->addColumn('business', function($result){
-                    return $result->business && $result->business->count() > 0 
-                    ? $result->business->count() 
+                    return $result->business && $result->business->count() > 0
+                    ? $result->business->count()
                     : 'Sin empresas';
                 })
                 ->addColumn('restaurants', function($result){
-                    return $result->restaurants && $result->restaurants->count() > 0 
-                    ? $result->restaurants->count() 
+                    return $result->restaurants && $result->restaurants->count() > 0
+                    ? $result->restaurants->count()
                     : 'Sin restaurantes';
 
                     // if ($result->subtype?->isNotEmpty()) {
@@ -70,7 +70,7 @@ class UsersController extends Controller
                         // if (Auth::user()->can('delete_operators')){
                             $opciones .= '<button type="button" onclick="btnSuspend('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
                             $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
-                            
+
                         // }
                     return $opciones;
                 })
@@ -112,11 +112,14 @@ class UsersController extends Controller
         // }
         $user->password = bcrypt($request->name.'2024');
         $user->save();
-        $user->business()->attach($request->business_id);
-        $restaurantIds = explode(',', $request->restaurant_ids);
-        $user->restaurants()->attach($restaurantIds);
+        if ($request->has('busines_id')) {
+            $user->business()->attach($request->business_id);
+        }
+        if ($request->has('busines_id')) {
+            $restaurantIds = explode(',', $request->restaurant_ids);
+            $user->restaurants()->attach($restaurantIds);
 
-        // $restaurant = Restaurant::create($data);
+        }
         return redirect()->route('users.index');
     }
 
@@ -154,11 +157,57 @@ class UsersController extends Controller
         return redirect()->route('users.index');
     }
 
+
+    public function suspend($id)
+    {
+        $user = User::findOrFail($id);
+        $suspend = $user->delete();
+        if ($suspend == 1){
+            $success = true;
+            $message = "Usuario Suspendido";
+        } else {
+            $success = true;
+            $message = "No fue posible suspendet";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
+    }
+
+    public function restore($id)
+    {
+        $user = User::onlyTrashed($id);
+        $restore = $user->restore();
+        if ($restore == 1){
+            $success = true;
+            $message = "Se restauro correctamene";
+        } else {
+            $success = true;
+            $message = "Restaurante no restaurado";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $user = User::onlyTrashed($id);
+        $delete = $user->forceDelete();
+        if ($delete == 1){
+            $success = true;
+            $message = "Se elimino permanentemente";
+        } else {
+            $success = true;
+            $message = "No se ha podido eliminar";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
     }
 }
