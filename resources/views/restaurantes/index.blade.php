@@ -122,7 +122,7 @@
         }).then(function (e) {
             if (e.value === true) {
                 $.ajax({
-                    type: 'DELETE',
+                    type: 'PUT',
                     url: "{{ url('suspend/restaurants') }}/" + id, 
                     data: {
                         id: id,
@@ -170,7 +170,7 @@
         }).then(function (e) {
             if (e.value === true) {
                 $.ajax({
-                    type: 'GET',
+                    type: 'PUT',
                     url: "{{ url('restore/restaurants') }}/" + id, 
                     data: {
                         id: id,

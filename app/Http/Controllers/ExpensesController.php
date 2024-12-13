@@ -83,34 +83,4 @@ class ExpensesController extends Controller
     {
         //
     }
-
-    public function fetchSubcategories(Request $request)
-    {
-        // $data['subcategories'] = ExpenseCategory::where("parent_id", $request->id)
-        //                                          ->where('level',2)   
-        //                                          ->get(["name", "id"]);
-        // return response()->json($data);
-        $ip = '192.168.193.226\NATIONALSOFT';
-        $database = 'softrestaurant10';
-        Config::set('database.connections.sqlsrv.host', $ip);
-        Config::set('database.connections.sqlsrv.database', $database);
-        DB::purge('sqlsrv');
-        $tipogastos = TypeExpense::query();
-        $proveedores = Provider::query();
-
-        // return response()->json($data);
-        return response()->json([
-            'tipogastos' => $tipogastos,
-            'proveedores' => $proveedores,
-        ]);
-
-    }
-
-    public function fetchSubsubcategories(Request $request)
-    {
-        $data['subsubcategories'] = ExpenseCategory::where("parent_id", $request->id)
-                                                ->where('level',3)   
-                                                ->get(["name", "id"]);
-        return response()->json($data);
-    }
 }

@@ -10,6 +10,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Config;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+
 class ExpensesCategoriesController extends Controller
 {
     /**
@@ -145,30 +146,4 @@ class ExpensesCategoriesController extends Controller
         //
     }
 
-    public function getCategories()
-    {
-        // $categories = ExpenseCategory::where('level',1)->get(['id','name']);
-        // return response()->json($categories);
-
-        $ip = '192.168.193.226\NATIONALSOFT';
-        $database = 'softrestaurant10';
-        Config::set('database.connections.sqlsrv.host', $ip);
-        Config::set('database.connections.sqlsrv.database', $database);
-        DB::purge('sqlsrv');
-        $tipogastos = TypeExpense::query()->get(['Idtipogasto','descripcion']);
-        // // return response()->json($data);
-        $proveedores = Provider::query()->get(['idproveedor','nombre']);
-
-        // return response()->json($data);
-        return response()->json([
-            'tipogastos' => $tipogastos,
-            'proveedores' => $proveedores,
-        ]);
-    }
-
-    public function getSubcategories($id)
-    {
-        $subcategories = ExpenseCategory::where('parent_id',$id)->where('level',2)->get(['id','name']);
-        return response()->json($subcategories);
-    }
 }
