@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BusinessRestaurants;
 use App\Models\ExpenseCategory;
 use App\Models\Restaurant;
 use App\Models\Sfrt\Provider;
@@ -40,9 +41,9 @@ class FetchDataController extends Controller
         return response()->json($subcategories);
     }
 
-    public function getRestaurantes($id)
+    public function getRestaurants($id)
     {
-        $restaurantes = Restaurant::where('business_id', $id)->get();
-        return response()->json($restaurantes);
+        $restaurants = BusinessRestaurants::with('restaurants')->where('business_id',$id)->get();
+        return response()->json($restaurants);
     }
 }

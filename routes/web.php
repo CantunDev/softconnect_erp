@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('fetch')->group( function(){
         Route::get('/categories', [FetchDataController::class, 'getCategories'])->name('categories.get');
         Route::get('/subcategories/{id}', [FetchDataController::class, 'getSubcategories'])->name('subcategories.get');
-        Route::get('/restaurantes/{id}', [FetchDataController::class, 'getRestaurantes'])->name('restaurantes.get');
+        Route::get('/restaurants/{id}', [FetchDataController::class, 'getRestaurants'])->name('restaurants.get');
 
     });
 

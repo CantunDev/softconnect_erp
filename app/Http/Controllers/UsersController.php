@@ -56,7 +56,7 @@ class UsersController extends Controller
                         );
                     }
                     $output .= '</ul>';
-                
+
                     return $output;
                 })
                 ->rawColumns(['action'])
@@ -79,15 +79,16 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validated();
+        return $request->all();
+        // $data = $request->validated();
 
-        if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
-            $imageName = Str::random(10) . '.' . $request->file('restuarnt_file')->getClientOriginalExtension();
-            $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
-            $data['restuarnt_file'] = $imageName;
-        }
+        // if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
+        //     $imageName = Str::random(10) . '.' . $request->file('restuarnt_file')->getClientOriginalExtension();
+        //     $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
+        //     $data['restuarnt_file'] = $imageName;
+        // }
 
-        $restaurant = Restaurant::create($data);
+        // $restaurant = Restaurant::create($data);
         return redirect()->route('restaurants.index');
     }
 
