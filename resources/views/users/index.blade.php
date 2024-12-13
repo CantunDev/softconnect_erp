@@ -68,9 +68,10 @@
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Nombre</th>
+                                                <th scope="col" class="px-4 py-3">Empresas</th>
                                                 <th scope="col" class="px-4 py-3">Restaurantes</th>
                                                 <th scope="col" class="px-4 py-3">Roles</th>
-                                                <th scope="col" class="px-4 py-3"></th>
+                                                <th scope="col" class="px-4 py-3">Estatus</th>
                                                 <th scope="col" class="px-4 py-3"></th>
                                             </tr>
                                         </thead>
@@ -100,9 +101,9 @@
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'name', name: 'name', orderable: false, searchable: false},  
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                {data: 'business', name: 'business', orderable: false, searchable: false},
+                {data: 'restaurants', name: 'restaurants', orderable: false, searchable: false},
+                {data: 'status', name: 'status', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
         });

@@ -18,6 +18,21 @@ class UsersController extends Controller
             $users = User::all();
             return DataTables::of($users)
                 ->addIndexColumn()
+                ->addColumn('business', function($result){
+                    return $result->business->count();
+                })
+                ->addColumn('restaurants', function($result){
+                    return $result->restaurants->count();
+                })
+                ->addColumn('status', function($result){
+                    $status = '';
+                    if ($result->trashed()) {
+                        $status .= '<div class="badge font-size-12 badge-soft-danger"> Suspendido </div>';
+                    }else{
+                        $status .= '<div class="badge font-size-12 badge-soft-success"> Activo </div>';
+                    }
+                    return $status;
+                })
                 ->addColumn('action', function($result) {
                     $buttons = [
                         'view' => [
@@ -59,7 +74,7 @@ class UsersController extends Controller
 
                     return $output;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','status'])
                 ->make(true);
          }
         return view('users.index');
@@ -80,14 +95,14 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         // return $request->all();
-        $user = new User($request->all());
-        if ($request->has('photo_user')) {
-            $photo = $request->file('photo_user');
-            $avatar =  $user->email.'.'.$photo->getClientOriginalExtension();
-            $path = public_path('/assets/images/users/');
-            $photo_user = $path . $avatar;
-            Image::make($photo)->resize(150, 150)->save($photo_user);
-        }
+         $user = new User($request->all());
+        //  if ($request->has('photo_user')) {
+        //     $photo = $request->file('photo_user');
+        //      $avatar =  $user->email.'.'.$photo->getClientOriginalExtension();
+        //      $path = public_path('/assets/images/users/');
+        //      $photo_user = $path . $avatar;
+        //      Image::make($photo)->resize(150, 150)->save($photo_user);
+        // }
         // $data = $request->validated();
 
         // if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
@@ -95,9 +110,14 @@ class UsersController extends Controller
         //     $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
         //     $data['restuarnt_file'] = $imageName;
         // }
+        $user->password = bcrypt($request->name.'2024');
+        $user->save();
+        $user->business()->attach($request->business_id);
+        $restaurantIds = explode(',', $request->restaurant_ids);
+        $user->restaurants()->attach($restaurantIds);
 
         // $restaurant = Restaurant::create($data);
-        return redirect()->route('restaurants.index');
+        return redirect()->route('users.index');
     }
 
     /**

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +21,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'lastname',
+        'surname',
+        'phone',
         'email',
         'password',
+        'user_file'
     ];
 
     /**
@@ -47,22 +53,22 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the business for the User
+     * The business that belong to the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function business(): HasMany
+    public function business(): BelongsToMany
     {
-        return $this->hasMany(Business::class, 'foreign_key', 'local_key');
+        return $this->belongsToMany(Business::class, 'users_business', 'user_id', 'business_id');
     }
-
+    
     /**
-     * Get all of the restaurants for the User
+     * The restaurants that belong to the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function restaurants(): HasMany
+    public function restaurants(): BelongsToMany
     {
-        return $this->hasMany(Restaurant::class, 'foreign_key', 'local_key');
+        return $this->belongsToMany(Restaurant::class, 'users_restaurants', 'user_id', 'restaurant_id');
     }
 }

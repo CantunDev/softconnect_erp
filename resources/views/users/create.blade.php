@@ -31,7 +31,7 @@
 
                 <div class="col-sm-6 col-lg-4">
                     <label for="inputBusinessName" class="form-label">A. Paterno</label>
-                    <input name="lastname " type="text"
+                    <input name="lastname" type="text"
                         class="form-control @error('lastname ') is-invalid @enderror" id="inputBusinessName"
                         placeholder="Apellido" value="{{ old('lastname ') }}">
                     @error('lastname ')
