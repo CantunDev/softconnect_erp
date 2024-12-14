@@ -18,14 +18,24 @@ class RestaurantsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $restaurant = Restaurant::withTrashed();
+            $restaurant = Restaurant::with('business','users')->withTrashed();
             return DataTables::of($restaurant)
                 ->addIndexColumn()
-                ->addColumn('business', function ($result){
-                    return "Corazon Contento";
+                ->addColumn('restaurant', function($result){
+                    $imageUrl = $result->restaurant_file ? !is_null($result->restaurant_file):
+                    'https://avatar.oxro.io/avatar.svg?name='.$result->name.'&caps=3&bold=true';
+                    $data = '<div class="d-flex align-items-center">';
+                    $data .= '<img src="'.$imageUrl.'" alt="" class="rounded-circle avatar-xs">';
+                    $data .= '<div class="ms-3">';
+                    $data .= '<h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.$result->name.'</a></h5>';
+                    $data .= '<p class="text-muted mb-0">' .  ($result->business ? $result->business->name : 'Sin empresa') . '</p>';                    
+                    $data .= '</div>';
+                    $data .= '</div>';
+
+                    return $data;
                 })
                 ->addColumn('assigned', function($result){
-                    return "Usuarios asignados: 0";
+                    return "Usuarios asignados: ". $result->users->count();
                 })
                 ->addColumn('action', function ($result){
                     $opciones = '';
@@ -42,9 +52,6 @@ class RestaurantsController extends Controller
                             
                         // }
                     return $opciones;
-                })
-                ->addColumn('assigned', function($result){
-                    return "Usuarios asignados: 0";
                 })
                 ->addColumn('status', function($result){
                     $status = '';
@@ -96,7 +103,7 @@ class RestaurantsController extends Controller
                 
                 //     return $output;
                 // })
-                ->rawColumns(['action','status'])
+                ->rawColumns(['restaurant','action','status'])
                 ->make(true);
          }
         return view('restaurantes.index');

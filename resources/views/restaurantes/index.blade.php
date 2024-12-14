@@ -59,11 +59,11 @@
         </div> --}}
         <div class="card-body">
             <div class="table-responsive">
-                <table id="table_restaurants" class="table table-wrapper text-wrapper text-center align-middle dt-responsive nowrap w-100 table-check" id="job-list">
-                    <thead>
+                {{-- <table id="table_restaurants" class="table table-wrapper text-wrapper text-center align-middle dt-responsive nowrap w-100 table-check" id="job-list"> --}}
+                <table id="table_restaurants" class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
+                    <thead class="table-light">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Empresa</th>
                             <th scope="col">Restaurante</th>
                             <th scope="col" class=" text-wrapper">Descripcion</th>
                             <th scope="col" class="">Usuarios</th>
@@ -98,8 +98,7 @@
                     },
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'business', name: 'business', orderable: false, searchable: false},
-                {data: 'name', name: 'name', orderable: false, searchable: false},
+                {data: 'restaurant', name: 'restaurant', orderable: false, searchable: false},
                 {data: 'description', name: 'description', orderable: false, searchable: false},
                 {data: 'assigned', name: 'assigned', orderable: false, searchable: false},
                 {data: 'ip', name: 'ip', orderable: false, searchable: false},

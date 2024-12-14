@@ -19,7 +19,7 @@ class UsersController extends Controller
             return DataTables::of($users)
                 ->addIndexColumn()
                 ->addColumn('user', function($result){
-                    $imageUrl = $result->restaurant_file ? !is_null($result->restaurant_file):
+                    $imageUrl = $result->user_file ? !is_null($result->user_file):
                     'https://avatar.oxro.io/avatar.svg?name='.$result->fullname.'&caps=3&bold=true';
                     $data = '<div class="d-flex align-items-center">';
                     $data .= '<img src="'.$imageUrl.'" alt="" class="rounded-circle avatar-xs">';
