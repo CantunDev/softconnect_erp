@@ -123,6 +123,7 @@ class BusinessController extends Controller
      */
     public function update(BusinessRequest $request, $id)
     {
+        //  return $request->all();
         $business = Business::findOrFail($id);
         $data = $request->validated();
 
@@ -132,6 +133,10 @@ class BusinessController extends Controller
             $data['business_file'] = $imageName;
         } else {
             $data['business_file'] = $business->business_file;
+        }
+        if ($request->has('restaurant_ids')) {
+            $restaurantIds = explode(',', $request->restaurant_ids);
+            $business->business_restaurants()->sync($restaurantIds);
         }
 
         $business->update($data);

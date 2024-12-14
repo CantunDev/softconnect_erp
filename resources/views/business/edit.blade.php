@@ -1,187 +1,279 @@
-<x-app-layout>
-  <div class="py-10">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <form action="{{ route('business.update', $business) }}" method="POST" class="dark:bg-gray-800 rounded-xl p-5"
-        enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        <h1 class="text-white text-2xl mb-3 font-semibold">Editar empresa</h1>
+@extends('layouts.master')
+@section('title')
+    Actualizar Empresa |
+@endsection
 
-        <div class="grid gap-4 grid-cols-12">
-          <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-            <label for="inputName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
-              corto</label>
-            <input type="text" name="name" id="inputName"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Empresa Demo" value="{{ old('name', $business->name) }}">
-            @error('name')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+@section('content')
+    @component('components.breadcrumb')
+        @slot('title')
+            Editar Empresa
+        @endslot
+        @slot('bcPrevText')
+            Empresas
+        @endslot
+        @slot('bcPrevLink')
+            {{ route('business.index') }}
+        @endslot
+        @slot('bcActiveText')
+            Editar empresa
+        @endslot
+    @endcomponent
 
-          <div class="col-span-12 sm:col-span-6 lg:col-span-6">
-            <label for="inputBusinessName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre
-              oficial</label>
-            <input type="text" name="business_name" id="inputBusinessName"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Empresa Demo SA de CV" value="{{ old('business_name', $business->business_name) }}">
-            @error('business_name')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+    <div class="card">
+        <div class="card-body">
+          <form id="business_edit" class="row g-3" action="{{ route('business.update', $business->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+                <div class="col-sm-6 col-lg-4">
+                    <label for="inputName" class="form-label">Nombre corto</label>
+                    <input name="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                        id="inputName" placeholder="Ej: Empresa Demo" value="{{ old('name', $business->name) }}">
+                    <input type="hidden" id="business_id" value="{{ old('id', $business->id) }}">
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-4 md:col-span-3 lg:col-span-2">
-            <label for="inputRfc" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">RFC</label>
-            <input type="text" name="rfc" id="inputRfc" minlength="12" maxlength="13"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 uppercase"
-              value="{{ old('rfc', $business->rfc) }}">
-            @error('rfc')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-6 col-lg-6">
+                    <label for="inputBusinessName" class="form-label">Nombre oficial</label>
+                    <input name="business_name" type="text"
+                        class="form-control @error('business_name') is-invalid @enderror" id="inputBusinessName"
+                        placeholder="Ej: Empresa Demo SA de CV"
+                        value="{{ old('business_name', $business->business_name) }}">
+                    @error('business_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-8 md:col-span-6 lg:col-span-3">
-            <label for="inputAddress"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección</label>
-            <input type="text" name="business_address" id="inputAddress"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Calle A entre B y C" value="{{ old('business_address', $business->business_address) }}">
-            @error('business_address')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    <label for="inputRfc" class="form-label">RFC</label>
+                    <input name="rfc" type="text"
+                        class="form-control text-uppercase @error('rfc') is-invalid @enderror" id="inputRfc" minlength="12"
+                        maxlength="13" value="{{ old('rfc', $business->rfc) }}">
+                    @error('rfc')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-6 md:col-span-3 lg:col-span-2">
-            <label for="inputPhone"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Teléfono</label>
-            <input type="tel" name="telephone" id="inputPhone" minlength="10" maxlength="15"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: 9380000000" value="{{ old('telephone', $business->telephone) }}">
-            @error('telephone')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-8 col-md-6 col-lg-3">
+                    <label for="inputAddress" class="form-label">Dirección</label>
+                    <input name="business_address" type="text"
+                        class="form-control @error('business_address') is-invalid @enderror" id="inputAddress"
+                        placeholder="Ej: Calle A entre B y C"
+                        value="{{ old('business_address', $business->business_address) }}">
+                    @error('business_address')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-            <label for="inputEmail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo
-              electrónico</label>
-            <input type="email" name="email" id="inputEmail"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 lowercase"
-              placeholder="softconnect_erp@mail.com" value="{{ old('email', $business->email) }}">
-            @error('email')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-6 col-md-3 col-lg-2">
+                    <label for="inputPhone" class="form-label">Teléfono</label>
+                    <input name="telephone" type="tel" class="form-control @error('telephone') is-invalid @enderror"
+                        id="inputPhone" minlength="10" maxlength="15" placeholder="Ej: 9380000000"
+                        value="{{ old('telephone', $business->telephone) }}">
+                    @error('telephone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-6 lg:col-span-3">
-            <label for="inputWeb" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sitio web
-              <span class="dark:text-gray-500">(opcional)</span></label>
-            <input type="url" name="web" id="inputWeb"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: www.sitioweb.com" value="{{ old('web', $business->web) }}">
-            @error('web')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-6 col-lg-4">
+                    <label for="inputEmail" class="form-label">Correo electrónico</label>
+                    <input type="email" name="email" id="inputEmail"
+                        class="form-control text-lowercase @error('email') is-invalid @enderror"
+                        placeholder="softconnect_erp@mail.com" value="{{ old('email', $business->email) }}">
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
-            <label for="inputBusinessLine" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Línea de
-              negocio</label>
-            <input type="text" name="business_line" id="inputBusinessLine"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Ej: Restaurantes" value="{{ old('business_line', $business->business_line) }}">
-            @error('business_line')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label for="inputWeb" class="form-label">Sitio web <span
+                            class="fw-normal text-muted">(opcional)</span></label>
+                    <input name="web" type="url" class="form-control @error('web') is-invalid @enderror"
+                        id="inputWeb" placeholder="Ej: www.sitioweb.com" value="{{ old('web', $business->web) }}">
+                    @error('web')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-4 lg:col-span-3">
-            <label for="inputCountry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">País</label>
-            <input type="text" name="country" id="inputCountry"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              value="{{ old('country', $business->country ?? 'México') }}">
-            @error('country')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <label for="inputBusinessLine" class="form-label">Línea de negocio</label>
+                    <input type="text" name="business_line" id="inputBusinessLine"
+                        class="form-control @error('business_line') is-invalid @enderror" placeholder="Ej: Restaurantes"
+                        value="{{ old('business_line', $business->business_line) }}">
+                    @error('business_line')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-4 lg:col-span-3">
-            <label for="inputState"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
-            <input type="text" name="state" id="inputState"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              value="{{ old('state', $business->state) }}">
-            @error('state')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-4 col-lg-3">
+                    <label for="inputCountry" class="form-label">País</label>
+                    <input type="text" name="country" id="inputCountry"
+                        class="form-control @error('country') is-invalid @enderror"
+                        value="{{ old('country', $business->country) }}">
+                    @error('country')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-4 lg:col-span-3">
-            <label for="inputCity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
-            <input type="text" name="city" id="inputCity"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              value="{{ old('city', $business->city) }}">
-            @error('city')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-4 col-lg-3">
+                    <label for="inputState" class="form-label">Estado</label>
+                    <input type="text" name="state" id="inputState"
+                        class="form-control @error('state') is-invalid @enderror"
+                        value="{{ old('state', $business->state) }}">
+                    @error('state')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <label for="inputRegime" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Régimen <span class="dark:text-gray-500">(opcional)</span>
-            </label>
-            <input type="text" name="regime" id="inputRegime"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              value="{{ old('regime', $business->regime) }}">
-            @error('regime')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-4 col-lg-3">
+                    <label for="inputCity" class="form-label">Ciudad</label>
+                    <input type="text" name="city" id="inputCity"
+                        class="form-control @error('city') is-invalid @enderror"
+                        value="{{ old('city', $business->city) }}">
+                    @error('city')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <label for="inputRegimensat" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Regimen SAT <span class="dark:text-gray-500">(opcional)</span>
-            </label>
-            <input type="text" name="idregiment_sat" id="inputRegimensat"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              value="{{ old('idregiment_sat', $business->idregiment_sat) }}">
-            @error('idregiment_sat')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
-          </div>
+                <div class="col-sm-6 col-md-4">
+                    <label for="inputRegime" class="form-label">Régimen <span
+                            class="fw-normal text-muted">(opcional)</span></label>
+                    <input type="text" name="regime" id="inputRegime"
+                        class="form-control @error('regime') is-invalid @enderror"
+                        value="{{ old('regime', $business->regime) }}">
+                    @error('regime')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-          <div class="col-span-12 lg:col-span-4">
-            <label for="inputLogo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Logo <span class="dark:text-gray-500">(opcional)</span>
-            </label>
-            <input type="file" name="business_file" accept=".jpg,.jpeg,.png" id="inputLogo"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-            @error('business_file')
-              <span class="block text-red-500 text-sm mt-1">{{ $message }}</span>
-            @enderror
+                <div class="col-sm-6 col-md-4">
+                    <label for="inputRegimensat" class="form-label">Régimen SAT <span
+                            class="fw-normal text-muted">(opcional)</span></label>
+                    <input type="text" name="idregiment_sat" id="inputRegimensat"
+                        class="form-control @error('idregiment_sat') is-invalid @enderror"
+                        value="{{ old('idregiment_sat', $business->idregiment_sat) }}">
+                    @error('idregiment_sat')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            @if ($business->business_file)
-              <div class="mt-4 flex justify-center">
-                <img class="max-w-full h-40 object-cover" src="{{ asset('storage/business/' . $business->business_file) }}"
-                  alt="">
-              </div>
-            @endif
-          </div>
-
-          <div class="col-span-full">
-            <div class="flex flex-wrap gap-3 items-center">
-              <button type="submit"
-                class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
-                Actualizar
-              </button>
-              <a href="{{ route('business.index') }}" type="button"
-                class="text-gray-700 hover:text-white border border-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:hover:bg-gray-500 dark:focus:ring-gray-700">
-                Cancelar
-              </a>
-            </div>
-          </div>
+                <div class="col-lg-4">
+                    <label for="inputLogo" class="form-label">Logo <span
+                            class="fw-normal text-muted">(opcional)</span></label>
+                    <input type="file" name="business_file" accept=".jpg,.jpeg,.png" id="inputLogo"
+                        class="form-control @error('business_file') is-invalid @enderror">
+                    @error('business_file')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
         </div>
-      </form>
     </div>
-  </div>
-</x-app-layout>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Asignar Restaurantes a la empresa</h4>
+                <div class="row g-3">
+                    <div class="col-sm-6 col-md-3 col-lg-6">
+                        <h4 class="card-title mb-4">Selecciona tu restaurante</h4>
+                        <div class="table-responsive">
+                            <table class="table table-nowrap align-middle mb-0" id="restaurants-table">
+                                <tbody id="restaurants-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <a class="btn btn-outline-secondary" href="{{ route('business.index') }}">Cancelar</a>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+@endsection
+@section('js')
+<script>
+    $(document).ready(function () {
+        var businessId = $('#business_id').val(); 
+        if (businessId) {
+            fetchRestaurants(businessId);
+        }
+        $('#business_id').change(function () {
+            var selectedBusinessId = $(this).val();
+            $('#restaurants-body').empty();
+            fetchRestaurants(selectedBusinessId);
+        });
+    });
+
+    function fetchRestaurants(businessId) {
+    $.ajax({
+        url: "{{ route('restaurants.get', ':id') }}".replace(':id', businessId),
+        type: "GET",
+        data: { business_id: businessId },
+        success: function(data) {
+            if (data.length > 0) {
+                $.each(data, function(index, restaurants) {
+                    var imageUrl = restaurants.restaurants.restaurant_file ?
+                        `/path/to/restaurants/files/${restaurants.restaurants.restaurants_file}` :
+                        `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurants.restaurants.name)}&caps=3&bold=true`;
+                    var userRestaurantIds = @json($business->restaurants->pluck('id')->toArray());
+
+                    var row = `
+                        <tr>
+                            <td style="width: 10px;">
+                                <div class="form-check font-size-16">
+                                    <input type="checkbox" name="restaurant_ids[]" value="${restaurants.restaurants.id}" id="restaurantCheck${restaurants.restaurants.id}"
+                                    ${userRestaurantIds.includes(restaurants.restaurants.id) ? 'checked' : ''}>
+                                    <label class="form-check-label" for="restaurantCheck${restaurants.restaurants.id}"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-group-item me-2">
+                                        <a href="javascript: void(0);" class="d-inline-block">
+                                            <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
+                                        </a>
+                                    </div>
+                                    <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
+                                </div>
+                            </td>
+                        </tr>`;
+
+                    $('#restaurants-body').append(row);
+                });
+            } else {
+                $('#restaurants-body').append('<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>');
+            }
+        },
+        error: function() {
+            alert('Error al cargar los restaurantes.');
+        }
+    });
+}
+
+</script>
+<script>
+    $('#business_edit').on('submit', function (e) {
+      e.preventDefault(); 
+      var seleccionados = [];
+        $('input[name="restaurant_ids[]"]:checked').each(function () {
+            seleccionados.push($(this).val());
+        });
+      // console.log('Seleccionados:', seleccionados);
+      if (seleccionados.length === 0) {
+          alert('Debe seleccionar al menos un restaurante.');
+          return; 
+      }
+      $('#restaurant_ids_field').remove();
+      $('<input>')
+          .attr('type', 'hidden')
+          .attr('name', 'restaurant_ids') 
+          .attr('id', 'restaurant_ids_field')
+          .val(seleccionados.join(','))
+          .appendTo('#business_edit'); 
+      this.submit();
+      });
+</script>
+
+@endsection

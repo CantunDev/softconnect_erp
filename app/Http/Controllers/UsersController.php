@@ -115,7 +115,7 @@ class UsersController extends Controller
         if ($request->has('busines_id')) {
             $user->business()->attach($request->business_id);
         }
-        if ($request->has('busines_id')) {
+        if ($request->has('restaurant_ids')) {
             $restaurantIds = explode(',', $request->restaurant_ids);
             $user->restaurants()->attach($restaurantIds);
 

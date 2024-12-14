@@ -22,7 +22,12 @@ class Business extends Model
         return $this->belongsToMany(User::class, 'users_business', 'business_id', 'user_id');
     }
 
-   public function restaurants()
+    public function business_restaurants()
+    {
+        return $this->belongsToMany(Restaurant::class, 'business_restaurants', 'business_id', 'restaurant_id');
+    }
+
+    public function restaurants()
     {
         return $this->hasManyThrough(Restaurant::class,BusinessRestaurants::class,'business_id','id','id','restaurant_id');
     }
