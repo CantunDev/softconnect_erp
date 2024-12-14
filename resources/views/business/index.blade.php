@@ -27,57 +27,19 @@
         </a>
       </div>
       <div class="table-responsive">
-        <table class="table project-list-table table-nowrap align-middle table-hover" id="datatable">
-          <thead>
+        {{-- <table class="table project-list-table table-nowrap align-middle table-hover" id="datatable"> --}}
+          <table id="table_business" class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
+          <thead class="table-light">
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Nombre</th>
-              <th scope="col">RFC</th>
-              <th scope="col">Linea de negocio</th>
-              <th scope="col">Regimen</th>
+              <th scope="col">Usuarios</th>
+              <th scope="col">Restaurantes</th>
+              <th scope="col">Estatus</th>
               <th scope="col">Opciones</th>
             </tr>
           </thead>
           <tbody>
-            @foreach ($companies as $company)
-              <tr>
-                <td>
-                  <p class="text-muted mb-0">{{ $company->id }}</p>
-                </td>
-                <td>
-                  {{-- <h5 class="font-size-14 mb-0">{{ $company->name }}</h5> --}}
-                  <p class="text-muted mb-0">{{ $company->name }}</p>
-                </td>
-                <td>
-                  <p class="text-muted mb-0">{{ $company->rfc }}</p>
-                </td>
-                <td>
-                  <p class="text-muted mb-0">{{ $company->business_line }}</p>
-                </td>
-                <td>
-                  <p class="text-muted mb-0">{{ $company->regime }}</p>
-                </td>
-                <td class="text-center">
-                  <div class="dropdown">
-                    <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="mdi mdi-dots-vertical font-size-18"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                      {{-- <a class="dropdown-item" href="#"><i class="bx bx-show font-size-15"></i> Ver</a> --}}
-                      <a class="dropdown-item" href="{{ route('business.edit', $company->id) }}"><i
-                          class="bx bx-edit font-size-15"></i> Editar</a>
-                      <form method="POST" action="{{ route('business.destroy', $company) }}"
-                        data-id="{{ $company->name }}" class="form-delete">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="dropdown-item text-danger"><i class="bx bx-trash font-size-15"></i>
-                          Eliminar</button>
-                      </form>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            @endforeach
           </tbody>
         </table>
       </div>
@@ -88,50 +50,170 @@
 @section('js')
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    $(document).ready(function() {
-      $("#datatable").DataTable({
-        responsive: true,
-        autoWidth: false,
-        pagingType: "simple",
-        language: {
-          lengthMenu: "Mostrar _MENU_ registros / página",
-          zeroRecords: "No se encontraron registros coincidentes",
-          info: "Mostrando _PAGE_ de _PAGES_ páginas",
-          infoEmpty: "No hay registros disponibles",
-          infoFiltered: "(_TOTAL_ registros filtrados)",
-          search: "Buscar:",
-          paginate: {
-            next: "Siguiente",
-            previous: "Anterior",
-          },
-          emptyTable: 'No hay datos disponibles en la tabla',
-        },
-        order: [
-          [0, "desc"]
-        ],
-      });
-      $(".datatable").attr("style", "border-collapse: collapse !important");
+    $(document).ready(function(){
+        $('#table_business').DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            ajax: {
+                url: '{!! route('business.index') !!}',
+            },
+            language: {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                {data: 'business', name: 'business', orderable: false, searchable: false},
+                {data: 'users', name: 'users', orderable: false, searchable: false},
+                {data: 'restaurants', name: 'restaurants', orderable: false, searchable: false},
+                {data: 'status', name: 'status', orderable: false, searchable: false},
+                {data: 'action', name: 'action', orderable: false, searchable: false}
+            ],
+        });
     });
-
-    $(document).on('submit', '.form-delete', function(e) {
-      e.preventDefault();
-
-      const alertAttribute = $(this).data('id');
-
+</script>
+<script>
+  function btnSuspend(id) {
       Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'La empresa ' + alertAttribute + ' se eliminará definitivamente.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: '¡Si, eliminar!',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.submit();
-        }
+          title: "Desea suspender?",
+          text: "Por favor asegúrese y luego confirme!",
+          icon: 'warning',
+          showCancelButton: !0,
+          confirmButtonText: "¡Sí, suspender!",
+          cancelButtonText: "¡No, cancelar!",
+          reverseButtons: !0
+      }).then(function (e) {
+          if (e.value === true) {
+              $.ajax({
+                  type: 'PUT',
+                  url: "{{ url('suspend/business') }}/" + id, 
+                  data: {
+                      id: id,
+                      _token: '{!! csrf_token() !!}'
+                  },
+                  dataType: 'JSON',
+                  success: function (response) {
+                      console.log(response);
+                      if (response.success === true) {
+                          Swal.fire({
+                              title: "Hecho!",
+                              text: response.message,
+                              icon: "success",
+                              confirmButtonText: "Hecho!",
+                          });
+                          $('#table_business').DataTable().ajax.reload();
+                      } else {
+                          Swal.fire({
+                              title: "Error!",
+                              text: response.message,
+                              icon: "error",
+                              confirmButtonText: "Cancelar!",
+                          });
+                      }
+                  }
+              });
+          } else {
+              e.dismiss;
+          }
+      }, function (dismiss) {
+          return false;
       })
-    });
-  </script>
+  }
+</script>
+<script>
+  function btnRestore(id) {
+      Swal.fire({
+          title: "Desea Restaurar?",
+          text: "Esta accion restaurara la empresa",
+          icon: 'warning',
+          showCancelButton: !0,
+          confirmButtonText: "¡Sí, restaurar!",
+          cancelButtonText: "¡No, cancelar!",
+          reverseButtons: !0
+      }).then(function (e) {
+          if (e.value === true) {
+              $.ajax({
+                  type: 'PUT',
+                  url: "{{ url('restore/business') }}/" + id, 
+                  data: {
+                      id: id,
+                      _token: '{!! csrf_token() !!}'
+                  },
+                  dataType: 'JSON',
+                  success: function (response) {
+                      console.log(response);
+                      if (response.success === true) {
+                          Swal.fire({
+                              title: "Hecho!",
+                              text: response.message,
+                              icon: "success",
+                              confirmButtonText: "Hecho!",
+                          });
+                          $('#table_business').DataTable().ajax.reload();
+                      } else {
+                          Swal.fire({
+                              title: "Error!",
+                              text: response.message,
+                              icon: "error",
+                              confirmButtonText: "Cancelar!",
+                          });
+                      }
+                  }
+              });
+          } else {
+              e.dismiss;
+          }
+      }, function (dismiss) {
+          return false;
+      })
+  }
+</script>
+<script>
+  function btnDelete(id) {
+      Swal.fire({
+          title: "Desea eliminar?",
+          text: "Por favor asegúrese y luego confirme esta opcion sera irreversible !",
+          icon: 'warning',
+          showCancelButton: !0,
+          confirmButtonText: "¡Sí, eliminar!",
+          cancelButtonText: "¡No, cancelar!",
+          reverseButtons: !0
+      }).then(function (e) {
+          if (e.value === true) {
+              $.ajax({
+                  type: 'DELETE',
+                  url: "{{ url('business') }}/" + id, 
+                  data: {
+                      id: id,
+                      _token: '{!! csrf_token() !!}'
+                  },
+                  dataType: 'JSON',
+                  success: function (response) {
+                      console.log(response);
+                      if (response.success === true) {
+                          Swal.fire({
+                              title: "Hecho!",
+                              text: response.message,
+                              icon: "success",
+                              confirmButtonText: "Hecho!",
+                          });
+                          $('#table_business').DataTable().ajax.reload();
+                      } else {
+                          Swal.fire({
+                              title: "Error!",
+                              text: response.message,
+                              icon: "error",
+                              confirmButtonText: "Cancelar!",
+                          });
+                      }
+                  }
+              });
+          } else {
+              e.dismiss;
+          }
+      }, function (dismiss) {
+          return false;
+      })
+  }
+</script>
 @endsection
