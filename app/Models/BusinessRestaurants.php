@@ -17,23 +17,31 @@ class BusinessRestaurants extends Model
         'restaurant_id'
     ];
 
+    //  protected $appends = ['getBusiness'];
+
     /**
      * Get all of the comments for the BusinessRestaurants
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    // public function restaurants(): HasMany
-    // {
-    //     return $this->hasMany(Restaurant::class, 'id','restaurant_id');
-    // }
+     public function restaurants(): BelongsTo
+     {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id','id');
+     }
 
     /**
      * Get the user that owns the BusinessRestaurants
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function restaurants(): BelongsTo
+    // public function getRestaurant(): BelongsTo
+    // {
+    //     return $this->belongsTo(Restaurant::class,  'id', 'restaurant_id');
+    // }
+
+    public function business(): BelongsTo
     {
-        return $this->belongsTo(Restaurant::class, 'restaurant_id', 'id');
+        return $this->belongsTo(Business::class, 'business_id', 'id');
     }
+
 }

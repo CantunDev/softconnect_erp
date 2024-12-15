@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\UsersController;
+use App\Models\Business;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,24 +41,16 @@ Route::middleware('auth')->group(function () {
         Route::put('/restaurants/{restaurant}', [RestaurantsController::class, 'restore'])->name('restaurants.restore');
         Route::put('/payment_method/{accounting}', [PaymentMethodController::class, 'restore' ])->name('payment_method.restore');
         Route::put('/users/{user}', [UsersController::class, 'restore' ])->name('users.restore');
+        Route::put('/business/{business}', [BusinessController::class, 'restore' ])->name('business.restore');
 
     });
     Route::prefix('suspend')->group( function(){
         Route::put('/restaurants/{restaurant}', [RestaurantsController::class, 'suspend' ])->name('restaurants.suspend');
         Route::put('/payment_method/{accounting}', [PaymentMethodController::class, 'suspend' ])->name('payment_method.suspend');
         Route::put('/users/{user}', [UsersController::class, 'suspend' ])->name('users.suspend');
-        
+        Route::put('/business/{business}', [BusinessController::class, 'suspend' ])->name('business.suspend');
     });
-    // Route::group(['prefix' => 'cheques'], function(){
-    //     Route::post('putget/{ip}/{database}/{table}', ChequesController::class, 'get')->name('cheques.get');
-    // });
-    // Route::get('/categories', [ExpensesCategoriesController::class, 'getCategories'])->name('categories.get');
-    // Route::get('/subcategories/{id}', [ExpensesCategoriesController::class, 'getSubcategories'])->name('subcategories.get');
 
-    // Route::post('/fetch-subcategories', [ExpensesController::class, 'fetchSubcategories'])->name('fetch.subcategories');
-    // Route::post('/fetch-subsubcategories', [ExpensesController::class, 'fetchSubsubcategories'])->name('fetch.subsubcategories');
-
-    // Route::get('connection/{ip}/{database}/{table}', [ConnectionSQLController::class, 'connection'])->name('connectionsqlsrv');
     Route::prefix('fetch')->group( function(){
         Route::get('/categories', [FetchDataController::class, 'getCategories'])->name('categories.get');
         Route::get('/subcategories/{id}', [FetchDataController::class, 'getSubcategories'])->name('subcategories.get');
