@@ -179,12 +179,32 @@
                         <div class="table-responsive">
                             <table class="table table-nowrap align-middle mb-0" id="restaurants-table">
                                 <tbody id="restaurants-body">
+                                    @foreach ($restaurants as $restaurant)
+                                        <tr>
+                                            <td style="width: 10px;">
+                                                <div class="form-check font-size-16">
+                                                    <input type="checkbox" name="restaurant_ids[]" value="{{$restaurant->id}}" id="restaurantCheck{{$restaurant->id}}" {{ $business->business_restaurants->pluck('id')->contains($restaurant->id) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="restaurantCheck{{$restaurant->id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-group-item me-2">
+                                                        <a href="javascript: void(0);" class="d-inline-block">
+                                                            <img src="https://avatar.oxro.io/avatar.svg?name={{$restaurant->name}}"&caps=3&bold=true alt="" class="rounded-circle avatar-xs">
+                                                        </a>
+                                                    </div>
+                                                    <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">{{$restaurant->name}}</a></h5>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="col-12 mt-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="submit" class="btn btn-warning">Actualizar</button>
                         <a class="btn btn-outline-secondary" href="{{ route('business.index') }}">Cancelar</a>
                     </div>
                 </div>
@@ -193,87 +213,4 @@
         </div>
 @endsection
 @section('js')
-<script>
-    $(document).ready(function () {
-        var businessId = $('#business_id').val(); 
-        if (businessId) {
-            fetchRestaurants(businessId);
-        }
-        $('#business_id').change(function () {
-            var selectedBusinessId = $(this).val();
-            $('#restaurants-body').empty();
-            fetchRestaurants(selectedBusinessId);
-        });
-    });
-
-    function fetchRestaurants(businessId) {
-    $.ajax({
-        url: "{{ route('restaurants.get', ':id') }}".replace(':id', businessId),
-        type: "GET",
-        data: { business_id: businessId },
-        success: function(data) {
-            if (data.length > 0) {
-                $.each(data, function(index, restaurants) {
-                    var imageUrl = restaurants.restaurants.restaurant_file ?
-                        `/path/to/restaurants/files/${restaurants.restaurants.restaurants_file}` :
-                        `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurants.restaurants.name)}&caps=3&bold=true`;
-                    var userRestaurantIds = @json($business->restaurants->pluck('id')->toArray());
-
-                    var row = `
-                        <tr>
-                            <td style="width: 10px;">
-                                <div class="form-check font-size-16">
-                                    <input type="checkbox" name="restaurant_ids[]" value="${restaurants.restaurants.id}" id="restaurantCheck${restaurants.restaurants.id}"
-                                    ${userRestaurantIds.includes(restaurants.restaurants.id) ? 'checked' : ''}>
-                                    <label class="form-check-label" for="restaurantCheck${restaurants.restaurants.id}"></label>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-group-item me-2">
-                                        <a href="javascript: void(0);" class="d-inline-block">
-                                            <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
-                                        </a>
-                                    </div>
-                                    <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
-                                </div>
-                            </td>
-                        </tr>`;
-
-                    $('#restaurants-body').append(row);
-                });
-            } else {
-                $('#restaurants-body').append('<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>');
-            }
-        },
-        error: function() {
-            alert('Error al cargar los restaurantes.');
-        }
-    });
-}
-
-</script>
-<script>
-    $('#business_edit').on('submit', function (e) {
-      e.preventDefault(); 
-      var seleccionados = [];
-        $('input[name="restaurant_ids[]"]:checked').each(function () {
-            seleccionados.push($(this).val());
-        });
-      // console.log('Seleccionados:', seleccionados);
-      if (seleccionados.length === 0) {
-          alert('Debe seleccionar al menos un restaurante.');
-          return; 
-      }
-      $('#restaurant_ids_field').remove();
-      $('<input>')
-          .attr('type', 'hidden')
-          .attr('name', 'restaurant_ids') 
-          .attr('id', 'restaurant_ids_field')
-          .val(seleccionados.join(','))
-          .appendTo('#business_edit'); 
-      this.submit();
-      });
-</script>
-
 @endsection

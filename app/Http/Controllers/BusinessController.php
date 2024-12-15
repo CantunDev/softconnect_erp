@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BusinessRequest;
 use App\Models\Business;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -114,8 +115,9 @@ class BusinessController extends Controller
      */
     public function edit($id)
     {
-        $business = Business::findOrFail($id);
-        return view('business.edit', compact('business'));
+        $business = Business::with('business_restaurants')->findOrFail($id);
+        $restaurants = Restaurant::unassigned($id)->get();
+        return view('business.edit', compact('business','restaurants'));
     }
 
     /**
@@ -123,7 +125,7 @@ class BusinessController extends Controller
      */
     public function update(BusinessRequest $request, $id)
     {
-        //  return $request->all();
+        // return $request->all();
         $business = Business::findOrFail($id);
         $data = $request->validated();
 
@@ -135,7 +137,7 @@ class BusinessController extends Controller
             $data['business_file'] = $business->business_file;
         }
         if ($request->has('restaurant_ids')) {
-            $restaurantIds = explode(',', $request->restaurant_ids);
+            $restaurantIds = $request->restaurant_ids;
             $business->business_restaurants()->sync($restaurantIds);
         }
 
