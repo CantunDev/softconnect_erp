@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::dropIfExists('providers'); 
-        Schema::dropIfExists('expenses_categories'); 
-        Schema::dropIfExists('payment_methods'); 
         Schema::dropIfExists('expenses'); 
+        Schema::dropIfExists('expenses_categories'); 
         Schema::dropIfExists('payment_method'); 
+        Schema::dropIfExists('payment_methods'); 
     }
 
     /**
