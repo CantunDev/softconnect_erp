@@ -76,7 +76,7 @@ class UsersController extends Controller
                 })
                 ->rawColumns(['user','action','status'])
                 ->make(true);
-         }
+        }
         return view('users.index');
     }
 
