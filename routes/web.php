@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
+use App\Http\Controllers\RolesPermissionsController;
 use App\Http\Controllers\UsersController;
 use App\Models\Business;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('payment_method', PaymentMethodController::class);
     Route::resource('cheques', ChequesController::class);
     Route::resource('invoices', InvoicesController::class);
+    Route::resource('roles_permissions', RolesPermissionsController::class);
 
     Route::prefix('restore')->group( function(){
         Route::put('/restaurants/{restaurant}', [RestaurantsController::class, 'restore'])->name('restaurants.restore');
@@ -55,7 +57,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/categories', [FetchDataController::class, 'getCategories'])->name('categories.get');
         Route::get('/subcategories/{id}', [FetchDataController::class, 'getSubcategories'])->name('subcategories.get');
         Route::get('/restaurants/{id}', [FetchDataController::class, 'getRestaurants'])->name('restaurants.get');
+        Route::get('roles/', [FetchDataController::class, 'getRoles'])->name('roles.get');
+        Route::get('permissions/', [FetchDataController::class, 'getPermissions'])->name('permissions.get');
+    });
 
+    Route::domain('blog.' . env('APP_URL'))->group(function () {
+        Route::get('posts', function () {
+            return 'Tu subdominio';
+        });
     });
 
 });
