@@ -86,8 +86,8 @@
                         searchable: false
                     },
                     {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
+                        data: 'roles',
+                        name: 'roles',
                         orderable: false,
                         searchable: false
                     },
