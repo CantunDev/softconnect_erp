@@ -281,5 +281,8 @@ return [
         'telephone'                => 'teléfono',
         'business_line'            => 'línea de negocio',
         'business_file'            => 'logo',
+        'lastname'                 => 'apellido paterno',
+        'surname'                  => 'apellido materno',
+        'business_id'              => 'empresas',
     ],
 ];

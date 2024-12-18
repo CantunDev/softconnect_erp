@@ -15,32 +15,32 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $users = User::withTrashed();
             return DataTables::of($users)
                 ->addIndexColumn()
-                ->addColumn('user', function($result){
-                    $imageUrl = $result->user_file ? !is_null($result->user_file):
-                    'https://avatar.oxro.io/avatar.svg?name='.$result->fullname.'&caps=3&bold=true';
+                ->addColumn('user', function ($result) {
+                    $imageUrl = $result->user_file ? !is_null($result->user_file) :
+                        'https://avatar.oxro.io/avatar.svg?name=' . $result->fullname . '&caps=3&bold=true';
                     $data = '<div class="d-flex align-items-center">';
-                    $data .= '<img src="'.$imageUrl.'" alt="" class="rounded-circle avatar-xs">';
+                    $data .= '<img src="' . $imageUrl . '" alt="" class="rounded-circle avatar-xs">';
                     $data .= '<div class="ms-3">';
-                    $data .= '<h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">'.$result->fullname.'</a></h5>';
-                    $data .= '<p class="text-muted mb-0">'.$result->email.'</p>';
+                    $data .= '<h5 class="text-capitalize font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->fullname . '</a></h5>';
+                    $data .= '<p class="text-muted text-lowercase mb-0">' . $result->email . '</p>';
                     $data .= '</div>';
                     $data .= '</div>';
 
                     return $data;
                 })
-                ->addColumn('business', function($result){
+                ->addColumn('business', function ($result) {
                     return $result->business && $result->business->count() > 0
-                    ? $result->business->count()
-                    : 'Sin empresas';
+                        ? $result->business->count()
+                        : 'Sin empresas';
                 })
-                ->addColumn('restaurants', function($result){
+                ->addColumn('restaurants', function ($result) {
                     return $result->restaurants && $result->restaurants->count() > 0
-                    ? $result->restaurants->count()
-                    : 'Sin restaurantes';
+                        ? $result->restaurants->count()
+                        : 'Sin restaurantes';
 
                     // if ($result->subtype?->isNotEmpty()) {
                     //     $items = $result->subtype->map(function ($subtype) {
@@ -50,7 +50,7 @@ class UsersController extends Controller
                     // }
                     // return 'Sin subtipos';
                 })
-                ->addColumn('roles', function($result){
+                ->addColumn('roles', function ($result) {
                     $roleNames = $result->getRoleNames();
                     if ($roleNames->isNotEmpty()) {
                         $listItems = $roleNames->map(function ($role) {
@@ -60,32 +60,31 @@ class UsersController extends Controller
                     }
                     return "<ul><li>Ningun Rol asignado</li></ul>";
                 })
-                ->addColumn('status', function($result){
+                ->addColumn('status', function ($result) {
                     $status = '';
                     if ($result->trashed()) {
                         $status .= '<div class="badge font-size-12 badge-soft-danger"> Suspendido </div>';
-                    }else{
+                    } else {
                         $status .= '<div class="badge font-size-12 badge-soft-success"> Activo </div>';
                     }
                     return $status;
                 })
-                ->addColumn('action', function ($result){
+                ->addColumn('action', function ($result) {
                     $opciones = '';
-                        // if (Auth::user()->can('read_operators')){
-                            // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
-                        // }
-                        if (Auth::user()->can('update_users')){
-                            $opciones .= '<a href="'.route('users.edit', $result->id).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                            $opciones .= '<button type="button" onclick="btnRestore('.$result->id.')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
-                        }
-                        if (Auth::user()->can('delete_users')){
-                            $opciones .= '<button type="button" onclick="btnSuspend('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
-                            $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
-
-                        }
+                    // if (Auth::user()->can('read_operators')){
+                    // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
+                    // }
+                    if (Auth::user()->can('update_users')) {
+                        $opciones .= '<a href="' . route('users.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                        $opciones .= '<button type="button" onclick="btnRestore(' . $result->id . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
+                    }
+                    if (Auth::user()->can('delete_users')) {
+                        $opciones .= '<button type="button" onclick="btnSuspend(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
+                        $opciones .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                    }
                     return $opciones;
                 })
-                ->rawColumns(['user','roles','action','status'])
+                ->rawColumns(['user', 'roles', 'action', 'status'])
                 ->make(true);
         }
         return view('users.index');
@@ -105,8 +104,25 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
-         $user = new User($request->all());
+        $data = $request->validate([
+            'name' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'lastname' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'surname' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'phone' => 'required|digits_between:10,15',
+            'email' => 'required|email',
+            'user_file' => 'nullable|image',
+            'business_id' => 'required',
+        ]);
+        $data['email'] = strtolower($data['email']);
+        
+        $keysToLowercase = ['name', 'lastname', 'surname'];
+        foreach ($keysToLowercase as $key) {
+            if (isset($data[$key])) {
+                $data[$key] = ucwords(strtolower($data[$key]));
+            }
+        }
+
+        $user = new User($data);
         //  if ($request->has('photo_user')) {
         //     $photo = $request->file('photo_user');
         //      $avatar =  $user->email.'.'.$photo->getClientOriginalExtension();
@@ -121,7 +137,7 @@ class UsersController extends Controller
         //     $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
         //     $data['restuarnt_file'] = $imageName;
         // }
-        $user->password = bcrypt($request->name.'2024');
+        $user->password = bcrypt($request->name . '2024');
         $user->save();
         if ($request->has('busines_id')) {
             $user->business()->attach($request->business_id);
@@ -129,7 +145,6 @@ class UsersController extends Controller
         if ($request->has('restaurant_ids')) {
             $restaurantIds = explode(',', $request->restaurant_ids);
             $user->restaurants()->attach($restaurantIds);
-
         }
         return redirect()->route('users.index');
     }
@@ -148,14 +163,14 @@ class UsersController extends Controller
     public function edit($id)
     {
         $business = Business::all();
-        $user = User::with(['business','restaurants'])->findOrFail($id);
-        return view('users.edit', compact('user','business'));
+        $user = User::with(['business', 'restaurants'])->findOrFail($id);
+        return view('users.edit', compact('user', 'business'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         // return $request->all();
         $user_find = User::findOrFail($id);
@@ -173,7 +188,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
         $suspend = $user->delete();
-        if ($suspend == 1){
+        if ($suspend == 1) {
             $success = true;
             $message = "Usuario Suspendido";
         } else {
@@ -190,7 +205,7 @@ class UsersController extends Controller
     {
         $user = User::onlyTrashed($id);
         $restore = $user->restore();
-        if ($restore == 1){
+        if ($restore == 1) {
             $success = true;
             $message = "Se restauro correctamene";
         } else {
@@ -209,7 +224,7 @@ class UsersController extends Controller
     {
         $user = User::onlyTrashed($id);
         $delete = $user->forceDelete();
-        if ($delete == 1){
+        if ($delete == 1) {
             $success = true;
             $message = "Se elimino permanentemente";
         } else {
