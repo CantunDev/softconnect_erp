@@ -8,6 +8,7 @@ use App\Models\Restaurant;
 use App\Models\Sfrt\Provider;
 use App\Models\Sfrt\TypeExpense;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Permission;
@@ -56,18 +57,24 @@ class FetchDataController extends Controller
             $roles = Role::all();
             return DataTables::of($roles)
                 ->addIndexColumn()
+                ->addColumn('users', function($result){
+                    return $result->users->count();
+                })
+                ->addColumn('permissions', function($result){
+                    return $result->permissions->count();
+                })
                 ->addColumn('action', function ($result){
                     $opciones = '';
-                        // if (Auth::user()->can('read_operators')){
+                        // if (Auth::user()->can('read_roles')){
                             // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
-                        // }
-                        // if (Auth::user()->can('update_operators')){
+                        if (Auth::user()->can('edit_roles')){
                             $opciones .= '<a href="'.route('users.edit', $result->id).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
                             $opciones .= '<button type="button" onclick="btnRestore('.$result->id.')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
-                        // }
-                        // if (Auth::user()->can('delete_operators')){
+                        }
+                         if (Auth::user()->can('delete_roles')){
                             $opciones .= '<button type="button" onclick="btnSuspend('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
                             $opciones .= '<button type="button" onclick="btnDelete('.$result->id.')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                        }
 
                         // }
                     return $opciones;

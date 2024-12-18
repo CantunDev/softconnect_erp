@@ -79,8 +79,8 @@
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'name', name: 'name', orderable: false, searchable: false},
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                {data: 'users', name: 'users', orderable: false, searchable: false},
+                {data: 'permissions', name: 'permissions', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
         });

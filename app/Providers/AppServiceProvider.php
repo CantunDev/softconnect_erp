@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,9 +21,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        DB::listen(function ($query) {
-            logger($query->sql);
-            logger($query->bindings);
+        // DB::listen(function ($query) {
+        //     logger($query->sql);
+        //     logger($query->bindings);
+        // });
+        // Implicitly grant "Super-Admin" role all permission checks using can()
+        Gate::before(function ($user, $ability) {
+            if ($user->hasRole('Super-Admin')) {
+                return true;
+            }
         });
     }
 }
