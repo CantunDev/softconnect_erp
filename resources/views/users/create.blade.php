@@ -17,7 +17,8 @@
 
     <div class="card">
         <div class="card-body">
-            <form id="create_users" class="row g-3" action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="create_users" class="row g-3" action="{{ route('users.store') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 @method('POST')
                 <div class="col-sm-6 col-lg-4">
@@ -31,9 +32,8 @@
 
                 <div class="col-sm-6 col-lg-4">
                     <label for="inputBusinessName" class="form-label">A. Paterno</label>
-                    <input name="lastname" type="text"
-                        class="form-control @error('lastname ') is-invalid @enderror" id="inputBusinessName"
-                        placeholder="Apellido" value="{{ old('lastname ') }}">
+                    <input name="lastname" type="text" class="form-control @error('lastname ') is-invalid @enderror"
+                        id="inputBusinessName" placeholder="Apellido" value="{{ old('lastname ') }}">
                     @error('lastname ')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -157,7 +157,7 @@
                             } else {
                                 $('#restaurants-body').append(
                                     '<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>'
-                                    );
+                                );
                             }
                         },
                         error: function() {
@@ -169,25 +169,25 @@
         });
     </script>
     <script>
-      $('#create_users').on('submit', function (e) {
-        e.preventDefault(); 
-        var seleccionados = [];
-          $('input[name="restaurant_ids[]"]:checked').each(function () {
-              seleccionados.push($(this).val());
-          });
-        // console.log('Seleccionados:', seleccionados);
-        // if (seleccionados.length === 0) {
-        //     alert('Debe seleccionar al menos un restaurante.');
-        //     return; 
-        // }
-        $('#restaurant_ids_field').remove();
-        $('<input>')
-            .attr('type', 'hidden')
-            .attr('name', 'restaurant_ids') 
-            .attr('id', 'restaurant_ids_field')
-            .val(seleccionados.join(','))
-            .appendTo('#create_users'); 
-        this.submit();
+        $('#create_users').on('submit', function(e) {
+            e.preventDefault();
+            var seleccionados = [];
+            $('input[name="restaurant_ids[]"]:checked').each(function() {
+                seleccionados.push($(this).val());
+            });
+            // console.log('Seleccionados:', seleccionados);
+            // if (seleccionados.length === 0) {
+            //     alert('Debe seleccionar al menos un restaurante.');
+            //     return; 
+            // }
+            $('#restaurant_ids_field').remove();
+            $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'restaurant_ids')
+                .attr('id', 'restaurant_ids_field')
+                .val(seleccionados.join(','))
+                .appendTo('#create_users');
+            this.submit();
         });
     </script>
 @endsection
