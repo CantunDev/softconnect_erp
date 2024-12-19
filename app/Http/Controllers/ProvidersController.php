@@ -16,12 +16,12 @@ class ProvidersController extends Controller
     {
         /*INDEX PARA PROVEEDORES */
         // $providers = Provider::all();
-        $ip = '192.168.193.226\NATIONALSOFT';
-        $database = 'softrestaurant10';
-        Config::set('database.connections.sqlsrv.host', $ip);
-        Config::set('database.connections.sqlsrv.database', $database);
-        DB::purge('sqlsrv');
-        $mes = Carbon::createFromFormat('Y-m', '2024-11')->month; // Mes de noviembre de 2024
+        // $ip = '192.168.193.226\NATIONALSOFT';
+        // $database = 'softrestaurant10';
+        // Config::set('database.connections.sqlsrv.host', $ip);
+        // Config::set('database.connections.sqlsrv.database', $database);
+        // DB::purge('sqlsrv');
+        // $mes = Carbon::createFromFormat('Y-m', '2024-11')->month; // Mes de no viembre de 2024
 
         if ($request->ajax()){
             $providers = Provider::query();
