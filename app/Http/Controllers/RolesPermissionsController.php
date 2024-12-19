@@ -19,6 +19,7 @@ class RolesPermissionsController extends Controller
     {
         $permisos_cat = Permission::groupBy('category')->get();
         $permisos = Permission::all();
+        Artisan::call('optimize:clear');
         return view('roles_permissions.create', compact('permisos_cat', 'permisos'));
     }
 
@@ -27,7 +28,7 @@ class RolesPermissionsController extends Controller
         $roles = Role::findOrFail($id);
         $permisos_cat = Permission::groupBy('category') ->get();
         $permisos = Permission::all();
-
+        Artisan::call('optimize:clear');
         return view('roles_permissions.edit', compact('roles', 'permisos_cat', 'permisos'));
     }
 
