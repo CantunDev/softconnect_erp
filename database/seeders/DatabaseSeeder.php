@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RestaurantsSeeder::class);
         $this->call(ProvidersSFRTSeeder::class);
         $this->call(InvoiceSFRTSeeder::class);
+        $this->call(PaymenMethodsFRTSeeder::class);
     }
 }
