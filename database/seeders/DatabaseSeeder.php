@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(InvoiceSFRTSeeder::class);
         $this->call(PaymenMethodsFRTSeeder::class);
         $this->call(ExpensesSFRTSeeder::class);
+        $this->call(PurchasesSFRTSeeder::class);
     }
 }
