@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CreateUserMail;
 use App\Models\Business;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -123,13 +125,14 @@ class UsersController extends Controller
         // }
         $user->password = bcrypt($request->name.'2024');
         $user->save();
+        // Mail::to('cantunberna@gmail.com')->send(new CreateUserMail($user));
+        // Mail::to($user->email)->send(new CreateUserMail($user));
         if ($request->has('busines_id')) {
             $user->business()->attach($request->business_id);
         }
         if ($request->has('restaurant_ids')) {
             $restaurantIds = explode(',', $request->restaurant_ids);
             $user->restaurants()->attach($restaurantIds);
-
         }
         return redirect()->route('users.index');
     }
