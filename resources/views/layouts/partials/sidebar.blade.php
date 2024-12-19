@@ -1,22 +1,22 @@
 <!-- ========== Left Sidebar Start ========== -->
 <div class="vertical-menu">
 
-  <div data-simplebar class="h-100">
+    <div data-simplebar class="h-100">
 
-    <!--- Sidemenu -->
-    <div id="sidebar-menu">
-      <!-- Left Menu Start -->
-      <ul class="metismenu list-unstyled" id="side-menu">
-        <li class="menu-title" key="t-menu">Menu</li>
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title" key="t-menu">Menu</li>
 
-        <li>
-          <a href="{{ route('dashboard') }}" class="waves-effect">
-            <i class="bx bx-home-circle"></i>
-            <span key="t-dashboard">Dashboard</span>
-          </a>
-        </li>
+                <li>
+                    <a href="{{ route('dashboard') }}" class="waves-effect">
+                        <i class="bx bx-home-circle"></i>
+                        <span key="t-dashboard">Dashboard</span>
+                    </a>
+                </li>
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-layout"></i>
             <span key="t-layouts">Layouts</span>
@@ -49,48 +49,70 @@
           </ul>
         </li> --}}
 
-        <li>
-          <a href="javascript: void(0);" class="has-arrow waves-effect">
-            <i class="bx bx-briefcase-alt-2"></i>
-            <span key="t-projects">Administración</span>
-          </a>
-          <ul class="sub-menu" aria-expanded="false">
-            <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
-            <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
-            <li><a href="{{ route('users.index') }}" key="t-p-overview">Usuarios</a></li>
-            <li><a href="{{ route('roles_permissions.index')}}" key="t-create-new">Roles y permisos</a></li>
-          </ul>
-        </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-briefcase-alt-2"></i>
+                        <span key="t-projects">Administración</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        @can('read_business')
+                            <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
+                        @endcan
+                        @can('read_restaurants')                          
+                            <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
+                        @endcan
+                        @can('read_users')
+                            <li><a href="{{ route('users.index') }}" key="t-p-overview">Usuarios</a></li>
+                        @endcan
+                        @can('read_roles')
+                            <li><a href="{{ route('roles_permissions.index') }}" key="t-create-new">Roles y permisos</a>
+                        @endcan
+                        </li>
+                    </ul>
+                </li>
+                @can('read_providers')
+                  <li>
+                    <a href="{{ route('providers.index') }}" class="waves-effect">
+                        <i class="bx bx-cart"></i>
+                        <span key="t-chat">Proveedores</span>
+                    </a>
+                </li>
+                @endcan
+                
+                @can('read_invoices')
+                <li>
+                  <a href="{{ route('invoices.index') }}" class="waves-effect">
+                      <i class="bx bx-receipt"></i>
+                      <span key="t-chat">Facturas</span>
+                  </a>
+              </li> 
+                @endcan
+                
 
-        <li>
-          <a href="{{ route('providers.index') }}" class="waves-effect">
-            <i class="bx bx-cart"></i>
-            <span key="t-chat">Proveedores</span>
-          </a>
-        </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-money"></i>
+                        <span key="t-projects">Operaciones</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                      @can('read_accounts')
+                        <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a></li>
+                          
+                      @endcan
+                      @can('read_expense')
+                        <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de gastos</a></li>
+                          
+                      @endcan
+                      @can('read_purchases')
+                        <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
+                          
+                      @endcan
+                    </ul>
+                </li>
 
-        <li>
-          <a href="{{ route('invoices.index') }}" class="waves-effect">
-            <i class="bx bx-receipt"></i>
-            <span key="t-chat">Facturas</span>
-          </a>
-        </li>
+                {{-- <li class="menu-title" key="t-apps">Apps</li> --}}
 
-        <li>
-          <a href="javascript: void(0);" class="has-arrow waves-effect">
-            <i class="bx bx-money"></i>
-            <span key="t-projects">Operaciones</span>
-          </a>
-          <ul class="sub-menu" aria-expanded="false">
-            <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a></li>
-            <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de gastos</a></li>
-            <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
-          </ul>
-        </li>
-
-        {{-- <li class="menu-title" key="t-apps">Apps</li> --}}
-
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="waves-effect">
             <i class="bx bx-calendar"></i><span class="badge rounded-pill bg-success float-end">New</span>
             <span key="t-dashboards">Calendars</span>
@@ -116,7 +138,7 @@
           </a>
         </li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-store"></i>
             <span key="t-ecommerce">Ecommerce</span>
@@ -171,7 +193,7 @@
           </ul>
         </li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-receipt"></i>
             <span key="t-invoices">Invoices</span>
@@ -207,7 +229,7 @@
           </ul>
         </li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bxs-user-detail"></i>
             <span key="t-contacts">Contacts</span>
@@ -232,9 +254,9 @@
           </ul>
         </li> --}}
 
-        {{-- <li class="menu-title" key="t-pages">Pages</li> --}}
+                {{-- <li class="menu-title" key="t-pages">Pages</li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="waves-effect">
             <span class="badge rounded-pill bg-success float-end" key="t-new">New</span>
             <i class="bx bx-user-circle"></i>
@@ -261,7 +283,7 @@
           </ul>
         </li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-file"></i>
             <span key="t-utility">Utility</span>
@@ -278,9 +300,9 @@
           </ul>
         </li> --}}
 
-        {{-- <li class="menu-title" key="t-components">Components</li> --}}
+                {{-- <li class="menu-title" key="t-components">Components</li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-tone"></i>
             <span key="t-ui-elements">UI Elements</span>
@@ -312,7 +334,7 @@
           </ul>
         </li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="waves-effect">
             <i class="bx bxs-eraser"></i>
             <span class="badge rounded-pill bg-danger float-end">10</span>
@@ -386,7 +408,7 @@
           </ul>
         </li> --}}
 
-        {{-- <li>
+                {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-share-alt"></i>
             <span key="t-multi-level">Multi Level</span>
@@ -403,9 +425,9 @@
           </ul>
         </li> --}}
 
-      </ul>
+            </ul>
+        </div>
+        <!-- Sidebar -->
     </div>
-    <!-- Sidebar -->
-  </div>
 </div>
 <!-- Left Sidebar End -->

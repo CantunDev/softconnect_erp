@@ -18,5 +18,11 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesPermissionSeeder::class);
         $this->call(BusinessSeeder::class);
         $this->call(RestaurantsSeeder::class);
+        $this->call(ProvidersSFRTSeeder::class);
+        $this->call(InvoiceSFRTSeeder::class);
+        $this->call(PaymenMethodsFRTSeeder::class);
+        $this->call(ExpensesSFRTSeeder::class);
+        $this->call(PurchasesSFRTSeeder::class);
+        $this->call(ChecksSFRTSeeder::class);
     }
 }

@@ -21,7 +21,7 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('users.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
+                <a href="{{ route('roles_permissions.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
                     <i class="bx bx-plus font-size-15"></i> Nuev Rol
                 </a>
             </div>
@@ -42,11 +42,11 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <div class="d-flex justify-content-end mb-3">
+            {{-- <div class="d-flex justify-content-end mb-3">
                 <a href="{{ route('users.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
                     <i class="bx bx-plus font-size-15"></i> Nuevo permiso
                 </a>
-            </div>
+            </div> --}}
             <div class="table-responsive">
                 <table id="table_permissions" class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
                     <thead class="table-light">
@@ -64,6 +64,7 @@
     </div>
 @endsection
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function(){
         $('#table_roles').DataTable({
@@ -85,6 +86,54 @@
             ],
         });
     });
+</script>
+<script>
+    function btnDelete(id) {
+        Swal.fire({
+            title: "Desea eliminar?",
+            text: "Por favor asegúrese y luego confirme esta opcion sera irreversible !",
+            icon: 'warning',
+            showCancelButton: !0,
+            confirmButtonText: "¡Sí, eliminar!",
+            cancelButtonText: "¡No, cancelar!",
+            reverseButtons: !0
+        }).then(function(e) {
+            if (e.value === true) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: "{{ url('roles_permissions') }}/" + id,
+                    data: {
+                        id: id,
+                        _token: '{!! csrf_token() !!}'
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success === true) {
+                            Swal.fire({
+                                title: "Hecho!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "Hecho!",
+                            });
+                            $('#table_roles').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: "Cancelar!",
+                            });
+                        }
+                    }
+                });
+            } else {
+                e.dismiss;
+            }
+        }, function(dismiss) {
+            return false;
+        })
+    }
 </script>
 <script>
     $(document).ready(function(){
