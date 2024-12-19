@@ -108,12 +108,12 @@ class FetchDataController extends Controller
                         // if (Auth::user()->can('read_operators')){
                             // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
                         // }
-                        if (Auth::user()->can('update_permissions')){
-                            $opciones .= '<a href="'.route('roles_permissions.edit', $result->keys()->first()).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                        }
-                        if (Auth::user()->can('delete_permissions')){
-                            $opciones .= '<button type="button" onclick="btnDelete('.$result->keys()->first().')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
-                        }
+                        // if (Auth::user()->can('update_permissions')){
+                        //     $opciones .= '<a href="'.route('roles_permissions.edit', $result->keys()->first()).'" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                        // }
+                        // if (Auth::user()->can('delete_permissions')){
+                        //     $opciones .= '<button type="button" onclick="btnDelete('.$result->keys()->first().')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                        // }
                     return $opciones;
                 })
                 ->rawColumns(['category','permissions','action'])

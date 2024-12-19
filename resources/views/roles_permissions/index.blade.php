@@ -42,11 +42,11 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <div class="d-flex justify-content-end mb-3">
+            {{-- <div class="d-flex justify-content-end mb-3">
                 <a href="{{ route('users.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
                     <i class="bx bx-plus font-size-15"></i> Nuevo permiso
                 </a>
-            </div>
+            </div> --}}
             <div class="table-responsive">
                 <table id="table_permissions" class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
                     <thead class="table-light">

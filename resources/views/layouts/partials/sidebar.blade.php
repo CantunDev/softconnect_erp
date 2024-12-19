@@ -70,20 +70,24 @@
                         </li>
                     </ul>
                 </li>
-
-                <li>
+                @can('read_providers')
+                  <li>
                     <a href="{{ route('providers.index') }}" class="waves-effect">
                         <i class="bx bx-cart"></i>
                         <span key="t-chat">Proveedores</span>
                     </a>
                 </li>
-
+                @endcan
+                
+                @can('read_invoices')
                 <li>
-                    <a href="{{ route('invoices.index') }}" class="waves-effect">
-                        <i class="bx bx-receipt"></i>
-                        <span key="t-chat">Facturas</span>
-                    </a>
-                </li>
+                  <a href="{{ route('invoices.index') }}" class="waves-effect">
+                      <i class="bx bx-receipt"></i>
+                      <span key="t-chat">Facturas</span>
+                  </a>
+              </li> 
+                @endcan
+                
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -91,9 +95,18 @@
                         <span key="t-projects">Operaciones</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+                      @can('read_accounts')
                         <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a></li>
+                          
+                      @endcan
+                      @can('read_expense')
                         <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de gastos</a></li>
+                          
+                      @endcan
+                      @can('read_purchases')
                         <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
+                          
+                      @endcan
                     </ul>
                 </li>
 
