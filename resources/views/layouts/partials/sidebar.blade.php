@@ -99,7 +99,7 @@
                         <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a></li>
                           
                       @endcan
-                      @can('read_expense')
+                      @can('read_expenses')
                         <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de gastos</a></li>
                           
                       @endcan
