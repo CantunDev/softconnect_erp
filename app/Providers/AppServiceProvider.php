@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Sfrt\Cheques;
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -31,5 +33,26 @@ class AppServiceProvider extends ServiceProvider
                 return true;
             }
         });
+
+        view()->composer(['layouts.master','dashboard'], function($view){
+            $currentMonth = Carbon::now()->month;
+            $clients_sum = Cheques::whereMonth('fecha', $currentMonth)->sum('nopersonas');
+            // $clients_sum = Cheques::whereMonth('fecha', $currentMonth)->sum('total');
+            // $services = DB::table('registers')
+            //                 ->select(
+            //                     array(
+            //                         DB::raw('type_service_id as title'),
+            //                         DB::raw('date as start'),
+            //                         DB::raw('date as end'),
+            //                         DB::raw('passenger as description'),
+            //                         ))
+            //                 ->get();
+            // $sales = Assign
+            $view->with([
+                // 'clients_avg' => number_format($clients_avg,2),
+                'clients_sum' => $clients_sum,
+            ]);
+        });
+
     }
 }

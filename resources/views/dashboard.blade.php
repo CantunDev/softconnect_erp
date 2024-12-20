@@ -31,13 +31,13 @@
                   <div class="col-lg-4">
                       <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
-                              <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-md rounded-circle img-thumbnail">
+                              <img src="https://avatar.oxro.io/avatar.svg?name={{Auth::user()->fullname}}" alt="" class="avatar-md rounded-circle img-thumbnail">
                           </div>
                           <div class="flex-grow-1 align-self-center">
                               <div class="text-muted">
-                                  <p class="mb-2">Welcome to Skote Dashboard</p>
-                                  <h5 class="mb-1">Henry wells</h5>
-                                  <p class="mb-0">UI / UX Designer</p>
+                                  <p class="mb-2">Bienvenido a tu Dashboard de SoftConnect</p>
+                                  <h5 class="mb-1">{{Auth::user()->fullname}}</h5>
+                                  <p class="mb-0">{{ Auth::user()->roles->pluck('name')[0] ?? '' }}</p>
                               </div>
                           </div>
                       </div>
@@ -48,19 +48,19 @@
                           <div class="row">
                               <div class="col-4">
                                   <div>
-                                      <p class="text-muted text-truncate mb-2">Total Projects</p>
-                                      <h5 class="mb-0">48</h5>
+                                      <p class="text-muted text-truncate mb-2">Empresas</p>
+                                      <h5 class="mb-0">{{ Auth::user()->business->count()}}</h5>
                                   </div>
                               </div>
                               <div class="col-4">
                                   <div>
-                                      <p class="text-muted text-truncate mb-2">Projects</p>
-                                      <h5 class="mb-0">40</h5>
+                                      <p class="text-muted text-truncate mb-2">Restaurantes</p>
+                                      <h5 class="mb-0">{{ Auth::user()->restaurants->count()}}</h5>
                                   </div>
                               </div>
                               <div class="col-4">
                                   <div>
-                                      <p class="text-muted text-truncate mb-2">Clients</p>
+                                      <p class="text-muted text-truncate mb-2">Compras</p>
                                       <h5 class="mb-0">18</h5>
                                       
                                   </div>
@@ -69,7 +69,7 @@
                       </div>
                   </div>
 
-                  <div class="col-lg-4 d-none d-lg-block">
+                  {{-- <div class="col-lg-4 d-none d-lg-block">
                       <div class="clearfix mt-4 mt-lg-0">
                           <div class="dropdown float-end">
                               <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,7 +82,7 @@
                               </div>
                           </div>
                       </div>
-                  </div>
+                  </div> --}}
               </div>
               <!-- end row -->
           </div>
@@ -98,12 +98,13 @@
               <div class="row">
                   <div class="col-7">
                       <div class="text-primary p-3">
-                          <h5 class="text-primary">Welcome Back !</h5>
-                          <p>Skote Saas Dashboard</p>
+                          {{-- <h5 class="text-primary">B Back !</h5> --}}
+                          <p>Informe de promedios</p>
 
                           <ul class="ps-3 mb-0">
-                              <li class="py-1">7 + Layouts</li>
-                              <li class="py-1">Multiple apps</li>
+                              <li class="py-1">Clientes</li>
+                              <li class="py-1">Compras</li>
+                              <li class="py-1">Tickets</li>
                           </ul>
                       </div>
                   </div>
@@ -125,12 +126,12 @@
                                   <i class="bx bx-copy-alt"></i>
                               </span>
                           </div>
-                          <h5 class="font-size-14 mb-0">Orders</h5>
+                          <h5 class="font-size-14 mb-0">Clientes</h5>
                       </div>
                       <div class="text-muted mt-4">
-                          <h4>1,452 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
+                          <h4>{{$clients_sum}} <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
                           <div class="d-flex">
-                              <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span>
+                              {{-- <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span> --}}
                           </div>
                       </div>
                   </div>
@@ -146,12 +147,12 @@
                                   <i class="bx bx-archive-in"></i>
                               </span>
                           </div>
-                          <h5 class="font-size-14 mb-0">Revenue</h5>
+                          <h5 class="font-size-14 mb-0">Compras</h5>
                       </div>
                       <div class="text-muted mt-4">
-                          <h4>$ 28,452 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
+                          <h4>$ 0 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
                           <div class="d-flex">
-                              <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span>
+                              {{-- <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span> --}}
                           </div>
                       </div>
                   </div>
@@ -167,13 +168,13 @@
                                   <i class="bx bx-purchase-tag-alt"></i>
                               </span>
                           </div>
-                          <h5 class="font-size-14 mb-0">Average Price</h5>
+                          <h5 class="font-size-14 mb-0">Tickts</h5>
                       </div>
                       <div class="text-muted mt-4">
                           <h4>$ 16.2 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
                           
                           <div class="d-flex">
-                              <span class="badge badge-soft-warning font-size-12"> 0% </span> <span class="ms-2 text-truncate">From previous period</span>
+                              {{-- <span class="badge badge-soft-warning font-size-12"> 0% </span> <span class="ms-2 text-truncate">From previous period</span> --}}
                           </div>
                       </div>
                   </div>
