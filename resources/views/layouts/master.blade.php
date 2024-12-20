@@ -24,6 +24,7 @@
   <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
   <!-- App Css-->
   <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   @vite(['resources/js/app.js'])
 </head>
 
@@ -63,6 +64,7 @@
   <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
   <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
   <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <script src="{{ asset('assets/js/app.js') }}"></script>
 
