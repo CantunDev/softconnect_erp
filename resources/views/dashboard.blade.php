@@ -845,7 +845,7 @@
       <div class="card">
         <div class="card-body">
 
-          <h4 class="card-title">Ventas mensuales de {{ $currentMonth }}</h4>
+          <h4 class="card-title">Ventas mensuales de {{ $currentMonth->format('M') }}</h4>
           <p class="card-title-desc">Informacion de cortes de caja diarios del mes en curso.</p>
 
           <div class="table-rep-plugin">
