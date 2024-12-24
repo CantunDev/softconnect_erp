@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         view()->composer(['layouts.master','dashboard'], function($view){
             $currentMonth = Carbon::now()->month;
             $clients_sum = Cheques::whereMonth('fecha', $currentMonth)->sum('nopersonas');
+            $cheques = Cheques::whereMonth('fecha', $currentMonth);
             // $clients_sum = Cheques::whereMonth('fecha', $currentMonth)->sum('total');
             // $services = DB::table('registers')
             //                 ->select(
@@ -50,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
             // $sales = Assign
             $view->with([
                 // 'clients_avg' => number_format($clients_avg,2),
+                'cheques' => $cheques,
+                'currentMonth' => $currentMonth,
                 'clients_sum' => $clients_sum,
             ]);
         });
