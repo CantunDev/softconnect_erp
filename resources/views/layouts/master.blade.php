@@ -26,6 +26,14 @@
   <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   @vite(['resources/js/app.js'])
+  <style>
+    .apexcharts-datalabel-label,
+.apexcharts-datalabel-value {
+    fill: #FFFFFF !important; /* Forzar el texto de los dataLabels a blanco */
+    color: #FFFFFF !important;
+}
+
+  </style>
 </head>
 
 <body data-sidebar="dark">
@@ -65,6 +73,7 @@
   <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
   <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
   <script src="{{ asset('assets/js/app.js') }}"></script>
 

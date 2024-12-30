@@ -118,7 +118,7 @@ return [
         // ],
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_SQL_HOST', '192.168.193.101\NATIONALSOFT'),
+            'host' => env('DB_SQL_HOST', '192.168.193.29\NATIONALSOFT'),
             'port' => env('DB_SQL_PORT', '1433'),
             'database' => env('DB_SQL_DATABASE', 'softrestaurant10'),
             'username' => env('DB_SQL_USERNAME', 'sa'),
