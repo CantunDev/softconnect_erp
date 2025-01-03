@@ -146,9 +146,9 @@ class AppServiceProvider extends ServiceProvider
                 'days_total_client' => $days_total_client,
                 'days_total_ticket' => $days_total_ticket,
                 'days_total' => $days_total,
-                'food_sum' => $food_sum,
-                'food_percentage' => $food_percentage,
-                'drink_sum' => $drink_sum,
+                'food_sum' => round($food_sum,2),
+                'food_percentage' =>$food_percentage,
+                'drink_sum' => round($drink_sum,2),
                 'drink_percentage' => $drink_percentage
             ]);
         });

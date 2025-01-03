@@ -206,7 +206,7 @@
         <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Alimentos - Bebidas</h4>
+                    <h4 class="card-title mb-4">Alimentos - Bebidas </h4>
 
                     <div>
                         <div id="food_drinks" class="apex-charts"></div>
@@ -214,18 +214,17 @@
 
                     <div class="text-center text-muted">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-4 text-center">
                                 <div class="mt-4">
                                     <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1" style="color: #F14A00"></i>
                                         Alimentos</p>
-                                    <h5>$ {{ $food_sum }}</h5>
+                                    <h6>$ {{ $food_sum }}</h6>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-4 text-center">
                                 <div class="mt-4">
-                                    <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1"
-                                            style="color: #006A67"></i>Bebidas</p>
-                                    <h5>$ {{ $drink_sum }}</h5>
+                                    <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1" style="color: #006A67"></i>Bebidas</p>
+                                    <h6>$ {{ $drink_sum }}</h6>
                                 </div>
                             </div>
                         </div>
