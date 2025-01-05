@@ -9,7 +9,7 @@ class Cheques extends Model
 {
     use HasFactory;
     
-    protected $connection = 'sqlsrv'; 
+    protected $connection = 'sqlsrv';
     protected $table = 'cheques';
     public $timestamps = false;
     protected $casts = [
