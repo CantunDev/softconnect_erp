@@ -9,7 +9,5 @@ class Products extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'productos';
     public $timestamps = false;
-    protected $casts = [
-        'hora' => 'datetime',
-    ];
+    
 }

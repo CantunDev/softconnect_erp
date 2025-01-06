@@ -9,7 +9,4 @@ class Group extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'grupos';
     public $timestamps = false;
-    protected $casts = [
-        'hora' => 'datetime',
-    ];
 }
