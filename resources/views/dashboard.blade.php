@@ -22,6 +22,7 @@
 @endsection
 
 @section('content')
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -223,7 +224,8 @@
                             </div>
                             <div class="col-4 text-center">
                                 <div class="mt-4">
-                                    <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1" style="color: #006A67"></i>Bebidas</p>
+                                    <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1"
+                                            style="color: #006A67"></i>Bebidas</p>
                                     <h6>$ {{ $drink_sum }}</h6>
                                 </div>
                             </div>
@@ -258,15 +260,65 @@
                 </div>
             </div>
         </div>
-
-
     </div>
+    <div class="row align-items-stretch">
+        <div class="col-6 d-flex">
+            <div class="card flex-grow-1">
+                <div class="card-body">
+                    <h4 class="card-title">Lista de categoría de productos vendidos
+                        {{ \Carbon\Carbon::parse($currentMonth)->format('F') }}</h4>
+                    <div class="table-rep-plugin">
+                        <div class="table-responsive mb-0" data-pattern="priority-columns">
+                            <table id="products" class="table table-sm table-bordered dt-responsive nowrap w-100">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th rowspan="2" data-priority="1">Categorías</th>
+                                        <th colspan="7" class="text-center">Detalles</th>
+                                    </tr>
+                                    <tr>
+                                        <th data-priority="1">Cant</th>
+                                        <th data-priority="3" class="text-center">Vta</th>
+                                        <th data-priority="3">Subt</th>
+                                        <th data-priority="3">Desc</th>
+                                        <th data-priority="3">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($groups as $i => $group)
+                                        <tr>
+                                            <td>{{ $group['descripcion'] }}</td>
+                                            <td>{{ $group['count_products'] }}</td>
+                                            <td>{{ $group['total_sales'] }}</td>
+                                            <td>{{ $group['total_subtotal'] }}</td>
+                                            <td>{{ $group['total_discount'] }}</td>
+                                            <td>{{ $group['avg_total'] }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+
+        <div class="col-6 d-flex">
+            <div class="card flex-grow-1">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <div id="categories_products" class="apex-charts" style="width: 100%; height: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- end row -->
+
+
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
 
-                    <h4 class="card-title">Ventas mensuales de {{ \Carbon\Carbon::parse($currentMonth)->format('F') }}</h4>
+                    <h4 class="card-title">Ventas mensuales de {{ \Carbon\Carbon::parse($currentMonth)->format('F') }}
+                    </h4>
                     <p class="card-title-desc">Informacion de cortes de caja diarios del mes en curso.</p>
 
                     <div class="table-rep-plugin">
@@ -329,7 +381,7 @@
                 </div>
             </div> --}}
 
-            <div id="chart" class="apex-charts" dir="ltr"></div>
+            <div id="chart" class="apex-charts"></div>
         </div>
     </div>
 @endsection
@@ -373,7 +425,7 @@
         <td>${totalPropinas}</td>
         <td>${totalTarjeta}</td>
         <td>${totalCreditos}</td>
-    `;
+        `;
 
             // Agregar la fila de totales al final de la tabla
             table.getElementsByTagName("tbody")[0].appendChild(totalRow);
@@ -721,7 +773,7 @@
             series: [{
                 name: 'Clientes',
                 data: chartData.days_total_client
-            },],
+            }, ],
             xaxis: {
                 categories: chartData.days,
                 axisBorder: {
@@ -765,14 +817,15 @@
             days_total_client: @json($days_total_client), // Clientes por día
             days_total_ticket: @json($days_total_ticket) // Ticket promedio por día
         };
-    
+
         var options = {
             chart: {
                 height: 350,
                 type: "line",
                 stacked: false
-            
-            },            zoom: {
+
+            },
+            zoom: {
                 enabled: true, // Habilitar zoom
                 type: 'x', // Zoom solo en el eje X
                 autoScaleYaxis: true // Ajustar automáticamente el eje Y al hacer zoom
@@ -786,9 +839,8 @@
                 },
                 autoSelected: 'zoom' // Configura zoom como la herramienta inicial
             },
-            colors: ['#66C7F4','#99C2A2'],
-            series: [
-                {
+            colors: ['#66C7F4', '#99C2A2'],
+            series: [{
                     name: 'Clientes',
                     type: 'column',
                     data: chartData.days_total_client
@@ -817,8 +869,7 @@
                     text: "Días"
                 }
             },
-            yaxis: [
-                {
+            yaxis: [{
                     seriesName: 'Clientes',
                     axisTicks: {
                         show: true
@@ -830,7 +881,7 @@
                     //     text: "Clientes"
                     // },
                     labels: {
-                        formatter: function (value) {
+                        formatter: function(value) {
                             return Math.round(value); // Redondea los valores
                         }
                     }
@@ -838,12 +889,12 @@
                 {
                     opposite: true,
                     seriesName: 'Ticket promedio',
-                    
+
                     // title: {
                     //     text: "Ticket Promedio"
                     // },
                     labels: {
-                        formatter: function (value) {
+                        formatter: function(value) {
                             return "$" + value.toFixed(2); // Formato de moneda
                         }
                     }
@@ -853,7 +904,11 @@
                 shared: true, // Mostrar ambos valores al pasar el cursor
                 intersect: false, // Evitar intersección
                 y: {
-                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                    formatter: function(value, {
+                        seriesIndex,
+                        dataPointIndex,
+                        w
+                    }) {
                         if (seriesIndex === 0) {
                             return value + " clientes"; // Tooltip para clientes
                         } else {
@@ -861,17 +916,143 @@
                         }
                     }
                 },
-                
+
             },
-            
+
             legend: {
                 show: false,
             }
         };
-    
+
         var chart = new ApexCharts(document.querySelector("#client_ticket"), options);
-    
+
         chart.render();
     </script>
-    
+    {{-- 
+    <script>
+        const groupSales = @json($groups); // Carga los datos del backend
+
+        groupSales.forEach((group, index) => {
+            const options = {
+                chart: {
+                    type: 'bar', // Gráfico de barras
+                    height: 60, // Altura de cada gráfico
+                    width: 120, // Altura de cada gráfico
+                    toolbar: {
+                        show: false
+                    } // Oculta opciones de herramientas
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true, // Barras horizontales
+                        barHeight: '100%', // Ajusta el grosor
+                    },
+                },
+                legend: {
+                    show: false
+                },
+                dataLabels: {
+                    // enabled: false, // Oculta las etiquetas dentro de la barra
+                },
+                series: [{
+                    data: [group.avg_total], // Porcentaje para este grupo
+                }],
+                xaxis: {
+                    labels: {
+                        show: false
+                    }, // Oculta las etiquetas del eje Y
+
+                    categories: [''], // Etiqueta del eje X
+                    max: 100, // Escala máxima al 100%
+                },
+                yaxis: {
+                    labels: {
+                        show: false
+                    }, // Oculta las etiquetas del eje Y
+                },
+                fill: {
+                    colors: ['#775DD0'], // Color de la barra
+                },
+            };
+
+            const chart = new ApexCharts(document.querySelector(`#chart-${index}`), options);
+            chart.render(); // Renderiza el gráfico
+        });
+    </script> --}}
+    <script>
+        const groupSales = @json($groups); // Carga los datos del backend
+        const categories = groupSales.map(group => group.descripcion); // Nombres de los grupos
+        const data = groupSales.map(group => group.avg_total); // Porcentaje de ventas por grupo
+
+        var options = {
+            chart: {
+                type: 'bar',
+                height: 380
+            },
+            plotOptions: {
+          bar: {
+            barHeight: '100%',
+            distributed: true,
+            horizontal: true,
+            dataLabels: {
+              position: 'bottom'
+            },
+          }
+        },
+        colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
+          '#f48024', '#69d2e7'
+        ],
+        legend: {
+                show: false,
+            },
+            dataLabels: {
+              enabled: true,
+              textAnchor: 'start',
+              style: {
+                colors: ['#fff']
+              },
+              formatter: function (val, opt) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+              },
+              offsetX: 0,
+              dropShadow: {
+                enabled: true
+              }
+            },
+            stroke: {
+          width: 1,
+          colors: ['#fff']
+        },
+        yaxis: {
+          labels: {
+            show: false
+          }
+        },
+        tooltip: {
+          theme: 'dark',
+          x: {
+            show: false
+          },
+          y: {
+            title: {
+              formatter: function () {
+                return ''
+              }
+            }
+          }
+        },
+            series: [{
+                name: 'sales',
+                data: data,
+
+            }],
+            xaxis: {
+                categories: categories
+            }
+        }
+
+        var chart = new ApexCharts(document.querySelector("#categories_products"), options);
+
+        chart.render();
+    </script>
 @endsection

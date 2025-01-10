@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Sfrt\Cheques;
+use App\Models\Sfrt\Group;
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
@@ -133,6 +134,35 @@ class AppServiceProvider extends ServiceProvider
                     $food_percentage = 0;
                     $drink_percentage = 0;
                 }
+            
+            $groups = Group::with(['products.cheques_details' => function($query) use ($currentMonth, $currentYear){
+                $query->whereYear('hora',$currentYear)
+                       ->whereMonth('hora', $currentMonth); 
+            }])
+            ->orderBy('descripcion','ASC')
+            ->get()
+            ->map(function($group) use ($total_sum){
+                $total_sales = $group->products->sum(function($product){
+                        return $product->cheques_details->sum('precio');
+                    });
+                return [
+                    'descripcion' => $group->descripcion,
+                    'count_products' => $group->products->sum(function($product){
+                        return $product->cheques_details->count('idproducto');
+                    }),
+                    // 'total_sales' => $group->products->sum(function($product){
+                    //     return $product->cheques_details->sum('precio');
+                    // }),
+                    'total_sales' => $total_sales,
+                    'total_subtotal' => $group->products->sum(function($product){
+                        return $product->cheques_details->sum('preciosinimpuestos');
+                    }),
+                    'total_discount' => $group->products->sum(function($product){
+                        return $product->cheques_details->sum('descuento');
+                    }),
+                    'avg_total' => $total_sum > 0 ? round(($total_sales / $total_sum) * 100,2) : 0,
+                ];
+            });
 
             $view->with([
                 // 'clients_avg' => number_format($clients_avg,2),
@@ -149,7 +179,8 @@ class AppServiceProvider extends ServiceProvider
                 'food_sum' => round($food_sum,2),
                 'food_percentage' =>$food_percentage,
                 'drink_sum' => round($drink_sum,2),
-                'drink_percentage' => $drink_percentage
+                'drink_percentage' => $drink_percentage,
+                'groups' => $groups,
             ]);
         });
 
