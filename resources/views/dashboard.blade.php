@@ -22,7 +22,6 @@
 @endsection
 
 @section('content')
-
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -81,7 +80,7 @@
                   <a class="dropdown-item" href="#">Action</a>
                   <a class="dropdown-item" href="#">Another action</a>
                   <a class="dropdown-item" href="#">Something else</a>
-                </div>
+                </div>  
               </div>
             </div>
           </div> --}}
@@ -92,7 +91,204 @@
         </div>
     </div>
     <!-- end row -->
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Sagrado Comal</h4>
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseOne" aria-expanded="true"
+                                    aria-controls="flush-collapseOne">
+                                    <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                    Ventas
+                            </h2>
+                        </div>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse show"
+                            aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body text-muted">
+                                <div class="tab-pane active" id="vta-tab" role="tabpanel">
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de venta dia 12</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Venta real al dia</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Alcance al dia</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DIF/PROY</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DEFICIT</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">META VTA DIARIA</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">PROM.. VTA DIARIA REAL</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">PROYECTADO AL CIERRE</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DIFERENCIA(+/-)</h5>
+                                </div>
+                            </div>
 
+                        </div>
+                    </div>
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseTwo" aria-expanded="true"
+                                    aria-controls="flush-collapseTwo">
+                                    <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                    Clientes
+                            </h2>
+                        </div>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse show"
+                            aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body text-muted">
+                                <div class="tab-pane active" id="vta-tab" role="tabpanel">
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de clientes</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de clientes al dia 12</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Clientes al dia real</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Alcance al dia</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DIF/PROY</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseThree" aria-expanded="true"
+                                    aria-controls="flush-collapseThree">
+                                    Cheques
+                            </h2>
+                        </div>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse show"
+                            aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body text-muted">
+                                <div class="tab-pane active" id="cheques-tab" role="tabpanel">
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de cheque promedio</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Cheque promedio actual</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i>
+                                            $43123.12
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DEFICIT</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
     <div class="row">
         <div class="col-xl-4">
             <div class="card bg-primary bg-soft">
@@ -217,7 +413,8 @@
                         <div class="row">
                             <div class="col-4 text-center">
                                 <div class="mt-4">
-                                    <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1" style="color: #F14A00"></i>
+                                    <p class="mb-2 text-truncate"><i class="mdi mdi-circle me-1"
+                                            style="color: #F14A00"></i>
                                         Alimentos</p>
                                     <h6>$ {{ $food_sum }}</h6>
                                 </div>
@@ -990,57 +1187,57 @@
                 height: 380
             },
             plotOptions: {
-          bar: {
-            barHeight: '100%',
-            distributed: true,
-            horizontal: true,
-            dataLabels: {
-              position: 'bottom'
+                bar: {
+                    barHeight: '100%',
+                    // distributed: true,
+                    horizontal: true,
+                    // dataLabels: {
+                    //   position: 'bottom'
+                    // },
+                }
             },
-          }
-        },
-        colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
-          '#f48024', '#69d2e7'
-        ],
-        legend: {
+            colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
+                '#f48024', '#69d2e7'
+            ],
+            legend: {
                 show: false,
             },
             dataLabels: {
-              enabled: true,
-              textAnchor: 'start',
-              style: {
-                colors: ['#fff']
-              },
-              formatter: function (val, opt) {
-                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-              },
-              offsetX: 0,
-              dropShadow: {
-                enabled: true
-              }
+                enabled: true,
+                textAnchor: 'start',
+                style: {
+                    colors: ['#fff']
+                },
+                formatter: function(val, opt) {
+                    return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                },
+                offsetX: 0,
+                dropShadow: {
+                    enabled: true
+                }
             },
             stroke: {
-          width: 1,
-          colors: ['#fff']
-        },
-        yaxis: {
-          labels: {
-            show: false
-          }
-        },
-        tooltip: {
-          theme: 'dark',
-          x: {
-            show: false
-          },
-          y: {
-            title: {
-              formatter: function () {
-                return ''
-              }
-            }
-          }
-        },
+                width: 1,
+                colors: ['#fff']
+            },
+            yaxis: {
+                labels: {
+                    show: false
+                }
+            },
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    show: false
+                },
+                y: {
+                    title: {
+                        formatter: function() {
+                            return ''
+                        }
+                    }
+                }
+            },
             series: [{
                 name: 'sales',
                 data: data,
