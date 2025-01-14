@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 return [
 
@@ -116,6 +117,7 @@ return [
         //         'Encrypt' =>false, // Habilitar o deshabilitar SSL
         //     ] : [],
         // ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'host' => env('DB_SQL_HOST', '192.168.193.29\NATIONALSOFT'),
