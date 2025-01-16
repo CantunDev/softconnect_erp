@@ -17,6 +17,9 @@
         <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
         <script src="../../media/js/jquery.dataTables.js"></script>
         <script src="../../media/js/dataTables.tailwindcss.js"></script>
+        <script src="autoNumeric.min.js" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
+
         <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js">
         <!-- Scripts -->
         

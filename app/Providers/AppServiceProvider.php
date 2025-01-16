@@ -75,8 +75,10 @@ class AppServiceProvider extends ServiceProvider
     
                 // Realizar consultas necesarias y compartir resultados con la vista
                 $results = collect();
-    
+                $resultsTemp = collect();
+                
                 foreach ($connections as $i => $connection) {
+                   
                     // $results->push(
                     //     $connection->table('cheques')->whereMonth('fecha', $currentMonth)
                     //     ->whereYear('fecha', $currentYear)
@@ -97,13 +99,112 @@ class AppServiceProvider extends ServiceProvider
                     ->where('pagado', true)
                     ->where('cancelado', false)
                     ->sum('nopersonas');
-                    
                     $chequePromedio = round(($total/$nopersonas),2);
+
+                    $lastTurno = $connection->table('cheques')
+    ->select('idturno', 'fecha')
+    ->orderBy('cierre', 'desc') // Ordenar por el cierre más reciente
+    ->first();
+
+// Obtener el último turno de la tabla 'turnos_temp'
+$lastTurnoTemp = $connection->table('tempcheques')
+    ->select('idturno', 'fecha')
+    ->orderBy('cierre', 'desc') // Ordenar por el cierre más reciente
+    ->first();
+
+// Validar si ambos resultados existen
+if ($lastTurno && $lastTurnoTemp) {
+    // Comparar los valores de 'idturno'
+    if ($lastTurno->idturno === $lastTurnoTemp->idturno) {
+        // Ambos coinciden: usar la tabla 'cheques'
+        $tabla = 'cheques';
+        $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
+    } else {
+        // No coinciden: usar la tabla 'tempcheques'
+        $tabla = 'tempcheques';
+        $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
+    }
+} elseif ($lastTurno) {
+    // Si solo existe $lastTurno
+    $tabla = 'cheques';
+    $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
+} elseif ($lastTurnoTemp) {
+    // Si solo existe $lastTurnoTemp
+    $tabla = 'tempcheques';
+    $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
+} else {
+    // Si no hay turnos en ninguna tabla
+    $tabla = 'tempcheques';
+    $dateCheque = null;
+}
+
+                    $totalTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        // ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('total');
+                    $totalPaidTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('total');
+                    $nopersonasTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha',$dateCheque) // Filtrar específicamente por el día de hoy
+                        // ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('nopersonas');
+                    $descuentosTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        // ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('descuentoimporte');
+                    $alimentosTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha',$dateCheque) // Filtrar específicamente por el día de hoy
+                        // ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('totalalimentos');
+                    $bebidasTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        // ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('totalbebidas');
+
+                        // if ($totalTemp != 0) {
+                            if ($nopersonasTemp > 0) {
+                                $chequePromedioTemp = round(($totalTemp / $nopersonasTemp), 2);
+                            } else {
+                                $chequePromedioTemp = 0; // O un valor predeterminado que tenga sentido
+                            }                        // } 
+                 
+
                 // Agregar el resultado al collection con un nombre personalizado
                     $results->put("venta$i",[
-                        'total' => $total,
+                        'total' => round($total,2),
                         'nopersonas' => $nopersonas,
-                        'chequePromedio' => $chequePromedio
+                        'chequePromedio' => $chequePromedio,
+                        'last' => $lastTurno
+                    ]);
+
+                    $resultsTemp->put("venta$i", [
+                        'totalTemp' => round($totalTemp,2), 
+                        'nopersonasTemp' => $nopersonasTemp,
+                        'descuentosTemp' => round($descuentosTemp,2),
+                        'totalPaidTemp' => round($totalPaidTemp,2),
+                        'alimentosTemp' => $alimentosTemp,
+                        'bebidasTemp' => $bebidasTemp,
+                        'chequePromedioTemp' => $chequePromedioTemp,
                     ]);
                 }
             }
@@ -119,7 +220,8 @@ class AppServiceProvider extends ServiceProvider
                 'daysPass' => $daysPass,
                 'rangeMonth' => $rangeMonth, 
                 'restaurants' => $restaurants,
-                'results' => $results
+                'results' => $results,
+                'resultsTemp' => $resultsTemp
             ]);
         });
         

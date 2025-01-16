@@ -53,7 +53,7 @@
                                     </div>
                                     <div class="mt-3">
                                         <p class="text-muted mb-1">% ALCANCE</p>
-                                        <h5>{{$rangeMonth}}%</h5>
+                                        <h5 class="percentage">{{$rangeMonth}}</h5>
                                     </div>
                                 </div>
                                 <div class="col-xl-3">
@@ -76,7 +76,7 @@
             <div class="col-xl-4">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">{{$restaurants[$i]->name}}</h4>
+                        <h4 class="card-title mb-4">{{$restaurants[$i]->name}} </h4>
                         <div class="accordion accordion-flush" id="accordionFlush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -84,7 +84,7 @@
                                         data-bs-target="#flush-collapseThree" aria-expanded="true"
                                         aria-controls="flush-collapseThree">
                                         <i class="bx bx-dollar text-primary font-size-12 align-middle me-1"></i>
-                                        Venta Al Dia
+                                        Venta Al Dia 
                                 </h2>
                             </div>
                             <div id="flush-collapseThree" class="accordion-collapse collapse show"
@@ -92,38 +92,53 @@
                                 <div class="accordion-body text-muted">
                                     <div class="tab-pane active" id="cheques-tab" role="tabpanel">
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['totalTemp']}}
                                             </h5>
                                         </div>
-                                        <h5 class="font-size-12 mb-2">Venta</h5>
+                                        <h5 class="font-size-12 mb-2">Venta Gral</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price" >
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['totalPaidTemp']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Venta Cobrada</h5>
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $  {{$results['venta'.$restaurants[$i]->id]['chequePromedio']}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['nopersonasTemp']}}
 
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Clientes</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                {{-- $  {{$resultsTemp['venta'.$restaurants[$i]->id]['chequePromedio']}} --}}
+                                                 
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['descuentosTemp']}}
+
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Descuentos</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['chequePromedioTemp']}}
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Cheque Promedio</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                            <h5 class="font-size-12 price">
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['alimentosTemp']}}
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Alimentos</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                            <h5 class="font-size-12 price">
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['bebidasTemp']}}
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Bebidas</h5>
@@ -158,78 +173,78 @@
                                 <div class="accordion-body text-muted">
                                     <div class="tab-pane active" id="vta-tab" role="tabpanel">
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
-                                                $ 0
+                                            <h5 class="font-size-12 price">
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
-                                        <h5 class="font-size-12 mb-2">Meta de venta dia 12</h5>
+                                        <h5 class="font-size-12 mb-2">Meta de venta dia {{ $daysPass }}</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                {{$results['venta'.$restaurants[$i]->id]['total']}}
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Venta real al dia</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 percentage">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ {{$results['venta'.$restaurants[$i]->id]['total']}}
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Alcance al dia</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">DIF/PROY</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 percentage">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">DEFICIT</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">META VTA DIARIA</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">PROM.. VTA DIARIA REAL</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">PROYECTADO AL CIERRE</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">DIFERENCIA(+/-)</h5>
@@ -265,18 +280,19 @@
                                                 0
                                             </h5>
                                         </div>
-                                        <h5 class="font-size-12 mb-2">Meta de clientes al dia 12</h5>
+                                        <h5 class="font-size-12 mb-2">Meta de clientes al dia {{$daysPass}}</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 ">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
+                                                {{$results['venta'.$restaurants[$i]->id]['nopersonas']}}
+                                                
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Clientes al dia real</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 percentage">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                {{$results['venta'.$restaurants[$i]->id]['nopersonas']}}
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Alcance al dia</h5>
@@ -307,24 +323,24 @@
                                 <div class="accordion-body text-muted">
                                     <div class="tab-pane active" id="cheques-tab" role="tabpanel">
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Meta de cheque promedio</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $  {{$results['venta'.$restaurants[$i]->id]['chequePromedio']}}
+                                                {{$results['venta'.$restaurants[$i]->id]['chequePromedio']}}
 
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Cheque promedio actual</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
+                                            <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                $ 0
+                                                0
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">DEFICIT</h5>
@@ -340,4 +356,44 @@
     </div>
 @endsection
 @section('js')
+<script>
+    // Selecciona el elemento h5 con la clase "price"
+    const priceElements = document.querySelectorAll('.price');
+
+    // Usa AutoNumeric para formatear el número
+    priceElements.forEach(element => {
+      const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
+      if (!isNaN(rawValue)) {
+        new AutoNumeric(element, {
+          currencySymbol: '$',
+          decimalPlaces: 2,
+          digitGroupSeparator: ',',
+          currencySymbolPlacement: 'p', // "p" coloca el símbolo antes del número
+          decimalCharacter: '.',
+          unformatOnSubmit: true, // Elimina el formato al enviar el formulario
+        }).set(rawValue); // Establece el valor formateado en el elemento
+      }
+    });
+  </script>
+  <script>
+    // Selecciona el elemento h5 con la clase "percentage"
+    const percentageElements = document.querySelectorAll('.percentage');
+
+    // Usa AutoNumeric para formatear como porcentaje
+    percentageElements.forEach(element => {
+      const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
+      if (!isNaN(rawValue)) {
+        new AutoNumeric(element, {
+          currencySymbol: '%',  // El símbolo es el de porcentaje
+          decimalPlaces: 2,     // Establece dos decimales
+        //   digitGrkoupSeparator: ',', // Si lo necesitas, puedes agregar separador de miles
+          percentage: true,     // Activa la opción de porcentaje
+          scaleDecimalPlaces: 2, // Controla la cantidad de decimales
+          unformatOnSubmit: true, // Elimina el formato al enviar el formulario
+          decimalCharacter: '.', // Caracter decimal
+          currencySymbolPlacement: 's' // El símbolo del porcentaje va al final
+        }).set(rawValue * 1); // Multiplica por 100 para obtener el valor en porcentaje
+      }
+    });
+  </script>
 @endsection
