@@ -21,7 +21,10 @@ class Restaurant extends Model
         'description',
         'ip',
         'database', 
-        'restaurant_file'
+        'restaurant_file',
+        'color_primary',
+        'color_secondary',
+        'color_accent',
     ];
     public function scopeUnassigned($query, $businessId)
     {

@@ -71,20 +71,25 @@
             </div>
         </div>
     </div>
+    
     <div class="row">
         @foreach ($restaurants as $i => $restaurant)
+        {{-- <div class="restaurant-card" style="background-color: {{ $restaurants[$i]->color_primary }}; color: {{ $restaurants[$i]->color_secondary }}">
+            <h1>{{ $restaurants[$i]->name }}</h1>
+            <button style="background-color: {{ $restaurants[$i]->color_accent }}">Ver más</button> --}}
+        {{-- </div> --}}
             <div class="col-xl-4">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">{{$restaurants[$i]->name}} </h4>
+                        {{-- <h4 class="card-title mb-4 fixed-text ">{{$restaurants[$i]->name}} </h4> --}}
                         <div class="accordion accordion-flush" id="accordionFlush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    <button style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseThree" aria-expanded="true"
                                         aria-controls="flush-collapseThree">
                                         <i class="bx bx-dollar text-primary font-size-12 align-middle me-1"></i>
-                                        Venta Al Dia 
+                                        Venta Al Dia {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>
                             <div id="flush-collapseThree" class="accordion-collapse collapse show"
@@ -161,11 +166,11 @@
                         <div class="accordion accordion-flush" id="accordionFlush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    <button  style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseOne" aria-expanded="true"
                                         aria-controls="flush-collapseOne">
                                         <i class="bx bx-restaurant text-primary font-size-12 align-middle me-1"></i>
-                                        Ventas
+                                        Ventas {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>
                             <div id="flush-collapseOne" class="accordion-collapse collapse show"
@@ -256,11 +261,11 @@
                         <div class="accordion accordion-flush" id="accordionFlush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    <button  style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseTwo" aria-expanded="true"
                                         aria-controls="flush-collapseTwo">
                                         <i class="bx bx-body text-primary font-size-12 align-middle me-1"></i>
-                                        Clientes
+                                        Clientes {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>
                             <div id="flush-collapseTwo" class="accordion-collapse collapse show"
@@ -311,11 +316,11 @@
                         <div class="accordion accordion-flush" id="accordionFlush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    <button   style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseThree" aria-expanded="true"
                                         aria-controls="flush-collapseThree">
                                         <i class="bx bx-spreadsheet text-primary font-size-12 align-middle me-1"></i>
-                                        Cheques
+                                        Cheques {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>
                             <div id="flush-collapseThree" class="accordion-collapse collapse show"

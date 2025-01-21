@@ -31,7 +31,30 @@
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
-
+        <div class="col-sm-6 col-lg-2">
+          <label for="color_primary" class="form-label">Color primario</label>
+          <input name="color_primary" type="color" class="form-control @error('name') is-invalid @enderror" id="color_primary"
+            placeholder="" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <label for="color_secondary" class="form-label">Color secundario</label>
+          <input name="color_secondary" type="color" class="form-control @error('name') is-invalid @enderror" id="color_secondary"
+            placeholder="" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <label for="color_accent" class="form-label">Color de Acento</label>
+          <input name="color_accent" type="color" class="form-control @error('name') is-invalid @enderror" id="color_accent"
+            placeholder="" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
         <div class="col-sm-8 col-lg-8">
           <label for="inputBusinessName" class="form-label">Descripcion</label>
           <input name="description" type="text" class="form-control @error('description') is-invalid @enderror"
