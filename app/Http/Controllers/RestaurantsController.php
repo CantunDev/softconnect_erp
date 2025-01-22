@@ -22,8 +22,9 @@ class RestaurantsController extends Controller
             return DataTables::of($restaurant)
                 ->addIndexColumn()
                 ->addColumn('restaurant', function($result){
-                    $imageUrl = $result->restaurant_file ? !is_null($result->restaurant_file):
-                    'https://avatar.oxro.io/avatar.svg?name='.$result->name.'&caps=3&bold=true';
+                    $imageUrl = $result->restaurant_file
+                    ? asset($result->restaurant_file)
+                    : 'https://avatar.oxro.io/avatar.svg?name=' . urlencode($result->name) . '&caps=3&bold=true';
                     $data = '<div class="d-flex align-items-center">';
                     $data .= '<img src="'.$imageUrl.'" alt="" class="rounded-circle avatar-xs">';
                     $data .= '<div class="ms-3">';
@@ -123,13 +124,24 @@ class RestaurantsController extends Controller
     public function store(RestaurantRequestStore $request)
     {
         $data = $request->validated();
-
         if ($request->hasFile('restaurant_file') && $request->file('restaurant_file')->isValid()) {
+            // Generar un nombre único para el archivo
             $imageName = Str::random(10) . '.' . $request->file('restaurant_file')->getClientOriginalExtension();
-            $request->file('restaurant_file')->storeAs('restaurant', $imageName);
-            $data['restaurant_file'] = $imageName;
+        
+            // Ruta al directorio dentro de `public`
+            $destinationPath = public_path('assets/images/restaurants');
+        
+            // Crear la carpeta si no existe
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+        
+            // Mover el archivo a la ubicación deseada
+            $request->file('restaurant_file')->move($destinationPath, $imageName);
+        
+            // Guardar la ruta relativa para almacenarla en la base de datos
+            $data['restaurant_file'] = 'assets/images/restaurants/' . $imageName;
         }
-
         $restaurant = Restaurant::create($data);
         return redirect()->route('restaurants.index');
     }
@@ -158,12 +170,27 @@ class RestaurantsController extends Controller
         $restaurant = Restaurant::findOrFail($id);
         $data = $request->validated();
 
+        // Manejo del archivo si es válido
         if ($request->hasFile('restaurant_file') && $request->file('restaurant_file')->isValid()) {
+            // Generar un nombre único para la imagen
             $imageName = Str::random(10) . '.' . $request->file('restaurant_file')->getClientOriginalExtension();
-            $request->file('restaurant_file')->storeAs('restaurant', $imageName);
-            $data['restaurant_file'] = $imageName;
+
+            // Definir la ruta de almacenamiento relativa al directorio `public`
+            $destinationPath = public_path('/assets/images/restaurants');
+
+            // Crear la carpeta si no existe
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            // Mover el archivo a la ubicación deseada
+            $request->file('restaurant_file')->move($destinationPath, $imageName);
+
+            // Guardar la ruta relativa para almacenarla en la base de datos
+            $data['restaurant_file'] = '/assets/images/restaurants/' . $imageName;
         } else {
-            $data['restaurant_file'] = $restaurant->restaurant_file;
+            // Mantener el archivo existente si no se proporciona uno nuevo
+            $data['restaurant_file'] = $restaurant->business_file;
         }
 
         $restaurant->update($data);

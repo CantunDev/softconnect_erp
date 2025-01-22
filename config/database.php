@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 return [
 
@@ -116,11 +117,12 @@ return [
         //         'Encrypt' =>false, // Habilitar o deshabilitar SSL
         //     ] : [],
         // ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_SQL_HOST', 'localhost'),
+            'host' => env('DB_SQL_HOST', '192.168.193.29\NATIONALSOFT'),
             'port' => env('DB_SQL_PORT', '1433'),
-            'database' => env('DB_SQL_DATABASE', 'forge'),
+            'database' => env('DB_SQL_DATABASE', 'softrestaurant10'),
             'username' => env('DB_SQL_USERNAME', 'sa'),
             'password' => env('DB_SQL_PASSWORD', 'National09'),
             'charset' => 'utf8',

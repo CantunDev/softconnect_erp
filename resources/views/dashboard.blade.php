@@ -1,1227 +1,404 @@
-{{-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.master')
+@section('title')
+    Dashboard |
+@endsection
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+@section('content')
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <img src="https://avatar.oxro.io/avatar.svg?name={{ Auth::user()->fullname }}"
+                                        alt="" class="avatar-md rounded-circle img-thumbnail">
+                                </div>
+                                <div class="flex-grow-1 align-self-center">
+                                    <div class="text-muted">
+                                        <p class="mb-2">Bienvenido</p>
+                                        <h5 class="mb-1">{{ Auth::user()->fullname }}</h5>
+                                        <p class="mb-0">{{ Auth::user()->roles->pluck('name')[0] ?? '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8">
+                            <div class="row text-center">
+                                <div class="col-xl-3">
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-1">INICIO MES</p>
+                                        <h5>{{ $startOfMonth }}</h5>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-1">TERMINO MES</p>
+                                        <h5>{{ $endOfMonth }}</h5>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3">
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-1">MES</p>
+                                        <h5>{{ $month }} </h5>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-1">TOTAL DIAS</p>
+                                        <h5>{{ $daysInMonth }} </h5>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3">
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-1">DIAS</p>
+                                        <h5>{{ $daysPass }} </h5>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-muted mb-1">% ALCANCE</p>
+                                        <h5 class="percentage">{{$rangeMonth}}</h5>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3">
+                                    <div class="col">
+                                        <img src="{{ Auth::user()->business->first()->business_file ?? 'https://avatar.oxro.io/avatar.svg?name=' . urlencode(Auth::user()->business->first()->business_name) }}"
+                                            alt="" class="avatar-md rounded-circle d-block mx-auto">
+                                        <span>{{ Auth::user()->business->pluck('business_name')[0] ?? '' }}</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout> --}}
+    
+    <div class="row">
+        @foreach ($restaurants as $i => $restaurant)
+        {{-- <div class="restaurant-card" style="background-color: {{ $restaurants[$i]->color_primary }}; color: {{ $restaurants[$i]->color_secondary }}">
+            <h1>{{ $restaurants[$i]->name }}</h1>
+            <button style="background-color: {{ $restaurants[$i]->color_accent }}">Ver más</button> --}}
+        {{-- </div> --}}
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-body">
+                        {{-- <h4 class="card-title mb-4 fixed-text ">{{$restaurants[$i]->name}} </h4> --}}
+                        <div class="accordion accordion-flush" id="accordionFlush">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseThree" aria-expanded="true"
+                                        aria-controls="flush-collapseThree">
+                                        <i class="bx bx-dollar text-primary font-size-12 align-middle me-1"></i>
+                                        Venta Al Dia {{$restaurants[$i]->name}} 
+                                </h2>
+                            </div>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse show"
+                                aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlush">
+                                <div class="accordion-body text-muted">
+                                    <div class="tab-pane active" id="cheques-tab" role="tabpanel">
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['totalTemp']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Venta Gral</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price" >
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['totalPaidTemp']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Venta Cobrada</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['nopersonasTemp']}}
 
-@extends('layouts.master')
-@section('title')
-  Dashboard |
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Clientes</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{-- $  {{$resultsTemp['venta'.$restaurants[$i]->id]['chequePromedio']}} --}}
+                                                 
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['descuentosTemp']}}
+
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Descuentos</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['chequePromedioTemp']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Cheque Promedio</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['alimentosTemp']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Alimentos</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{$resultsTemp['venta'.$restaurants[$i]->id]['bebidasTemp']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Bebidas</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    <div class="row">
+        @foreach ($restaurants as $i => $restaurant)
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">{{$restaurants[$i]->name}}</h4>
+                        <div class="accordion accordion-flush" id="accordionFlush">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button  style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseOne" aria-expanded="true"
+                                        aria-controls="flush-collapseOne">
+                                        <i class="bx bx-restaurant text-primary font-size-12 align-middle me-1"></i>
+                                        Ventas {{$restaurants[$i]->name}} 
+                                </h2>
+                            </div>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse show"
+                                aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                                <div class="accordion-body text-muted">
+                                    <div class="tab-pane active" id="vta-tab" role="tabpanel">
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Meta de venta dia {{ $daysPass }}</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$results['venta'.$restaurants[$i]->id]['total']}}
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Venta real al dia</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 percentage">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Alcance al dia</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">DIF/PROY</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 percentage">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">DEFICIT</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">META VTA DIARIA</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">PROM.. VTA DIARIA REAL</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">PROYECTADO AL CIERRE</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">DIFERENCIA(+/-)</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="accordion accordion-flush" id="accordionFlush">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button  style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseTwo" aria-expanded="true"
+                                        aria-controls="flush-collapseTwo">
+                                        <i class="bx bx-body text-primary font-size-12 align-middle me-1"></i>
+                                        Clientes {{$restaurants[$i]->name}} 
+                                </h2>
+                            </div>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse show"
+                                aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                                <div class="accordion-body text-muted">
+                                    <div class="tab-pane active" id="vta-tab" role="tabpanel">
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Meta de clientes</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Meta de clientes al dia {{$daysPass}}</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 ">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$results['venta'.$restaurants[$i]->id]['nopersonas']}}
+                                                
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Clientes al dia real</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 percentage">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Alcance al dia</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">DIF/PROY</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="accordion accordion-flush" id="accordionFlush">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button   style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseThree" aria-expanded="true"
+                                        aria-controls="flush-collapseThree">
+                                        <i class="bx bx-spreadsheet text-primary font-size-12 align-middle me-1"></i>
+                                        Cheques {{$restaurants[$i]->name}} 
+                                </h2>
+                            </div>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse show"
+                                aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlush">
+                                <div class="accordion-body text-muted">
+                                    <div class="tab-pane active" id="cheques-tab" role="tabpanel">
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Meta de cheque promedio</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                {{$results['venta'.$restaurants[$i]->id]['chequePromedio']}}
+
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">Cheque promedio actual</h5>
+                                        <div class="float-end ms-2">
+                                            <h5 class="font-size-12 price">
+                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                                0
+                                            </h5>
+                                        </div>
+                                        <h5 class="font-size-12 mb-2">DEFICIT</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
 @endsection
+@section('js')
+<script>
+    // Selecciona el elemento h5 con la clase "price"
+    const priceElements = document.querySelectorAll('.price');
 
-@section('content')
+    // Usa AutoNumeric para formatear el número
+    priceElements.forEach(element => {
+      const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
+      if (!isNaN(rawValue)) {
+        new AutoNumeric(element, {
+          currencySymbol: '$',
+          decimalPlaces: 2,
+          digitGroupSeparator: ',',
+          currencySymbolPlacement: 'p', // "p" coloca el símbolo antes del número
+          decimalCharacter: '.',
+          unformatOnSubmit: true, // Elimina el formato al enviar el formulario
+        }).set(rawValue); // Establece el valor formateado en el elemento
+      }
+    });
+  </script>
+  <script>
+    // Selecciona el elemento h5 con la clase "percentage"
+    const percentageElements = document.querySelectorAll('.percentage');
 
-<div class="row">
-  <div class="col-lg-12">
-      <div class="card">
-          <div class="card-body">
-              <div class="row">
-                  <div class="col-lg-4">
-                      <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                              <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-md rounded-circle img-thumbnail">
-                          </div>
-                          <div class="flex-grow-1 align-self-center">
-                              <div class="text-muted">
-                                  <p class="mb-2">Welcome to Skote Dashboard</p>
-                                  <h5 class="mb-1">Henry wells</h5>
-                                  <p class="mb-0">UI / UX Designer</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-4 align-self-center">
-                      <div class="text-lg-center mt-4 mt-lg-0">
-                          <div class="row">
-                              <div class="col-4">
-                                  <div>
-                                      <p class="text-muted text-truncate mb-2">Total Projects</p>
-                                      <h5 class="mb-0">48</h5>
-                                  </div>
-                              </div>
-                              <div class="col-4">
-                                  <div>
-                                      <p class="text-muted text-truncate mb-2">Projects</p>
-                                      <h5 class="mb-0">40</h5>
-                                  </div>
-                              </div>
-                              <div class="col-4">
-                                  <div>
-                                      <p class="text-muted text-truncate mb-2">Clients</p>
-                                      <h5 class="mb-0">18</h5>
-                                      
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-4 d-none d-lg-block">
-                      <div class="clearfix mt-4 mt-lg-0">
-                          <div class="dropdown float-end">
-                              <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <i class="bx bxs-cog align-middle me-1"></i> Setting
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-end">
-                                  <a class="dropdown-item" href="#">Action</a>
-                                  <a class="dropdown-item" href="#">Another action</a>
-                                  <a class="dropdown-item" href="#">Something else</a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <!-- end row -->
-          </div>
-      </div>
-  </div>
-</div>
-<!-- end row -->
-
-<div class="row">
-  <div class="col-xl-4">
-      <div class="card bg-primary bg-soft">
-          <div>
-              <div class="row">
-                  <div class="col-7">
-                      <div class="text-primary p-3">
-                          <h5 class="text-primary">Welcome Back !</h5>
-                          <p>Skote Saas Dashboard</p>
-
-                          <ul class="ps-3 mb-0">
-                              <li class="py-1">7 + Layouts</li>
-                              <li class="py-1">Multiple apps</li>
-                          </ul>
-                      </div>
-                  </div>
-                  <div class="col-5 align-self-end">
-                      <img src="assets/images/profile-img.png" alt="" class="img-fluid">
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  <div class="col-xl-8">
-      <div class="row">
-          <div class="col-sm-4">
-              <div class="card">
-                  <div class="card-body">
-                      <div class="d-flex align-items-center mb-3">
-                          <div class="avatar-xs me-3">
-                              <span class="avatar-title rounded-circle bg-primary bg-soft text-primary font-size-18">
-                                  <i class="bx bx-copy-alt"></i>
-                              </span>
-                          </div>
-                          <h5 class="font-size-14 mb-0">Orders</h5>
-                      </div>
-                      <div class="text-muted mt-4">
-                          <h4>1,452 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                          <div class="d-flex">
-                              <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="col-sm-4">
-              <div class="card">
-                  <div class="card-body">
-                      <div class="d-flex align-items-center mb-3">
-                          <div class="avatar-xs me-3">
-                              <span class="avatar-title rounded-circle bg-primary bg-soft text-primary font-size-18">
-                                  <i class="bx bx-archive-in"></i>
-                              </span>
-                          </div>
-                          <h5 class="font-size-14 mb-0">Revenue</h5>
-                      </div>
-                      <div class="text-muted mt-4">
-                          <h4>$ 28,452 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                          <div class="d-flex">
-                              <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="col-sm-4">
-              <div class="card">
-                  <div class="card-body">
-                      <div class="d-flex align-items-center mb-3">
-                          <div class="avatar-xs me-3">
-                              <span class="avatar-title rounded-circle bg-primary bg-soft text-primary font-size-18">
-                                  <i class="bx bx-purchase-tag-alt"></i>
-                              </span>
-                          </div>
-                          <h5 class="font-size-14 mb-0">Average Price</h5>
-                      </div>
-                      <div class="text-muted mt-4">
-                          <h4>$ 16.2 <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                          
-                          <div class="d-flex">
-                              <span class="badge badge-soft-warning font-size-12"> 0% </span> <span class="ms-2 text-truncate">From previous period</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <!-- end row -->
-  </div>
-</div>
-
-
-
-<div class="card">
-  <div class="card-body">
-      <div class="d-sm-flex flex-wrap">
-          <h4 class="card-title mb-4">Email Sent</h4>
-          <div class="ms-auto">
-              <ul class="nav nav-pills">
-                  <li class="nav-item">
-                      <a class="nav-link" href="#">Week</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="#">Month</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link active" href="#">Year</a>
-                  </li>
-              </ul>
-          </div>
-      </div>
-      
-      <div id="stacked-column-chart" class="apex-charts" dir="ltr"></div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xl-8">
-      <div class="card">
-          <div class="card-body">
-              <div class="clearfix">
-                  <div class="float-end">
-                      <div class="input-group input-group-sm">
-                          <select class="form-select form-select-sm">
-                              <option value="JA" selected>Jan</option>
-                              <option value="DE">Dec</option>
-                              <option value="NO">Nov</option>
-                              <option value="OC">Oct</option>
-                          </select>
-                          <label class="input-group-text">Month</label>
-                      </div>
-                  </div>
-                  <h4 class="card-title mb-4">Earning</h4>
-              </div>
-
-              <div class="row">
-                  <div class="col-lg-4">
-                      <div class="text-muted">
-                          <div class="mb-4">
-                              <p>This month</p>
-                              <h4>$2453.35</h4>
-                              <div><span class="badge badge-soft-success font-size-12 me-1"> + 0.2% </span> From previous period</div>
-                          </div>
-
-                          <div>
-                              <a href="javascript: void(0);" class="btn btn-primary waves-effect waves-light btn-sm">View Details <i class="mdi mdi-chevron-right ms-1"></i></a>
-                          </div>
-                          
-                          <div class="mt-4">
-                              <p class="mb-2">Last month</p>
-                              <h5>$2281.04</h5>
-                          </div>
-                          
-                      </div>
-                  </div>
-
-                  <div class="col-lg-8">
-                      <div id="line-chart" class="apex-charts" dir="ltr"></div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="col-xl-4">
-      <div class="card">
-          <div class="card-body">
-              <h4 class="card-title mb-4">Sales Analytics</h4>
-
-              <div>
-                  <div id="donut-chart" class="apex-charts"></div>
-              </div>
-
-              <div class="text-center text-muted">
-                  <div class="row">
-                      <div class="col-4">
-                          <div class="mt-4">
-                              <p class="mb-2 text-truncate"><i class="mdi mdi-circle text-primary me-1"></i> Product A</p>
-                              <h5>$ 2,132</h5>
-                          </div>
-                      </div>
-                      <div class="col-4">
-                          <div class="mt-4">
-                              <p class="mb-2 text-truncate"><i class="mdi mdi-circle text-success me-1"></i> Product B</p>
-                              <h5>$ 1,763</h5>
-                          </div>
-                      </div>
-                      <div class="col-4">
-                          <div class="mt-4">
-                              <p class="mb-2 text-truncate"><i class="mdi mdi-circle text-danger me-1"></i> Product C</p>
-                              <h5>$ 973</h5>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-</div>
-<!-- end row -->
-
-<div class="row">
-  <div class="col-xl-4">
-      <div class="card">
-          <div class="card-body">
-              <div class="clearfix">
-                  <div class="float-end">
-                      <div class="input-group input-group-sm">
-                          <select class="form-select form-select-sm">
-                              <option value="JA" selected>Jan</option>
-                              <option value="DE">Dec</option>
-                              <option value="NO">Nov</option>
-                              <option value="OC">Oct</option>
-                          </select>
-                          <label class="input-group-text">Month</label>
-                      </div>
-                  </div>
-                  <h4 class="card-title mb-4">Top Selling product</h4>
-              </div>
-
-              <div class="text-muted text-center">
-                  <p class="mb-2">Product A</p>
-                  <h4>$ 6385</h4>
-                  <p class="mt-4 mb-0"><span class="badge badge-soft-success font-size-11 me-2"> 0.6% <i class="mdi mdi-arrow-up"></i> </span> From previous period</p>
-              </div>
-
-              <div class="table-responsive mt-4">
-                  <table class="table align-middle mb-0">
-                      <tbody>
-                          <tr>
-                              <td>
-                                  <h5 class="font-size-14 mb-1">Product A</h5>
-                                  <p class="text-muted mb-0">Neque quis est</p>
-                              </td>
-
-                              <td>
-                                  <div id="radialchart-1" class="apex-charts"></div>
-                              </td>
-                              <td>
-                                  <p class="text-muted mb-1">Sales</p>
-                                  <h5 class="mb-0">37 %</h5>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td>
-                                  <h5 class="font-size-14 mb-1">Product B</h5>
-                                  <p class="text-muted mb-0">Quis autem iure</p>
-                              </td>
-
-                              <td>
-                                  <div id="radialchart-2" class="apex-charts"></div>
-                              </td>
-                              <td>
-                                  <p class="text-muted mb-1">Sales</p>
-                                  <h5 class="mb-0">72 %</h5>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td>
-                                  <h5 class="font-size-14 mb-1">Product C</h5>
-                                  <p class="text-muted mb-0">Sed aliquam mauris.</p>
-                              </td>
-
-                              <td>
-                                  <div id="radialchart-3" class="apex-charts"></div>
-                              </td>
-                              <td>
-                                  <p class="text-muted mb-1">Sales</p>
-                                  <h5 class="mb-0">54 %</h5>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="col-xl-4">
-      <div class="card">
-          <div class="card-body">
-              <h4 class="card-title mb-4">Tasks</h4>
-
-              <ul class="nav nav-pills bg-light rounded">
-                  <li class="nav-item">
-                      <a class="nav-link active" href="#">In Process</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="#">Upcoming</a>
-                  </li>
-              </ul>
-
-              <div class="mt-4">
-                  <div data-simplebar style="max-height: 250px;">
-                  
-                      <div class="table-responsive">
-                          <table class="table table-nowrap align-middle table-hover mb-0">
-                              <tbody>
-                                  <tr>
-                                      <td style="width: 50px;">
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck01">
-                                              <label class="form-check-label" for="tasklistCheck01"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Skote Saas Dashboard</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Mark</p>
-                                      </td>
-                                      <td style="width: 90px;">
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-
-                                  <tr>
-                                      <td>
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck02">
-                                              <label class="form-check-label" for="tasklistCheck02"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">New Landing UI</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Team A</p>
-                                      </td>
-                                      <td>
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-
-                                  <tr>
-                                      <td>
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck02">
-                                              <label class="form-check-label" for="tasklistCheck02"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Brand logo design</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Janis</p>
-                                      </td>
-                                      <td>
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-
-                                  <tr>
-                                      <td>
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck04">
-                                              <label class="form-check-label" for="tasklistCheck04"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Blog Template UI</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Dianna</p>
-                                      </td>
-                                      <td>
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-
-                                  <tr>
-                                      <td>
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck05">
-                                              <label class="form-check-label" for="tasklistCheck05"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Multipurpose Landing</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Team B</p>
-                                      </td>
-                                      <td>
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck06">
-                                              <label class="form-check-label" for="tasklistCheck06"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Redesign - Landing page</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Jerry</p>
-                                      </td>
-                                      <td>
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <div class="form-check">
-                                              <input class="form-check-input" type="checkbox" id="tasklistCheck07">
-                                              <label class="form-check-label" for="tasklistCheck07"></label>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Skote Crypto Dashboard</a></h5>
-                                          <p class="text-muted mb-0">Assigned to Eric</p>
-                                      </td>
-                                      <td>
-                                          <div>
-                                              <ul class="list-inline mb-0 font-size-16">
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                  </li>
-                                                  <li class="list-inline-item">
-                                                      <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                      </td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="card-footer bg-transparent border-top">
-              <div class="text-center">
-                  <a href="javascript: void(0);" class="btn btn-primary waves-effect waves-light"> Add new Task</a>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="col-xl-4">
-      <div class="card">
-          <div class="card-body border-bottom">
-              <div class="row">
-                  <div class="col-md-4 col-9">
-                      <h5 class="font-size-15 mb-1">Steven Franklin</h5>
-                      <p class="text-muted mb-0"><i class="mdi mdi-circle text-success align-middle me-1"></i> Active now</p>
-                  </div>
-                  <div class="col-md-8 col-3">
-                      <ul class="list-inline user-chat-nav text-end mb-0">
-                          <li class="list-inline-item d-none d-sm-inline-block">
-                              <div class="dropdown">
-                                  <button class="btn nav-btn" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="bx bx-search-alt-2"></i>
-                                  </button>
-                                  <div class="dropdown-menu dropdown-menu-end py-0 dropdown-menu-md">
-                                      <form class="p-3">
-                                          <div class="form-group m-0">
-                                              <div class="input-group">
-                                                  <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
-                                                  
-                                                  <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
-                                              </div>
-                                          </div>
-                                      </form>
-                                  </div>
-                              </div>
-                          </li>
-                          <li class="list-inline-item  d-none d-sm-inline-block">
-                              <div class="dropdown">
-                                  <button class="btn nav-btn" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="bx bx-cog"></i>
-                                  </button>
-                                  <div class="dropdown-menu dropdown-menu-end">
-                                      <a class="dropdown-item" href="#">View Profile</a>
-                                      <a class="dropdown-item" href="#">Clear chat</a>
-                                      <a class="dropdown-item" href="#">Muted</a>
-                                      <a class="dropdown-item" href="#">Delete</a>
-                                  </div>
-                              </div>
-                          </li>
-
-                          <li class="list-inline-item">
-                              <div class="dropdown">
-                                  <button class="btn nav-btn" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="bx bx-dots-horizontal-rounded"></i>
-                                  </button>
-                                  <div class="dropdown-menu dropdown-menu-end">
-                                      <a class="dropdown-item" href="#">Action</a>
-                                      <a class="dropdown-item" href="#">Another action</a>
-                                      <a class="dropdown-item" href="#">Something else</a>
-                                  </div>
-                              </div>
-                          </li>
-                          
-                      </ul>
-                  </div>
-              </div>
-          </div>
-          <div class="card-body pb-0">
-              <div>
-                  <div class="chat-conversation">
-                      <ul class="list-unstyled" data-simplebar style="max-height: 260px;">
-                          <li> 
-                              <div class="chat-day-title">
-                                  <span class="title">Today</span>
-                              </div>
-                          </li>
-                          <li>
-                              <div class="conversation-list">
-                                  <div class="dropdown">
-
-                                      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                      <div class="dropdown-menu">
-                                          <a class="dropdown-item" href="#">Copy</a>
-                                          <a class="dropdown-item" href="#">Save</a>
-                                          <a class="dropdown-item" href="#">Forward</a>
-                                          <a class="dropdown-item" href="#">Delete</a>
-                                      </div>
-                                  </div>
-                                  <div class="ctext-wrap">
-                                      <div class="conversation-name">Steven Franklin</div>
-                                      <p>
-                                          Hello!
-                                      </p>
-                                      <p class="chat-time mb-0"><i class="bx bx-time-five align-middle me-1"></i> 10:00</p>
-                                  </div>
-                                  
-                              </div>
-                          </li>
-
-                          <li class="right">
-                              <div class="conversation-list">
-                                  <div class="dropdown">
-
-                                      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                      <div class="dropdown-menu">
-                                          <a class="dropdown-item" href="#">Copy</a>
-                                          <a class="dropdown-item" href="#">Save</a>
-                                          <a class="dropdown-item" href="#">Forward</a>
-                                          <a class="dropdown-item" href="#">Delete</a>
-                                      </div>
-                                  </div>
-                                  <div class="ctext-wrap">
-                                      <div class="conversation-name">Henry Wells</div>
-                                      <p>
-                                          Hi, How are you? What about our next meeting?
-                                      </p>
-
-                                      <p class="chat-time mb-0"><i class="bx bx-time-five align-middle me-1"></i> 10:02</p>
-                                  </div>
-                              </div>
-                          </li>
-
-                          <li>
-                              <div class="conversation-list">
-                                  <div class="dropdown">
-
-                                      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                      <div class="dropdown-menu">
-                                          <a class="dropdown-item" href="#">Copy</a>
-                                          <a class="dropdown-item" href="#">Save</a>
-                                          <a class="dropdown-item" href="#">Forward</a>
-                                          <a class="dropdown-item" href="#">Delete</a>
-                                      </div>
-                                  </div>
-                                  <div class="ctext-wrap">
-                                      <div class="conversation-name">Steven Franklin</div>
-                                      <p>
-                                          Yeah everything is fine
-                                      </p>
-                                      
-                                      <p class="chat-time mb-0"><i class="bx bx-time-five align-middle me-1"></i> 10:06</p>
-                                  </div>
-                                  
-                              </div>
-                          </li>
-
-                          <li class="last-chat">
-                              <div class="conversation-list">
-                                  <div class="dropdown">
-
-                                      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                      <div class="dropdown-menu">
-                                          <a class="dropdown-item" href="#">Copy</a>
-                                          <a class="dropdown-item" href="#">Save</a>
-                                          <a class="dropdown-item" href="#">Forward</a>
-                                          <a class="dropdown-item" href="#">Delete</a>
-                                      </div>
-                                  </div>
-                                  <div class="ctext-wrap">
-                                      <div class="conversation-name">Steven Franklin</div>
-                                      <p>& Next meeting tomorrow 10.00AM</p>
-                                      <p class="chat-time mb-0"><i class="bx bx-time-five align-middle me-1"></i> 10:06</p>
-                                  </div>
-                                  
-                              </div>
-                          </li>
-
-                          <li class="right">
-                              <div class="conversation-list">
-                                  <div class="dropdown">
-
-                                      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                      <div class="dropdown-menu">
-                                          <a class="dropdown-item" href="#">Copy</a>
-                                          <a class="dropdown-item" href="#">Save</a>
-                                          <a class="dropdown-item" href="#">Forward</a>
-                                          <a class="dropdown-item" href="#">Delete</a>
-                                      </div>
-                                  </div>
-                                  <div class="ctext-wrap">
-                                      <div class="conversation-name">Henry Wells</div>
-                                      <p>
-                                          Wow that's great
-                                      </p>
-
-                                      <p class="chat-time mb-0"><i class="bx bx-time-five align-middle me-1"></i> 10:07</p>
-                                  </div>
-                              </div>
-                          </li>
-                          
-                          
-                      </ul>
-                  </div>
-                  
-              </div>
-          </div>
-
-          <div class="p-3 chat-input-section">
-              <div class="row">
-                  <div class="col">
-                      <div class="position-relative">
-                          <input type="text" class="form-control rounded chat-input" placeholder="Enter Message...">
-                          <div class="chat-input-links">
-                              <ul class="list-inline mb-0">
-                                  <li class="list-inline-item"><a href="javascript: void(0);"><i class="mdi mdi-emoticon-happy-outline"></i></a></li>
-                                  <li class="list-inline-item"><a href="javascript: void(0);"><i class="mdi mdi-file-image-outline"></i></a></li>
-                                  <li class="list-inline-item"><a href="javascript: void(0);"><i class="mdi mdi-file-document-outline"></i></a></li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-auto">
-                      <button type="submit" class="btn btn-primary chat-send w-md waves-effect waves-light"><span class="d-none d-sm-inline-block me-2">Send</span> <i class="mdi mdi-send"></i></button>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-
-</div>
-<div class="row">
-  <div class="col-12">
-      <div class="card">
-          <div class="card-body">
-
-              <h4 class="card-title">Example</h4>
-              <p class="card-title-desc">This is an experimental awesome solution for responsive tables with complex data.</p>
-
-              <div class="table-rep-plugin">
-                  <div class="table-responsive mb-0" data-pattern="priority-columns">
-                      <table id="tech-companies-1" class="table table-striped">
-                          <thead>
-                          <tr>
-                              <th>Company</th>
-                              <th data-priority="1">Last Trade</th>
-                              <th data-priority="3">Trade Time</th>
-                              <th data-priority="1">Change</th>
-                              <th data-priority="3">Prev Close</th>
-                              <th data-priority="3">Open</th>
-                              <th data-priority="6">Bid</th>
-                              <th data-priority="6">Ask</th>
-                              <th data-priority="6">1y Target Est</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr>
-                              <th>GOOG <span class="co-name">Google Inc.</span></th>
-                              <td>597.74</td>
-                              <td>12:12PM</td>
-                              <td>14.81 (2.54%)</td>
-                              <td>582.93</td>
-                              <td>597.95</td>
-                              <td>597.73 x 100</td>
-                              <td>597.91 x 300</td>
-                              <td>731.10</td>
-                          </tr>
-                          <tr>
-                              <th>AAPL <span class="co-name">Apple Inc.</span></th>
-                              <td>378.94</td>
-                              <td>12:22PM</td>
-                              <td>5.74 (1.54%)</td>
-                              <td>373.20</td>
-                              <td>381.02</td>
-                              <td>378.92 x 300</td>
-                              <td>378.99 x 100</td>
-                              <td>505.94</td>
-                          </tr>
-                          <tr>
-                              <th>AMZN <span class="co-name">Amazon.com Inc.</span></th>
-                              <td>191.55</td>
-                              <td>12:23PM</td>
-                              <td>3.16 (1.68%)</td>
-                              <td>188.39</td>
-                              <td>194.99</td>
-                              <td>191.52 x 300</td>
-                              <td>191.58 x 100</td>
-                              <td>240.32</td>
-                          </tr>
-                          <tr>
-                              <th>ORCL <span class="co-name">Oracle Corporation</span></th>
-                              <td>31.15</td>
-                              <td>12:44PM</td>
-                              <td>1.41 (4.72%)</td>
-                              <td>29.74</td>
-                              <td>30.67</td>
-                              <td>31.14 x 6500</td>
-                              <td>31.15 x 3200</td>
-                              <td>36.11</td>
-                          </tr>
-                          <tr>
-                              <th>MSFT <span class="co-name">Microsoft Corporation</span></th>
-                              <td>25.50</td>
-                              <td>12:27PM</td>
-                              <td>0.66 (2.67%)</td>
-                              <td>24.84</td>
-                              <td>25.37</td>
-                              <td>25.50 x 71100</td>
-                              <td>25.51 x 17800</td>
-                              <td>31.50</td>
-                          </tr>
-                          <tr>
-                              <th>CSCO <span class="co-name">Cisco Systems, Inc.</span></th>
-                              <td>18.65</td>
-                              <td>12:45PM</td>
-                              <td>0.97 (5.49%)</td>
-                              <td>17.68</td>
-                              <td>18.23</td>
-                              <td>18.65 x 10300</td>
-                              <td>18.66 x 24000</td>
-                              <td>21.12</td>
-                          </tr>
-                          <tr>
-                              <th>YHOO <span class="co-name">Yahoo! Inc.</span></th>
-                              <td>15.81</td>
-                              <td>12:25PM</td>
-                              <td>0.11 (0.67%)</td>
-                              <td>15.70</td>
-                              <td>15.94</td>
-                              <td>15.79 x 6100</td>
-                              <td>15.80 x 17000</td>
-                              <td>18.16</td>
-                          </tr>
-                          <!-- Repeat -->
-                          <tr>
-                              <th>GOOG <span class="co-name">Google Inc.</span></th>
-                              <td>597.74</td>
-                              <td>12:12PM</td>
-                              <td>14.81 (2.54%)</td>
-                              <td>582.93</td>
-                              <td>597.95</td>
-                              <td>597.73 x 100</td>
-                              <td>597.91 x 300</td>
-                              <td>731.10</td>
-                          </tr>
-                          <tr>
-                              <th>AAPL <span class="co-name">Apple Inc.</span></th>
-                              <td>378.94</td>
-                              <td>12:22PM</td>
-                              <td>5.74 (1.54%)</td>
-                              <td>373.20</td>
-                              <td>381.02</td>
-                              <td>378.92 x 300</td>
-                              <td>378.99 x 100</td>
-                              <td>505.94</td>
-                          </tr>
-                          <tr>
-                              <th>AMZN <span class="co-name">Amazon.com Inc.</span></th>
-                              <td>191.55</td>
-                              <td>12:23PM</td>
-                              <td>3.16 (1.68%)</td>
-                              <td>188.39</td>
-                              <td>194.99</td>
-                              <td>191.52 x 300</td>
-                              <td>191.58 x 100</td>
-                              <td>240.32</td>
-                          </tr>
-                          <tr>
-                              <th>ORCL <span class="co-name">Oracle Corporation</span></th>
-                              <td>31.15</td>
-                              <td>12:44PM</td>
-                              <td>1.41 (4.72%)</td>
-                              <td>29.74</td>
-                              <td>30.67</td>
-                              <td>31.14 x 6500</td>
-                              <td>31.15 x 3200</td>
-                              <td>36.11</td>
-                          </tr>
-                          <tr>
-                              <th>MSFT <span class="co-name">Microsoft Corporation</span></th>
-                              <td>25.50</td>
-                              <td>12:27PM</td>
-                              <td>0.66 (2.67%)</td>
-                              <td>24.84</td>
-                              <td>25.37</td>
-                              <td>25.50 x 71100</td>
-                              <td>25.51 x 17800</td>
-                              <td>31.50</td>
-                          </tr>
-                          <tr>
-                              <th>CSCO <span class="co-name">Cisco Systems, Inc.</span></th>
-                              <td>18.65</td>
-                              <td>12:45PM</td>
-                              <td>0.97 (5.49%)</td>
-                              <td>17.68</td>
-                              <td>18.23</td>
-                              <td>18.65 x 10300</td>
-                              <td>18.66 x 24000</td>
-                              <td>21.12</td>
-                          </tr>
-                          <tr>
-                              <th>YHOO <span class="co-name">Yahoo! Inc.</span></th>
-                              <td>15.81</td>
-                              <td>12:25PM</td>
-                              <td>0.11 (0.67%)</td>
-                              <td>15.70</td>
-                              <td>15.94</td>
-                              <td>15.79 x 6100</td>
-                              <td>15.80 x 17000</td>
-                              <td>18.16</td>
-                          </tr>
-                          <!-- Repeat -->
-                          <tr>
-                              <th>GOOG <span class="co-name">Google Inc.</span></th>
-                              <td>597.74</td>
-                              <td>12:12PM</td>
-                              <td>14.81 (2.54%)</td>
-                              <td>582.93</td>
-                              <td>597.95</td>
-                              <td>597.73 x 100</td>
-                              <td>597.91 x 300</td>
-                              <td>731.10</td>
-                          </tr>
-                          <tr>
-                              <th>AAPL <span class="co-name">Apple Inc.</span></th>
-                              <td>378.94</td>
-                              <td>12:22PM</td>
-                              <td>5.74 (1.54%)</td>
-                              <td>373.20</td>
-                              <td>381.02</td>
-                              <td>378.92 x 300</td>
-                              <td>378.99 x 100</td>
-                              <td>505.94</td>
-                          </tr>
-                          <tr>
-                              <th>AMZN <span class="co-name">Amazon.com Inc.</span></th>
-                              <td>191.55</td>
-                              <td>12:23PM</td>
-                              <td>3.16 (1.68%)</td>
-                              <td>188.39</td>
-                              <td>194.99</td>
-                              <td>191.52 x 300</td>
-                              <td>191.58 x 100</td>
-                              <td>240.32</td>
-                          </tr>
-                          <tr>
-                              <th>ORCL <span class="co-name">Oracle Corporation</span></th>
-                              <td>31.15</td>
-                              <td>12:44PM</td>
-                              <td>1.41 (4.72%)</td>
-                              <td>29.74</td>
-                              <td>30.67</td>
-                              <td>31.14 x 6500</td>
-                              <td>31.15 x 3200</td>
-                              <td>36.11</td>
-                          </tr>
-                          <tr>
-                              <th>MSFT <span class="co-name">Microsoft Corporation</span></th>
-                              <td>25.50</td>
-                              <td>12:27PM</td>
-                              <td>0.66 (2.67%)</td>
-                              <td>24.84</td>
-                              <td>25.37</td>
-                              <td>25.50 x 71100</td>
-                              <td>25.51 x 17800</td>
-                              <td>31.50</td>
-                          </tr>
-                          <tr>
-                              <th>CSCO <span class="co-name">Cisco Systems, Inc.</span></th>
-                              <td>18.65</td>
-                              <td>12:45PM</td>
-                              <td>0.97 (5.49%)</td>
-                              <td>17.68</td>
-                              <td>18.23</td>
-                              <td>18.65 x 10300</td>
-                              <td>18.66 x 24000</td>
-                              <td>21.12</td>
-                          </tr>
-                          <tr>
-                              <th>YHOO <span class="co-name">Yahoo! Inc.</span></th>
-                              <td>15.81</td>
-                              <td>12:25PM</td>
-                              <td>0.11 (0.67%)</td>
-                              <td>15.70</td>
-                              <td>15.94</td>
-                              <td>15.79 x 6100</td>
-                              <td>15.80 x 17000</td>
-                              <td>18.16</td>
-                          </tr>
-                          <!-- Repeat -->
-                          <tr>
-                              <th>GOOG <span class="co-name">Google Inc.</span></th>
-                              <td>597.74</td>
-                              <td>12:12PM</td>
-                              <td>14.81 (2.54%)</td>
-                              <td>582.93</td>
-                              <td>597.95</td>
-                              <td>597.73 x 100</td>
-                              <td>597.91 x 300</td>
-                              <td>731.10</td>
-                          </tr>
-                          <tr>
-                              <th>AAPL <span class="co-name">Apple Inc.</span></th>
-                              <td>378.94</td>
-                              <td>12:22PM</td>
-                              <td>5.74 (1.54%)</td>
-                              <td>373.20</td>
-                              <td>381.02</td>
-                              <td>378.92 x 300</td>
-                              <td>378.99 x 100</td>
-                              <td>505.94</td>
-                          </tr>
-                          <tr>
-                              <th>AMZN <span class="co-name">Amazon.com Inc.</span></th>
-                              <td>191.55</td>
-                              <td>12:23PM</td>
-                              <td>3.16 (1.68%)</td>
-                              <td>188.39</td>
-                              <td>194.99</td>
-                              <td>191.52 x 300</td>
-                              <td>191.58 x 100</td>
-                              <td>240.32</td>
-                          </tr>
-                          <tr>
-                              <th>ORCL <span class="co-name">Oracle Corporation</span></th>
-                              <td>31.15</td>
-                              <td>12:44PM</td>
-                              <td>1.41 (4.72%)</td>
-                              <td>29.74</td>
-                              <td>30.67</td>
-                              <td>31.14 x 6500</td>
-                              <td>31.15 x 3200</td>
-                              <td>36.11</td>
-                          </tr>
-                          <tr>
-                              <th>MSFT <span class="co-name">Microsoft Corporation</span></th>
-                              <td>25.50</td>
-                              <td>12:27PM</td>
-                              <td>0.66 (2.67%)</td>
-                              <td>24.84</td>
-                              <td>25.37</td>
-                              <td>25.50 x 71100</td>
-                              <td>25.51 x 17800</td>
-                              <td>31.50</td>
-                          </tr>
-                          <tr>
-                              <th>CSCO <span class="co-name">Cisco Systems, Inc.</span></th>
-                              <td>18.65</td>
-                              <td>12:45PM</td>
-                              <td>0.97 (5.49%)</td>
-                              <td>17.68</td>
-                              <td>18.23</td>
-                              <td>18.65 x 10300</td>
-                              <td>18.66 x 24000</td>
-                              <td>21.12</td>
-                          </tr>
-                          <tr>
-                              <th>YHOO <span class="co-name">Yahoo! Inc.</span></th>
-                              <td>15.81</td>
-                              <td>12:25PM</td>
-                              <td>0.11 (0.67%)</td>
-                              <td>15.70</td>
-                              <td>15.94</td>
-                              <td>15.79 x 6100</td>
-                              <td>15.80 x 17000</td>
-                              <td>18.16</td>
-                          </tr>
-                          <!-- Repeat -->
-                          <tr>
-                              <th>GOOG <span class="co-name">Google Inc.</span></th>
-                              <td>597.74</td>
-                              <td>12:12PM</td>
-                              <td>14.81 (2.54%)</td>
-                              <td>582.93</td>
-                              <td>597.95</td>
-                              <td>597.73 x 100</td>
-                              <td>597.91 x 300</td>
-                              <td>731.10</td>
-                          </tr>
-                          <tr>
-                              <th>AAPL <span class="co-name">Apple Inc.</span></th>
-                              <td>378.94</td>
-                              <td>12:22PM</td>
-                              <td>5.74 (1.54%)</td>
-                              <td>373.20</td>
-                              <td>381.02</td>
-                              <td>378.92 x 300</td>
-                              <td>378.99 x 100</td>
-                              <td>505.94</td>
-                          </tr>
-                          <tr>
-                              <th>AMZN <span class="co-name">Amazon.com Inc.</span></th>
-                              <td>191.55</td>
-                              <td>12:23PM</td>
-                              <td>3.16 (1.68%)</td>
-                              <td>188.39</td>
-                              <td>194.99</td>
-                              <td>191.52 x 300</td>
-                              <td>191.58 x 100</td>
-                              <td>240.32</td>
-                          </tr>
-                          <tr>
-                              <th>ORCL <span class="co-name">Oracle Corporation</span></th>
-                              <td>31.15</td>
-                              <td>12:44PM</td>
-                              <td>1.41 (4.72%)</td>
-                              <td>29.74</td>
-                              <td>30.67</td>
-                              <td>31.14 x 6500</td>
-                              <td>31.15 x 3200</td>
-                              <td>36.11</td>
-                          </tr>
-                          <tr>
-                              <th>MSFT <span class="co-name">Microsoft Corporation</span></th>
-                              <td>25.50</td>
-                              <td>12:27PM</td>
-                              <td>0.66 (2.67%)</td>
-                              <td>24.84</td>
-                              <td>25.37</td>
-                              <td>25.50 x 71100</td>
-                              <td>25.51 x 17800</td>
-                              <td>31.50</td>
-                          </tr>
-                          <tr>
-                              <th>CSCO <span class="co-name">Cisco Systems, Inc.</span></th>
-                              <td>18.65</td>
-                              <td>12:45PM</td>
-                              <td>0.97 (5.49%)</td>
-                              <td>17.68</td>
-                              <td>18.23</td>
-                              <td>18.65 x 10300</td>
-                              <td>18.66 x 24000</td>
-                              <td>21.12</td>
-                          </tr>
-                          <tr>
-                              <th>YHOO <span class="co-name">Yahoo! Inc.</span></th>
-                              <td>15.81</td>
-                              <td>12:25PM</td>
-                              <td>0.11 (0.67%)</td>
-                              <td>15.70</td>
-                              <td>15.94</td>
-                              <td>15.79 x 6100</td>
-                              <td>15.80 x 17000</td>
-                              <td>18.16</td>
-                          </tr>
-                          </tbody>
-                      </table>
-                  </div>
-
-              </div>
-
-          </div>
-      </div>
-  </div> <!-- end col -->
-</div> <!-- end row -->
+    // Usa AutoNumeric para formatear como porcentaje
+    percentageElements.forEach(element => {
+      const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
+      if (!isNaN(rawValue)) {
+        new AutoNumeric(element, {
+          currencySymbol: '%',  // El símbolo es el de porcentaje
+          decimalPlaces: 2,     // Establece dos decimales
+        //   digitGrkoupSeparator: ',', // Si lo necesitas, puedes agregar separador de miles
+          percentage: true,     // Activa la opción de porcentaje
+          scaleDecimalPlaces: 2, // Controla la cantidad de decimales
+          unformatOnSubmit: true, // Elimina el formato al enviar el formulario
+          decimalCharacter: '.', // Caracter decimal
+          currencySymbolPlacement: 's' // El símbolo del porcentaje va al final
+        }).set(rawValue * 1); // Multiplica por 100 para obtener el valor en porcentaje
+      }
+    });
+  </script>
 @endsection
