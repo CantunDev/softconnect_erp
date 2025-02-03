@@ -58,7 +58,7 @@
                         @can('read_business')
                             <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
                         @endcan
-                        @can('read_restaurants')                          
+                        @can('read_restaurants')
                             <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
                         @endcan
                         @can('read_users')
@@ -66,49 +66,48 @@
                         @endcan
                         @can('read_roles')
                             <li><a href="{{ route('roles_permissions.index') }}" key="t-create-new">Roles y permisos</a>
-                        @endcan
+                            @endcan
                         </li>
                     </ul>
                 </li>
-                @can('read_providers')
-                  <li>
-                    <a href="{{ route('providers.index') }}" class="waves-effect">
-                        <i class="bx bx-cart"></i>
-                        <span key="t-chat">Proveedores</span>
-                    </a>
-                </li>
-                @endcan
-                
-                @can('read_invoices')
-                <li>
-                  <a href="{{ route('invoices.index') }}" class="waves-effect">
-                      <i class="bx bx-receipt"></i>
-                      <span key="t-chat">Facturas</span>
-                  </a>
-              </li> 
-                @endcan
-                
+                @foreach (Auth::user()->restaurants as $restaurant)
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="bx bx-briefcase-alt-2"></i>
+                            <span key="t-restaurant">{{ $restaurant->name }}</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li>
+                                <a href="{{ route('providers.index') }}">
+                                    <i class="bx bx-cart"></i>
+                                    <span key="t-chat">Proveedores</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('invoices.index') }}" class="waves-effect">
+                                    <i class="bx bx-receipt"></i>
+                                    <span key="t-chat">Facturas</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-money"></i>
+                                    <span key="t-projects">Operaciones</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a>
+                                    </li>
+                                    <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de
+                                            gastos</a></li>
+                                    <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endforeach
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bx-money"></i>
-                        <span key="t-projects">Operaciones</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                      @can('read_accounts')
-                        <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a></li>
-                          
-                      @endcan
-                      @can('read_expenses')
-                        <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de gastos</a></li>
-                          
-                      @endcan
-                      @can('read_purchases')
-                        <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
-                          
-                      @endcan
-                    </ul>
-                </li>
+
+
 
                 {{-- <li class="menu-title" key="t-apps">Apps</li> --}}
 

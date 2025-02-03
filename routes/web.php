@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChequesController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ExpensesCategoriesController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\FetchDataController;
+use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProvidersController;
@@ -24,6 +26,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/info', [InfoController::class, 'index'])->name('info');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -61,12 +64,15 @@ Route::middleware('auth')->group(function () {
         Route::get('permissions/', [FetchDataController::class, 'getPermissions'])->name('permissions.get');
     });
 
-    Route::domain('blog.' . env('APP_URL'))->group(function () {
-        Route::get('posts', function () {
-            return 'Tu subdominio';
-        });
-    });
+    // Route::domain('blog.' . env('APP_URL'))->group(function () {
+    //     Route::get('posts', function () {
+    //         return 'Tu subdominio';
+    //     });
+    // });
 
+    // Route::get('/', function () {
+    //     return 'First sub domain';
+    // })->domain('blog.' . env('APP_URL'));
 });
 
 require __DIR__.'/auth.php';    
