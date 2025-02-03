@@ -15,10 +15,12 @@ class InvoicesController extends Controller
 
   public function index(Request $request)
   {
-
-    $mes = Carbon::now()->month; // Obtiene el mes actual
+    $currentMonth = Carbon::now()->month;
+    $currentYear = Carbon::now()->year;
     if ($request->ajax()) {
-      $facturas = Invoice::query()->sinCancelados()->whereMonth('fecha', $mes);
+
+      $facturas = Invoice::query()->sinCancelados() ->whereMonth('fecha', $currentMonth)
+      ->whereYear('fecha', $currentYear);
       return DataTables::of($facturas)
         ->addColumn('sfrtNotaDate', function ($result) {
           return '
