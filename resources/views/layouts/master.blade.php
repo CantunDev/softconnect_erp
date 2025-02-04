@@ -27,6 +27,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   @vite(['resources/js/app.js'])
   <style>
+    body[data-sidebar=dark] .navbar-brand-box {
+    background: #01081d;
+    }
+    body[data-sidebar=dark] .vertical-menu {
+      background: #01081d;
+    }
     .apexcharts-datalabel-label,
 .apexcharts-datalabel-value {
     fill: #FFFFFF !important; /* Forzar el texto de los dataLabels a blanco */

@@ -169,7 +169,7 @@
                                     <button  style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseOne" aria-expanded="true"
                                         aria-controls="flush-collapseOne">
-                                        <i class="bx bx-restaurant text-primary font-size-12 align-middle me-1"></i>
+                                        <i class="bx bx-restaurant font-size-12 align-middle me-1" style="color: {{$restaurant[$i]->color_accent ?? ''}}" ></i>
                                         Ventas {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>
@@ -264,7 +264,7 @@
                                     <button  style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseTwo" aria-expanded="true"
                                         aria-controls="flush-collapseTwo">
-                                        <i class="bx bx-body text-primary font-size-12 align-middle me-1"></i>
+                                        <i class="bx bx-body font-size-12 align-middle me-1" style="color: {{$restaurant[$i]->color_accent ?? ''}}"></i>
                                         Clientes {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>
@@ -319,7 +319,7 @@
                                     <button   style="background-color: {{ $restaurants[$i]->color_primary ?? ''}}; color: {{ $restaurants[$i]->color_accent ?? ''}}" class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapseThree" aria-expanded="true"
                                         aria-controls="flush-collapseThree">
-                                        <i class="bx bx-spreadsheet text-primary font-size-12 align-middle me-1"></i>
+                                        <i class="bx bx-spreadsheet font-size-12 align-middle me-1" style="color: {{$restaurant[$i]->color_accent ?? ''}}"></i>
                                         Cheques {{$restaurants[$i]->name}} 
                                 </h2>
                             </div>

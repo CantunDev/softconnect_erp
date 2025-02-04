@@ -17,6 +17,23 @@
   <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
   <!-- App Css-->
   <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+  <style>
+    .bg-primary.bg-soft {
+        background-color: rgb(0 2 10 / 50%) !important;
+    }
+    .text-primary{
+      color: #fff !important; 
+    }
+    .btn-primary {
+        color: #fff;
+        background-color: #006FB3;
+        border-color: #006FB3;
+    }
+    .btn-primary:focus{
+      background-color: #006FB3 !important;
+      color: #fff !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -34,7 +51,7 @@
                   </div>
                 </div>
                 <div class="col-5 align-self-end">
-                  <img src="{{ asset('assets/images/profile-img.png') }}" alt="" class="img-fluid">
+                  {{-- <img src="{{ asset('assets/images/profile-img.png') }}" alt="" class="img-fluid"> --}}
                 </div>
               </div>
             </div>
