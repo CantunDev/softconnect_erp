@@ -73,7 +73,7 @@
                 @foreach (Auth::user()->restaurants as $restaurant)
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bx-briefcase-alt-2"></i>
+                            <i class="bx bx-restaurant alt-2" style="color: {{ $restaurant->color_primary ?? ''}};"></i>
                             <span key="t-restaurant">{{ $restaurant->name }}</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
