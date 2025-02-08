@@ -78,14 +78,6 @@ class AppServiceProvider extends ServiceProvider
                 $resultsTemp = collect();
 
                 foreach ($connections as $i => $connection) {
-
-                    // $results->push(
-                    //     $connection->table('cheques')->whereMonth('fecha', $currentMonth)
-                    //     ->whereYear('fecha', $currentYear)
-                    //     ->where('pagado', true)
-                    //     ->where('cancelado', false)
-                    //     ->sum('total')
-                    // );
                     $total = $connection->table('cheques')
                         ->whereMonth('fecha', $currentMonth)
                         ->whereYear('fecha', $currentYear)
@@ -101,7 +93,6 @@ class AppServiceProvider extends ServiceProvider
                         ->sum('nopersonas');
 
                     $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
-
                     $lastTurno = $connection->table('cheques')
                         ->select('idturno', 'fecha')
                         ->orderBy('fecha', 'desc')

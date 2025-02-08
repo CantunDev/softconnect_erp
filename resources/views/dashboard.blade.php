@@ -39,7 +39,7 @@
                                 <div class="col-xl-3">
                                     <div class="mt-3">
                                         <p class="text-muted mb-1">MES</p>
-                                        <h5>{{ $month }} </h5>
+                                        <h5 class="text-uppercase">{{ $month }} </h5>
                                     </div>
                                     <div class="mt-3">
                                         <p class="text-muted mb-1">TOTAL DIAS</p>
@@ -73,23 +73,21 @@
     </div>
     @php
     $count = count($restaurants);
-    if ($count == 1) {
-        $colSize = 12; // Si hay un solo restaurante, ocupa toda la fila
-    } elseif ($count == 2) {
-        $colSize = 6; // Si hay dos, se dividen en mitades
-    } elseif ($count == 4) {
-        $colSize = 3; // Si hay dos, se dividen en mitades
-    }else {
-        $colSize = 4; // Si hay tres o más, se dividen en tercios (máximo 3 columnas)
-    }
-@endphp
+        if ($count == 1) {
+            $colSize = 12; // Si hay un solo restaurante, ocupa toda la fila
+        } elseif ($count == 2) {
+            $colSize = 6; // Si hay dos, se dividen en mitades
+        } else {
+            $colSize = 4; // Si hay tres o más, se dividen en tercios (máximo 3 columnas)
+        }
+    @endphp
     <div class="row">
         @foreach ($restaurants as $i => $restaurant)
             {{-- <div class="restaurant-card" style="background-color: {{ $restaurants[$i]->color_primary }}; color: {{ $restaurants[$i]->color_secondary }}">
             <h1>{{ $restaurants[$i]->name }}</h1>
             <button style="background-color: {{ $restaurants[$i]->color_accent }}">Ver más</button> --}}
             {{-- </div> --}}
-            <div class="col-xl-{{$colSize}}">
+            <div class="col-xl-{{ $colSize }}">
                 <div class="card">
                     <div class="card-body">
                         {{-- <h4 class="card-title mb-4 fixed-text ">{{$restaurants[$i]->name}} </h4> --}}
@@ -102,7 +100,7 @@
                                         data-bs-target="#flush-collapse{{ $restaurants[$i]->id }}" aria-expanded="true"
                                         aria-controls="flush-collapse{{ $restaurants[$i]->id }}">
                                         <i class="bx bx-food-menu font-size-12 align-middle me-1"
-                                        style="color: {{ $restaurant[$i]->color_accent ?? '' }}"></i>
+                                            style="color: {{ $restaurant[$i]->color_accent ?? '' }}"></i>
                                         Venta Al Dia {{ $restaurants[$i]->name }}
                                 </h2>
                             </div>
@@ -162,7 +160,8 @@
                                         </div>
                                         <h5 class="font-size-12 mb-2">Bebidas</h5>
                                         <div class="float-end ms-2">
-                                            <span class="me-1 badge rounded-circle p-1 {{ $resultsTemp['venta' . $restaurants[$i]->id]['turno'] == 'Abierto' ? 'bg-success' : 'bg-warning' }}">
+                                            <span
+                                                class="me-1 badge rounded-circle p-1 {{ $resultsTemp['venta' . $restaurants[$i]->id]['turno'] == 'Abierto' ? 'bg-success' : 'bg-warning' }}">
                                                 <span class="visually-hidden">status</span>
                                             </span>
                                             {{ $resultsTemp['venta' . $restaurants[$i]->id]['turno'] }}
@@ -180,219 +179,189 @@
             </div>
         @endforeach
     </div>
-    <div class="row">
-        @foreach ($restaurants as $i => $restaurant)
-            <div class="col-xl-{{$colSize}}">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title mb-4">{{ $restaurants[$i]->name }}</h4>
-                        <div class="accordion accordion-flush" id="accordionFlush">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button
-                                        style="background-color: {{ $restaurants[$i]->color_primary ?? '' }}; color: {{ $restaurants[$i]->color_accent ?? '' }}"
-                                        class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#flush-collapse{{ $restaurants[$i]->id }}" aria-expanded="true"
-                                        aria-controls="flush-collapse{{ $restaurants[$i]->id }}">
-                                        <i class="bx bx-restaurant font-size-12 align-middle me-1"
-                                            style="color: {{ $restaurant[$i]->color_accent ?? '' }}"></i>
-                                        Ventas {{ $restaurants[$i]->name }}
-                                </h2>
-                            </div>
-                            <div id="flush-collapse{{ $restaurants[$i]->id }}" class="accordion-collapse collapse show"
-                                aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
-                                <div class="accordion-body text-muted">
-                                    <div class="tab-pane active" id="vta-tab" role="tabpanel">
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Meta de venta mesual</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Meta de venta dia {{ $daysPass }}</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                {{ $results['venta' . $restaurants[$i]->id]['total'] }}
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Venta real al dia</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 percentage">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Alcance al dia</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">DIF/PROY</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 percentage">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">DEFICIT</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">META VTA DIARIA</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">PROM.. VTA DIARIA REAL</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">PROYECTADO AL CIERRE</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">DIFERENCIA(+/-)</h5>
-                                    </div>
-                                </div>
+    @include('components.restaurants_tabs')
+@endsection
+@section('js')
+    <script>
+        function openModal(event, restaurantId, restaurantName) {
+            event.stopPropagation(); // Evita que el acordeón se active
 
-                            </div>
+            const modalId = "modal-" + restaurantId;
+            if (document.getElementById(modalId)) {
+                var existingModal = new bootstrap.Modal(document.getElementById(modalId));
+                existingModal.show();
+                return;
+            }
+
+            let modalHTML = `
+            <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="modalLabel-${restaurantId}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel-${restaurantId}">Proyeccion para ${restaurantName}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="projectionForm-${restaurantId}" onsubmit="submitForm(event, ${restaurantId})">
+                        <div class="mb-3">
+                            <label for="projecttion_sales_at-${restaurantId}" class="form-label">Proyeccion de venta</label>
+                            <input type="input" class="form-control" id="projected_sales-${restaurantId}" name="projected_sales" required>
                         </div>
-                        <div class="accordion accordion-flush" id="accordionFlush">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button
-                                        style="background-color: {{ $restaurants[$i]->color_primary ?? '' }}; color: {{ $restaurants[$i]->color_accent ?? '' }}"
-                                        class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#flush-collapse{{ $restaurants[$i]->id }}" aria-expanded="true"
-                                        aria-controls="flush-collapse{{ $restaurants[$i]->id }}">
-                                        <i class="bx bx-body font-size-12 align-middle me-1"
-                                            style="color: {{ $restaurant[$i]->color_accent ?? '' }}"></i>
-                                        Clientes {{ $restaurants[$i]->name }}
-                                </h2>
-                            </div>
-                            <div id="flush-collapse{{ $restaurants[$i]->id }}" class="accordion-collapse collapse show"
-                                aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
-                                <div class="accordion-body text-muted">
-                                    <div class="tab-pane active" id="vta-tab" role="tabpanel">
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Meta de clientes</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Meta de clientes al dia {{ $daysPass }}</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 ">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                {{ $results['venta' . $restaurants[$i]->id]['nopersonas'] }}
-
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Clientes al dia real</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 percentage">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Alcance al dia</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">DIF/PROY</h5>
-                                    </div>
-                                </div>
-
-                            </div>
+                        <div class="mb-3">
+                            <label for="projecttion_tax_at-${restaurantId}" class="form-label">Proyeccion de clientes</label>
+                            <input type="input" class="form-control" id="projected_tax-${restaurantId}" name="projected_tax" required>
                         </div>
-                        <div class="accordion accordion-flush" id="accordionFlush">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button
-                                        style="background-color: {{ $restaurants[$i]->color_primary ?? '' }}; color: {{ $restaurants[$i]->color_accent ?? '' }}"
-                                        class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#flush-collapse{{ $restaurants[$i]->id }}" aria-expanded="true"
-                                        aria-controls="flush-collapse{{ $restaurants[$i]->id }}">
-                                        <i class="bx bx-spreadsheet font-size-12 align-middle me-1"
-                                            style="color: {{ $restaurant[$i]->color_accent ?? '' }}"></i>
-                                        Cheques {{ $restaurants[$i]->name }}
-                                </h2>
-                            </div>
-                            <div id="flush-collapse{{ $restaurants[$i]->id }}" class="accordion-collapse collapse show"
-                                aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlush">
-                                <div class="accordion-body text-muted">
-                                    <div class="tab-pane active" id="cheques-tab" role="tabpanel">
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Meta de cheque promedio</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                {{ $results['venta' . $restaurants[$i]->id]['chequePromedio'] }}
+                         <div class="mb-3">
+                            <label for="projecttion_checks_at-${restaurantId}" class="form-label">Proyeccion de cheque</label>
+                            <input type="input" class="form-control" id="projected_check-${restaurantId}" name="projected_check" required>
+                        </div>
+                        <input type="hidden" name="restaurant_id" value="${restaurantId}">
+                      </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" form="projectionForm-${restaurantId}">Guardar</button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
 
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">Cheque promedio actual</h5>
-                                        <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                0
-                                            </h5>
-                                        </div>
-                                        <h5 class="font-size-12 mb-2">DEFICIT</h5>
-                                    </div>
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            var newModal = new bootstrap.Modal(document.getElementById(modalId));
+            newModal.show();
+        }
+
+        function submitForm(event, restaurantId) {
+            event.preventDefault();
+
+            let form = document.getElementById(`projectionForm-${restaurantId}`);
+            let formData = new FormData(form);
+
+            fetch("{{ route('projections.store') }}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Proyeccion guardada correctamente.");
+                        document.getElementById(`modal-${restaurantId}`).remove(); // Cierra el modal
+                        refreshData(); // Recargar solo el div
+                    } else {
+                        alert("Error al guardar la proyeccion.");
+                    }
+                })
+                .catch(error => console.error("Error en la petición:", error));
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+    </script>
+    <script>
+        function openUpdateModal(event, restaurantId, restaurantName) {
+            event.stopPropagation(); // Evita que el acordeón se active
+    
+            const modalId = "update-modal-" + restaurantId;
+    
+            // Si el modal ya existe, solo lo mostramos
+            if (document.getElementById(modalId)) {
+                var existingModal = new bootstrap.Modal(document.getElementById(modalId));
+                existingModal.show();
+                return;
+            }
+    
+            // Estructura del modal
+            let modalHTML = `
+            <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="modalLabel-${restaurantId}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel-${restaurantId}">Actualizar Proyección para ${restaurantName}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="updateForm-${restaurantId}" onsubmit="updateProjection(event, ${restaurantId})">
+                                <div class="mb-3">
+                                    <label for="projected_sales-${restaurantId}" class="form-label">Proyección de Ventas</label>
+                                    <input type="number" step="0.01" class="form-control" id="projected_sales-${restaurantId}" name="projected_sales" required>
                                 </div>
-
-                            </div>
+                                <div class="mb-3">
+                                    <label for="projected_tax-${restaurantId}" class="form-label">Proyección de Clientes</label>
+                                    <input type="number" class="form-control" id="projected_tax-${restaurantId}" name="projected_tax" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="projected_check-${restaurantId}" class="form-label">Proyección de Cheque</label>
+                                    <input type="number" step="0.01" class="form-control" id="projected_check-${restaurantId}" name="projected_check" required>
+                                </div>
+                                <input type="hidden" name="restaurant_id" value="${restaurantId}">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" form="updateForm-${restaurantId}">Actualizar</button>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
-@endsection
-@section('js')
+            </div>`;
+    
+            // Insertar modal en el DOM y mostrarlo
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            var newModal = new bootstrap.Modal(document.getElementById(modalId));
+            newModal.show();
+    
+            // Llamada AJAX para obtener los datos del restaurante
+            fetch(`/projections/${restaurantId}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    // Llenar los campos con los datos obtenidos
+                    document.getElementById(`projected_sales-${restaurantId}`).value = data.projected_sales ?? "";
+                    document.getElementById(`projected_tax-${restaurantId}`).value = data.projected_tax ?? "";
+                    document.getElementById(`projected_check-${restaurantId}`).value = data.projected_check ?? "";
+                })
+                .catch(error => console.error("Error al obtener los datos:", error));
+        }
+    
+        function updateProjection(event, restaurantId) {
+            event.preventDefault();
+    
+            let form = document.getElementById(`updateForm-${restaurantId}`);
+            // let formData = new FormData(form);
+            let formData = {
+                projected_sales: document.getElementById(`projected_sales-${restaurantId}`).value,
+                projected_tax: document.getElementById(`projected_tax-${restaurantId}`).value,
+                projected_check: document.getElementById(`projected_check-${restaurantId}`).value,
+                _method: "PUT"
+            };
+            fetch(`/projections/${restaurantId}`, {
+                method: "PUT",
+                body: JSON.stringify(formData),
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Proyección actualizada correctamente.");
+                    document.getElementById(`update-modal-${restaurantId}`).remove(); // Cierra el modal
+                    refreshData(); // Refrescar datos sin recargar toda la página
+                } else {
+                    alert("Error al actualizar la proyección.");
+                }
+            })
+            .catch(error => console.error("Error en la petición:", error));
+        }
+    
+        function refreshData() {
+            location.reload();
+        }
+    </script>
+    
     <script>
         // Selecciona el elemento h5 con la clase "price"
         const priceElements = document.querySelectorAll('.price');

@@ -54,4 +54,10 @@ class Restaurant extends Model
     {
         return $this->belongsToMany(User::class, 'users_restaurants', 'restaurant_id', 'user_id');
     }
+
+    public function projections(): hasMany
+    {
+        return $this->hasMany(Projection::class, 'restaurant_id', 'id');
+    }
+
 }
