@@ -10,6 +10,7 @@ use App\Http\Controllers\FetchDataController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\RolesPermissionsController;
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UsersController::class);
     Route::resource('business', BusinessController::class);
     Route::resource('restaurants', RestaurantsController::class);
+    Route::resource('projections', ProjectionController::class);
     Route::resource('providers', ProvidersController::class);
     Route::resource('expenses_categories', ExpensesCategoriesController::class);
     Route::resource('expenses', ExpensesController::class);

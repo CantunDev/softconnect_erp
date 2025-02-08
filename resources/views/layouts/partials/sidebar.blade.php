@@ -48,6 +48,7 @@
             </li>
           </ul>
         </li> --}}
+        @can('read_business')
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -70,6 +71,7 @@
                         </li>
                     </ul>
                 </li>
+
                 @foreach (Auth::user()->restaurants as $restaurant)
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -107,6 +109,7 @@
                 @endforeach
 
 
+                @endcan
 
 
                 {{-- <li class="menu-title" key="t-apps">Apps</li> --}}

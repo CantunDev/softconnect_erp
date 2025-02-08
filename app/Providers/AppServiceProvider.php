@@ -78,14 +78,6 @@ class AppServiceProvider extends ServiceProvider
                 $resultsTemp = collect();
 
                 foreach ($connections as $i => $connection) {
-
-                    // $results->push(
-                    //     $connection->table('cheques')->whereMonth('fecha', $currentMonth)
-                    //     ->whereYear('fecha', $currentYear)
-                    //     ->where('pagado', true)
-                    //     ->where('cancelado', false)
-                    //     ->sum('total')
-                    // );
                     $total = $connection->table('cheques')
                         ->whereMonth('fecha', $currentMonth)
                         ->whereYear('fecha', $currentYear)
@@ -100,45 +92,52 @@ class AppServiceProvider extends ServiceProvider
                         ->where('cancelado', false)
                         ->sum('nopersonas');
 
-$chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
-
+                    $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
                     $lastTurno = $connection->table('cheques')
-                    ->select('idturno', 'fecha')
-                    ->orderBy('fecha', 'desc') // Ordenar por el cierre más reciente
-                    ->first();
+                        ->select('idturno', 'fecha')
+                        ->orderBy('fecha', 'desc')
+                        ->first();
 
-                // Obtener el último turno de la tabla 'turnos_temp'
-                $lastTurnoTemp = $connection->table('tempcheques')
-                    ->select('idturno', 'fecha')
-                    ->orderBy('fecha', 'desc') // Ordenar por el cierre más reciente
-                    ->first();
+                    $lastTurnoTemp = $connection->table('tempcheques')
+                        ->select('idturno', 'fecha')
+                        ->orderBy('fecha', 'desc')
+                        ->first();
 
-                // Validar si ambos resultados existen
-                if ($lastTurno && $lastTurnoTemp) {
-                    // Comparar los valores de 'idturno'
-                    if ($lastTurno->idturno == $lastTurnoTemp->idturno) {
-                        // Ambos coinciden: usar la tabla 'cheques'
-                        $tabla = 'cheques';
-                        $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
-                    } else {
-                        // No coinciden: usar la tabla 'tempcheques'
-                        $tabla = 'tempcheques';
-                        $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
-                    }
-                } elseif ($lastTurno) {
-                    // Si solo existe $lastTurno
-                    $tabla = 'cheques';
-                    $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
-                } elseif ($lastTurnoTemp) {
-                    // Si solo existe $lastTurnoTemp
-                    $tabla = 'tempcheques';
-                    $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
-                } else {
-                    // Si no hay turnos en ninguna tabla
-                    $tabla = 'tempcheques';
+                    $turno = [];
+                    $tabla = null;
                     $dateCheque = null;
-                }
-                
+
+                    // Si existen ambos registros, decidir cuál usar
+                    if ($lastTurno && $lastTurnoTemp) {
+                        // Comparar fechas para obtener el más reciente
+                        if (Carbon::parse($lastTurno->fecha)->gt(Carbon::parse($lastTurnoTemp->fecha))) {
+                            // Si el de 'cheques' es más reciente, significa que el turno ya fue cerrado
+                            $tabla = 'cheques';
+                            $turno = 'Cerrado';
+                            $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
+                        } else {
+                            // Si el de 'tempcheques' es más reciente, el turno sigue abierto
+                            $tabla = 'tempcheques';
+                            $turno = 'Abierto';
+                            $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
+                        }
+                    } elseif ($lastTurno) {
+                        // Si solo hay un turno cerrado
+                        $tabla = 'cheques';
+                        $turno = 'Cerrado';
+                        $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
+                    } elseif ($lastTurnoTemp) {
+                        // Si solo hay un turno abierto
+                        $tabla = 'tempcheques';
+                        $turno = 'Abierto';
+                        $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
+                    } else {
+                        // No hay turnos registrados
+                        $tabla = 'tempcheques';
+                        $turno = 'Abierto';
+                        $dateCheque = null;
+                    }
+
                     $totalTemp = $connection->table($tabla)
                         ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
                         ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
@@ -195,7 +194,7 @@ $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
                         'total' => round($total, 2),
                         'nopersonas' => $nopersonas,
                         'chequePromedio' => $chequePromedio,
-                        'last' => $lastTurno
+                        'last' => $lastTurno,
                     ]);
 
                     $resultsTemp->put("venta$i", [
@@ -206,6 +205,8 @@ $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
                         'alimentosTemp' => $alimentosTemp,
                         'bebidasTemp' => $bebidasTemp,
                         'chequePromedioTemp' => $chequePromedioTemp,
+                        'turno' => $turno,
+
                     ]);
                 }
             }
