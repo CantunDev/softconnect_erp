@@ -14,7 +14,10 @@ class Business extends Model
 
     protected $table = "business";
     protected $fillable = [
-        'name', 'business_name', 'business_address', 'rfc', 'telephone', 'business_line', 'email', 'web', 'country', 'state', 'city', 'regime', 'business_file', 'idregiment_sat'
+        'name', 'business_name', 'business_address', 'rfc', 'telephone', 'business_line', 'email', 'web', 'country', 'state', 'city', 'regime', 'business_file', 'idregiment_sat',
+        'color_primary',
+        'color_secondary',
+        'color_accent',
     ];
 
     public function users(): BelongsToMany

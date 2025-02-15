@@ -17,15 +17,27 @@ class Restaurant extends Model
 
     protected $table = "restaurants";
     protected $fillable = [
-        'name', 
+        'name',
         'description',
         'ip',
-        'database', 
+        'database',
         'restaurant_file',
         'color_primary',
         'color_secondary',
         'color_accent',
     ];
+
+    /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getCnameAttribute()
+    {
+        $name = explode(' ', $this->name);
+        return implode('', $name);  // Une todas las partes sin espacio
+    }
+
     public function scopeUnassigned($query, $businessId)
     {
         return $query->where(function ($q) use ($businessId) {
@@ -42,14 +54,14 @@ class Restaurant extends Model
      */
     public function business()
     {
-        return $this->hasOneThrough(Business::class,BusinessRestaurants::class,'restaurant_id','id','id','business_id');
+        return $this->hasOneThrough(Business::class, BusinessRestaurants::class, 'restaurant_id', 'id', 'id', 'business_id');
     }
 
     /**
-        * The roles that belong to the Restaurant
-        *
-        * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-        */
+     * The roles that belong to the Restaurant
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'users_restaurants', 'restaurant_id', 'user_id');
@@ -59,5 +71,4 @@ class Restaurant extends Model
     {
         return $this->hasMany(Projection::class, 'restaurant_id', 'id');
     }
-
 }

@@ -89,6 +89,46 @@
   <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
   <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
+  <script>
+    // Selecciona el elemento h5 con la clase "price"
+    const priceElements = document.querySelectorAll('.price');
+
+    // Usa AutoNumeric para formatear el número
+    priceElements.forEach(element => {
+        const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
+        if (!isNaN(rawValue)) {
+            new AutoNumeric(element, {
+                currencySymbol: '$',
+                decimalPlaces: 2,
+                digitGroupSeparator: ',',
+                currencySymbolPlacement: 'p', // "p" coloca el símbolo antes del número
+                decimalCharacter: '.',
+                unformatOnSubmit: true, // Elimina el formato al enviar el formulario
+            }).set(rawValue); // Establece el valor formateado en el elemento
+        }
+    });
+</script>
+<script>
+    // Selecciona el elemento h5 con la clase "percentage"
+    const percentageElements = document.querySelectorAll('.percentage');
+
+    // Usa AutoNumeric para formatear como porcentaje
+    percentageElements.forEach(element => {
+        const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
+        if (!isNaN(rawValue)) {
+            new AutoNumeric(element, {
+                currencySymbol: '%', // El símbolo es el de porcentaje
+                decimalPlaces: 2, // Establece dos decimales
+                //   digitGrkoupSeparator: ',', // Si lo necesitas, puedes agregar separador de miles
+                percentage: true, // Activa la opción de porcentaje
+                scaleDecimalPlaces: 2, // Controla la cantidad de decimales
+                unformatOnSubmit: true, // Elimina el formato al enviar el formulario
+                decimalCharacter: '.', // Caracter decimal
+                currencySymbolPlacement: 's' // El símbolo del porcentaje va al final
+            }).set(rawValue * 1); // Multiplica por 100 para obtener el valor en porcentaje
+        }
+    });
+</script>
   @yield('js')
 </body>
 

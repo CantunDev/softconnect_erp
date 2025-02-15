@@ -48,9 +48,8 @@
             </li>
           </ul>
         </li> --}}
-        @can('read_business')
-
-                <li>
+        @role('Super-Admin')
+            <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="bx bx-briefcase-alt-2"></i>
                         <span key="t-projects">Administración</span>
@@ -71,6 +70,8 @@
                         </li>
                     </ul>
                 </li>
+              @endrole
+                @can('read_restaurants')
 
                 @foreach (Auth::user()->restaurants as $restaurant)
                     <li>
@@ -80,13 +81,21 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li>
-                                <a href="{{ route('providers.index') }}">
+                                <a href="{{route('business.home.index', ['business' => $restaurant->id]); }}">
+                                    <i class="mdi mdi-room-service"></i>
+                                    <span key="t-chat">Inicio</span>
+                                </a>
+                            </li>
+                        @can('read_business')
+
+                            <li>
+                                <a href="{{route('business.providers.index', ['business' => $restaurant->id]); }}">
                                     <i class="bx bx-cart"></i>
                                     <span key="t-chat">Proveedores</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('invoices.index') }}" class="waves-effect">
+                                <a href="{{ route('business.invoices.index', ['business' => $restaurant->id]); }}" class="waves-effect">
                                     <i class="bx bx-receipt"></i>
                                     <span key="t-chat">Facturas</span>
                                 </a>
@@ -97,13 +106,14 @@
                                     <span key="t-projects">Operaciones</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{ route('payment_method.index') }}" key="t-p-grid">Metodo de pagos</a>
+                                    <li><a href="{{ route('business.payment_method.index', ['business' => $restaurant->id]); }}" key="t-p-grid">Metodo de pagos</a>
                                     </li>
-                                    <li><a href="{{ route('expenses_categories.index') }}" key="t-p-list">Tipo de
+                                    <li><a href="{{ route('business.expenses_categories.index', ['business' => $restaurant->id]); }}" key="t-p-list">Tipo de
                                             gastos</a></li>
-                                    <li><a href="{{ route('expenses.index') }}" key="t-p-overview">Gastos</a></li>
+                                    <li><a href="{{ route('business.expenses.index', ['business' => $restaurant->id]); }}" key="t-p-overview">Gastos</a></li>
                                 </ul>
                             </li>
+                            @endcan
                         </ul>
                     </li>
                 @endforeach
