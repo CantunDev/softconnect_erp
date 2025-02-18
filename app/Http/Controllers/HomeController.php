@@ -44,7 +44,8 @@ class HomeController extends Controller
                 SUM(tarjeta) as total_tarjeta,
                 SUM(otros) as total_otros,
                 SUM(totalalimentos) as total_alimentos,
-                SUM(totalbebidas) as total_bebidas
+                SUM(totalbebidas) as total_bebidas,
+                SUM(descuentoimporte) as total_descuento
             ')
             ->whereYear('fecha', $currentYear)
             ->whereMonth('fecha', $currentMonth)

@@ -86,8 +86,8 @@
 
             <div class="row g-3">
                 <div class="col-sm-6 col-md-6 col-lg-6">
-                    <select class="form-control" name="business_id" id="business_id">
-                        <option disabled selected>Selecciona una opcion</option>
+                    <select class="form-control selectpicker" multiple name="business_id" id="business_id">
+                        <option disabled >Selecciona una opcion</option>
                         @foreach ($business as $bs)
                         <option value="{{ $bs->id }}" {{ in_array($bs->id, $user->business->pluck('id')->toArray()) ? 'selected' : '' }}>
                             {{ $bs->business_name }}</option>
@@ -117,64 +117,77 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function () {
-        var businessId = $('#business_id').val(); 
-        if (businessId) {
-            fetchRestaurants(businessId);
+    $(document).ready(function() {
+        if ($.fn.selectpicker) {
+            $('.selectpicker').selectpicker();
+        } else {
+            console.error("Bootstrap Select no está cargado.");
         }
-        $('#business_id').change(function () {
-            var selectedBusinessId = $(this).val();
-            $('#restaurants-body').empty();
-            fetchRestaurants(selectedBusinessId);
-        });
     });
+</script>
 
-    function fetchRestaurants(businessId) {
-    $.ajax({
-        url: "{{ route('restaurants.get', ':id') }}".replace(':id', businessId),
-        type: "GET",
-        data: { business_id: businessId },
-        success: function(data) {
-            if (data.length > 0) {
-                $.each(data, function(index, restaurants) {
-                    var imageUrl = restaurants.restaurants.restaurant_file ?
-                        `/path/to/restaurants/files/${restaurants.restaurants.restaurants_file}` :
-                        `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurants.restaurants.name)}&caps=3&bold=true`;
-                    var userRestaurantIds = @json($user->restaurants->pluck('id')->toArray());
+<script>
+ $(document).ready(function() {
+$('#business_id').on('change', function() {
+    var businessIds = $(this).val(); // Obtener los IDs seleccionados
+    $('#restaurants-body').empty(); // Limpiar la tabla antes de agregar nuevos datos
 
-                    var row = `
-                        <tr>
-                            <td style="width: 10px;">
-                                <div class="form-check font-size-16">
-                                    <input type="checkbox" name="restaurant_ids[]" value="${restaurants.restaurants.id}" id="restaurantCheck${restaurants.restaurants.id}"
-                                    ${userRestaurantIds.includes(restaurants.restaurants.id) ? 'checked' : ''}>
-                                    <label class="form-check-label" for="restaurantCheck${restaurants.restaurants.id}"></label>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-group-item me-2">
-                                        <a href="javascript: void(0);" class="d-inline-block">
-                                            <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
-                                        </a>
+    if (businessIds && businessIds.length > 0) {
+        // Enviar los IDs seleccionados al servidor
+        $.ajax({
+            url: "{{ route('restaurants.get') }}", // Ruta para obtener los restaurantes
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                business_ids: businessIds // Enviar los IDs como un array
+            },
+            success: function(data) {
+                if (data.length > 0) {
+                    $.each(data, function(index, restaurant) {
+                        var imageUrl = restaurant?.restaurant_file ?
+                            `${restaurant.restaurant_file}` :
+                            `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurant.name || 'Restaurante')}&caps=3&bold=true`;
+
+                        var row = `
+                            <tr>
+                                <td style="width: 40px;">
+                                    <div class="form-check font-size-16">
+                                        <input type="checkbox" name="restaurant_ids[]" value="${restaurant.id}" id="restaurantCheck${restaurant.id}">
+                                        <label class="form-check-label" for="restaurantCheck${restaurant.id}"></label>
                                     </div>
-                                    <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">${restaurants.restaurants.name}</a></h5>
-                                </div>
-                            </td>
-                        </tr>`;
-
-                    $('#restaurants-body').append(row);
-                });
-            } else {
-                $('#restaurants-body').append('<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>');
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-group-item me-2">
+                                            <a href="javascript: void(0);" class="d-inline-block">
+                                                <img src="${imageUrl}" alt="" class="rounded-circle avatar-xs">
+                                            </a>
+                                        </div>
+                                        <h5 class="text-truncate font-size-14 m-0 ms-2">
+                                            <a href="#" class="text-dark">${restaurant.name}</a>
+                                        </h5>
+                                    </div>
+                                </td>
+                            </tr>`;
+                        $('#restaurants-body').append(row);
+                    });
+                } else {
+                    $('#restaurants-body').append(
+                        '<tr><td colspan="4" class="text-center">No se encontraron restaurantes.</td></tr>'
+                    );
+                }
+            },
+            error: function() {
+                alert('Error al cargar los restaurantes.');
             }
-        },
-        error: function() {
-            alert('Error al cargar los restaurantes.');
-        }
-    });
-}
-
+        });
+    } else {
+        $('#restaurants-body').append(
+            '<tr><td colspan="4" class="text-center">Seleccione al menos un negocio.</td></tr>'
+        );
+    }
+});
+});
 </script>
 <script>
     $('#create_users').on('submit', function (e) {

@@ -25,6 +25,8 @@
   <!-- App Css-->
   <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
   @vite(['resources/js/app.js'])
   <style>
     body[data-sidebar=dark] .navbar-brand-box {
@@ -73,22 +75,36 @@
   @include('layouts.partials.right-sidebar')
 
   <!-- JAVASCRIPT -->
-  <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- jQuery debe cargarse primero -->
+<script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
 
-  <script src="{{ asset('assets/js/app.js') }}"></script>
+<!-- Bootstrap (Necesario para Bootstrap Select y otros plugins) -->
+<script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-  <!-- Datatables -->
-  <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-  <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
+<!-- Plugins adicionales -->
+<script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
+
+<!-- Flatpickr y ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<!-- Aplicación principal -->
+<script src="{{ asset('assets/js/app.js') }}"></script>
+
+<!-- Datatables -->
+<script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+
+<!-- AutoNumeric -->
+<script src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
+
+<!-- Bootstrap Select (versión compatible con Bootstrap 5) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+
   <script>
     // Selecciona el elemento h5 con la clase "price"
     const priceElements = document.querySelectorAll('.price');

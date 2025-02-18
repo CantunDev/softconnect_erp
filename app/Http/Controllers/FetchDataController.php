@@ -45,9 +45,28 @@ class FetchDataController extends Controller
         return response()->json($subcategories);
     }
 
-    public function getRestaurants($id)
+    // public function getRestaurants($id)
+    // {
+    //     $restaurants = BusinessRestaurants::with('restaurants')->where('business_id',$id)->get();
+    //     return response()->json($restaurants);
+    // }
+    public function getRestaurants(Request $request)
     {
-        $restaurants = BusinessRestaurants::with('restaurants')->where('business_id',$id)->get();
+        // Obtener los IDs de los negocios seleccionados
+        $businessIds = $request->input('business_ids');
+
+        // Validar que se hayan enviado IDs
+        if (empty($businessIds)) {
+            return response()->json([]);
+        }
+
+        // Obtener los restaurantes asociados a los IDs de los negocios
+        $restaurants = BusinessRestaurants::with('restaurants')
+            ->whereIn('business_id', $businessIds)
+            ->get()
+            ->pluck('restaurants') // Extraer solo los restaurantes
+            ->filter(); // Eliminar valores nulos
+
         return response()->json($restaurants);
     }
 

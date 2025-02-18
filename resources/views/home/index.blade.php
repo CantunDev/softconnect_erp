@@ -96,13 +96,13 @@
                                                 <tr>
                                                     <th data-priority="1">Fecha</th>
                                                     <th data-priority="3" class="text-center">Clientes</th>
-                                                    <th data-priority="1">Importe Total</th>
+                                                    <th data-priority="1">Total</th>
                                                     <th data-priority="3">Iva</th>
                                                     <th data-priority="3">Subtotal</th>
                                                     <th data-priority="6">Efectivo</th>
                                                     <th data-priority="6">Propinas</th>
                                                     <th data-priority="6">Tarjeta</th>
-                                                    <th data-priority="6">Creditos</th>
+                                                    <th data-priority="6">Descuento</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -116,7 +116,7 @@
                                                         <td class="price">{{ $corte->total_efectivo }}</td>
                                                         <td class="price">{{ $corte->total_propina }}</td>
                                                         <td class="price">{{ $corte->total_tarjeta }}</td>
-                                                        <td class="price">{{ $corte->total_otros }}</td>
+                                                        <td class="price">{{ $corte->total_descuento }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -165,7 +165,9 @@
                                                 <tr>
                                                     <th class="text-center" data-priority="1">Fecha</th>
                                                     <th class="text-center" data-priority="1">Total de alimentos</th>
+                                                    <th class="text-center" data-priority="1">Porcentaje de alimentos</th>
                                                     <th class="text-center" data-priority="3">Total de bebidas</th>
+                                                    <th class="text-center" data-priority="3">Porcentaje de bebidas</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -173,7 +175,9 @@
                                                     <tr>
                                                         <td class="text-center">{{ $corte->dia }}</td>
                                                         <td class="price text-center">{{ $corte->total_alimentos }}</td>
+                                                        <td class="price text-center">0</td>
                                                         <td class="price text-center">{{ $corte->total_bebidas }}</td>
+                                                        <td class="price text-center">0</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
