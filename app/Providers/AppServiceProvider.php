@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -55,7 +56,8 @@ class AppServiceProvider extends ServiceProvider
                 $connections = [];
                 foreach ($restaurants as $restaurant) {
                     $connectionName = "restaurant_{$restaurant->id}";
-                    // Configurar la conexión dinámica para cada restaurante
+                     try {
+                        // Configurar la conexión dinámica para cada restaurante
                     Config::set("database.connections.{$connectionName}", [
                         'driver' => 'sqlsrv',
                         'host' => $restaurant->ip . '\NATIONALSOFT' ?? '192.168.193.29\NATIONALSOFT',
@@ -71,11 +73,19 @@ class AppServiceProvider extends ServiceProvider
                     DB::purge($connectionName);
                     // Agregar la conexión al array
                     $connections[$restaurant->id] = DB::connection($connectionName);
+                     } catch (\Exception $e) {
+                        \Log::error("Error en la conexion $restaurant: ". $e->getMessage());
+                        $connections[$restaurant->id] = null;
+                     }
                 }
 
                 // Realizar consultas necesarias y compartir resultados con la vista
                 $results = collect();
                 $resultsTemp = collect();
+
+                $totalGeneral = 0;
+                $nopersonasGeneral = 0;
+                $chequePromedioSum = 0;
 
                 foreach ($connections as $i => $connection) {
                     $total = $connection->table('cheques')
@@ -93,6 +103,7 @@ class AppServiceProvider extends ServiceProvider
                         ->sum('nopersonas');
 
                     $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
+
                     $lastTurno = $connection->table('cheques')
                         ->select('idturno', 'fecha')
                         ->orderBy('fecha', 'desc')
@@ -188,8 +199,12 @@ class AppServiceProvider extends ServiceProvider
                         $chequePromedioTemp = 0; // O un valor predeterminado que tenga sentido
                     }                        // } 
 
+                    $totalGeneral += $total;
+                    $nopersonasGeneral += $nopersonas;
 
-                    // Agregar el resultado al collection con un nombre personalizado
+                    $chequePromedioFinal = $nopersonasGeneral > 0 ? round(($totalGeneral / $nopersonasGeneral), 2) : 0;
+
+
                     $results->put("venta$i", [
                         'total' => round($total, 2),
                         'nopersonas' => $nopersonas,
@@ -206,7 +221,6 @@ class AppServiceProvider extends ServiceProvider
                         'bebidasTemp' => $bebidasTemp,
                         'chequePromedioTemp' => $chequePromedioTemp,
                         'turno' => $turno,
-
                     ]);
                 }
             }
@@ -223,7 +237,11 @@ class AppServiceProvider extends ServiceProvider
                 'rangeMonth' => $rangeMonth,
                 'restaurants' => $restaurants,
                 'results' => $results,
-                'resultsTemp' => $resultsTemp
+                'resultsTemp' => $resultsTemp,
+                'totalGeneral' => $totalGeneral,
+                'nopersonasGeneral' => $nopersonasGeneral,
+                'chequePromedioGeneral' => $chequePromedioFinal,
+
             ]);
         });
     }

@@ -27,6 +27,9 @@ class RestaurantRequestStore extends FormRequest
             'ip' => 'required|ip',
             'database' => 'required',
             'restaurant_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'color_primary' => 'nullable',
+            'color_secondary' => 'nullable',
+            'color_accent' => 'nullable',
         ];
     }
 }

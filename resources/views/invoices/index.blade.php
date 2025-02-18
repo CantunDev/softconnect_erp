@@ -8,12 +8,14 @@
             Facturas
         @endslot
         @slot('bcPrevLink')
-            {{ route('providers.index') }}
+            {{ route('business.providers.index', ['business' => request()->route('business')]) }}
         @endslot
         @slot('bcActiveText')
             Listado
         @endslot
     @endcomponent
+    {{-- @dd(request()->route('business')) --}}
+
     <div class="card">
         <div class="card-body border-bottom">
             <div class="d-flex align-items-center">
@@ -94,7 +96,7 @@
             // Serializa los datos del formulario como una cadena de consulta
             const queryParams = $(this).serialize();
             $.ajax({
-                url: '{!! route('invoices.index') !!}',
+                url: '{!! route('business.invoices.index', ['business' => request()->route('business')]) !!}',
                 method: 'GET',
                 success: function(response) {
                     console.log('Datos enviados correctamente', response);
@@ -114,7 +116,7 @@
                 serverSide: true,
                 searching: false,
                 ajax: {
-                    url: '{!! route('invoices.index') !!}',
+                    url: '{!! route('business.invoices.index', ['business' => request()->route('business')]) !!}',
                     type: 'GET',
                     error: function(error) {
                         console.error('Error al cargar los datos:', error);

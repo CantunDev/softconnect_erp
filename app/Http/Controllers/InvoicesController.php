@@ -15,18 +15,22 @@ class InvoicesController extends Controller
 
   public function index(Request $request)
   {
-    $currentMonth = Carbon::now()->month;
-    $currentYear = Carbon::now()->year;
+    
     if ($request->ajax()) {
-
-      $facturas = Invoice::query()->sinCancelados() ->whereMonth('fecha', $currentMonth)
-      ->whereYear('fecha', $currentYear);
+      $currentMonth = Carbon::now()->month;
+      $currentYear = Carbon::now()->year;
+      $facturas = Invoice::query()->sinCancelados()->whereMonth('fecha', $currentMonth)->whereYear('fecha', $currentYear);
       return DataTables::of($facturas)
-        ->addColumn('sfrtNotaDate', function ($result) {
-          return '
-                    <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->nota . '</a></h5>
-                    <p class="text-muted mb-0">' . $result->cheques->fecha->format('d-m-Y') . '</p>';
-        })
+        
+      ->addColumn('sfrtNotaDate', function ($result) {
+        $fecha = optional($result->cheques)->fecha ? $result->cheques->fecha->format('d-m-Y') : 'NA';
+    
+        return '
+            <h5 class="text-truncate font-size-14 mb-1">
+                <a href="javascript: void(0);" class="text-dark">' . e($result->nota) . '</a>
+            </h5>
+            <p class="text-muted mb-0">' . e($fecha) . '</p>';
+    })    
         ->addColumn('sfrtCustomer', function ($result) {
           return '<h5 class="text-truncate font-size-14 mb-1" data-toggle="tooltip" data-placement="top" title="' . $result->customer->nombre . '"><a href="javascript: void(0);" class="text-dark">' . Str::limit($result->customer->nombre, 15, '...') . '</a></h5>
                             <span class="badge badge-soft-primary" data-toggle="tooltip" data-placement="top" title="' . $result->customer->email . '">' . Str::limit($result->customer->email, 15, '...') . '</span>';

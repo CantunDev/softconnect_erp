@@ -8,7 +8,7 @@
             Proveedores
         @endslot
         @slot('bcPrevLink')
-            {{ route('providers.index') }}
+            {{ route('business.providers.index', ['business' => request()->route('business')]) }} 
         @endslot
         @slot('bcActiveText')
             Listado
@@ -20,7 +20,7 @@
                 <h5 class="mb-0 card-title flex-grow-1">Lista de proveedores </h5>
                 @can('create_providers')
                     <div class="flex-shrink-0">
-                        <a href="{{ route('providers.create') }}" class="btn btn-primary">Nuevo</a>
+                        <a href="{{ route('business.providers.create',['business' => request()->route('business')]) }}" class="btn btn-primary">Nuevo</a>
                     </div>
                 @endcan
             </div>
@@ -51,7 +51,7 @@
     <script>
         $(document).ready(function() {
             $.ajax({
-                url: '{!! route('providers.index') !!}',
+                url: '{!! route('business.providers.index', ['business' => request()->route('business')]) !!}',
                 type: 'GET',
                 success: function(response) {
                     if (response.data) {

@@ -72,7 +72,7 @@
         </div>
     </div>
     @php
-    $count = count($restaurants);
+        $count = count($restaurants);
         if ($count == 1) {
             $colSize = 12; // Si hay un solo restaurante, ocupa toda la fila
         } elseif ($count == 2) {
@@ -180,6 +180,195 @@
         @endforeach
     </div>
     @include('components.restaurants_tabs')
+    @can('read_business')
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Total Ventas Corazon Contento</h4>
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button
+                                    style="background-color: {{ Auth::user()->business->first()->color_primary ?? '' }}; color: {{ Auth::user()->business->first()->color_accent ?? '' }}"
+                                    class="accordion-button fw-medium d-flex justify-content-between align-items-center"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseC"
+                                    aria-expanded="true" aria-controls="flush-collapseC">
+                                    <span>
+                                        <i class="bx bx-restaurant font-size-12 align-middle me-1"></i>
+                                        Ventas
+                                    </span>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="flush-collapseC" class="accordion-collapse collapse show"
+                            aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body text-muted">
+                                <div class="tab-pane active" id="vta-tab" role="tabpanel">
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price"> 
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de venta</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{-- meta / dias del mes * dias analizados --}}
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de venta al {{ $daysPass }}</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{$totalGeneral}}
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Venta real al dia</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 percentage">
+                                            {{-- venta real al dia / meta clientes a la fecha * 100 --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Alcance al dia</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+
+                                            {{-- Venta real al dia - meta de venta a la fecha --}}
+                                            0
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DIF/PROY</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 percentage">
+
+                                            {{-- alcance - 100  --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DEFICIT</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{-- meta / dias del mes --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">META VTA DIARIA</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{-- vta_real / dias transcurridos --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">PROM VTA DIARIA</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{-- promedio venta * dias del mes   --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">PROY AL CIERRE</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+
+                                            {{-- proyectado - meta  --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DIFERENCIA(+/-)</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button
+                                    style="background-color: {{ Auth::user()->business->first()->color_primary ?? '' }}; color: {{ Auth::user()->business->first()->color_accent ?? '' }}"
+                                    class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseC" aria-expanded="true"
+                                    aria-controls="flush-collapseC">
+                                    <i class="bx bx-body font-size-12 align-middle me-1"></i>
+                                    Clientes
+                            </h2>
+                        </div>
+                        <div id="flush-collapseC" class="accordion-collapse collapse show"
+                            aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body text-muted">
+                                <div class="tab-pane active" id="vta-tab" role="tabpanel">
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de clientes</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+                                            {{-- meta_clientes / dias del mes * dias transcurridos --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta de clientes al dia {{ $daysPass }}</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 ">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Clientes al dia real</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 percentage">
+                                            {{-- venta real al dia / meta clientes a la fecha * 100 --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Alcance al dia</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12">
+
+                                            {{-- meta_clientes - clientes al dia  --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DIF/PROY</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button
+                                    style="background-color: {{ Auth::user()->business->first()->color_primary ?? '' }}; color: {{ Auth::user()->business->first()->color_accent ?? '' }}"
+                                    class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseC" aria-expanded="true"
+                                    aria-controls="flush-collapseC">
+                                    <i class="bx bx-spreadsheet font-size-12 align-middle me-1"></i>
+                                    Cheques
+                            </h2>
+                        </div>
+                        <div id="flush-collapseC" class="accordion-collapse collapse show"
+                            aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body text-muted">
+                                <div class="tab-pane active" id="cheques-tab" role="tabpanel">
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Meta cheque prom</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
+                                            
+                                        </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">Cheque prom actual</h5>
+                                    <div class="float-end ms-2">
+                                        <h5 class="font-size-12 price">
+                                            {{-- metacheques - promedio cheque actual --}}
+                                            0 </h5>
+                                    </div>
+                                    <h5 class="font-size-12 mb-2">DEFICIT</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endcan
 @endsection
 @section('js')
     <script>
@@ -264,16 +453,16 @@
     <script>
         function openUpdateModal(event, restaurantId, restaurantName) {
             event.stopPropagation(); // Evita que el acordeón se active
-    
+
             const modalId = "update-modal-" + restaurantId;
-    
+
             // Si el modal ya existe, solo lo mostramos
             if (document.getElementById(modalId)) {
                 var existingModal = new bootstrap.Modal(document.getElementById(modalId));
                 existingModal.show();
                 return;
             }
-    
+
             // Estructura del modal
             let modalHTML = `
             <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="modalLabel-${restaurantId}" aria-hidden="true">
@@ -307,12 +496,12 @@
                     </div>
                 </div>
             </div>`;
-    
+
             // Insertar modal en el DOM y mostrarlo
             document.body.insertAdjacentHTML('beforeend', modalHTML);
             var newModal = new bootstrap.Modal(document.getElementById(modalId));
             newModal.show();
-    
+
             // Llamada AJAX para obtener los datos del restaurante
             fetch(`/projections/${restaurantId}/edit`)
                 .then(response => response.json())
@@ -324,10 +513,10 @@
                 })
                 .catch(error => console.error("Error al obtener los datos:", error));
         }
-    
+
         function updateProjection(event, restaurantId) {
             event.preventDefault();
-    
+
             let form = document.getElementById(`updateForm-${restaurantId}`);
             // let formData = new FormData(form);
             let formData = {
@@ -337,69 +526,28 @@
                 _method: "PUT"
             };
             fetch(`/projections/${restaurantId}`, {
-                method: "PUT",
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Proyección actualizada correctamente.");
-                    document.getElementById(`update-modal-${restaurantId}`).remove(); // Cierra el modal
-                    refreshData(); // Refrescar datos sin recargar toda la página
-                } else {
-                    alert("Error al actualizar la proyección.");
-                }
-            })
-            .catch(error => console.error("Error en la petición:", error));
+                    method: "PUT",
+                    body: JSON.stringify(formData),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Proyección actualizada correctamente.");
+                        document.getElementById(`update-modal-${restaurantId}`).remove(); // Cierra el modal
+                        refreshData(); // Refrescar datos sin recargar toda la página
+                    } else {
+                        alert("Error al actualizar la proyección.");
+                    }
+                })
+                .catch(error => console.error("Error en la petición:", error));
         }
-    
+
         function refreshData() {
             location.reload();
         }
-    </script>
-    
-    <script>
-        // Selecciona el elemento h5 con la clase "price"
-        const priceElements = document.querySelectorAll('.price');
-
-        // Usa AutoNumeric para formatear el número
-        priceElements.forEach(element => {
-            const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
-            if (!isNaN(rawValue)) {
-                new AutoNumeric(element, {
-                    currencySymbol: '$',
-                    decimalPlaces: 2,
-                    digitGroupSeparator: ',',
-                    currencySymbolPlacement: 'p', // "p" coloca el símbolo antes del número
-                    decimalCharacter: '.',
-                    unformatOnSubmit: true, // Elimina el formato al enviar el formulario
-                }).set(rawValue); // Establece el valor formateado en el elemento
-            }
-        });
-    </script>
-    <script>
-        // Selecciona el elemento h5 con la clase "percentage"
-        const percentageElements = document.querySelectorAll('.percentage');
-
-        // Usa AutoNumeric para formatear como porcentaje
-        percentageElements.forEach(element => {
-            const rawValue = parseFloat(element.textContent); // Obtén el valor del texto de la etiqueta
-            if (!isNaN(rawValue)) {
-                new AutoNumeric(element, {
-                    currencySymbol: '%', // El símbolo es el de porcentaje
-                    decimalPlaces: 2, // Establece dos decimales
-                    //   digitGrkoupSeparator: ',', // Si lo necesitas, puedes agregar separador de miles
-                    percentage: true, // Activa la opción de porcentaje
-                    scaleDecimalPlaces: 2, // Controla la cantidad de decimales
-                    unformatOnSubmit: true, // Elimina el formato al enviar el formulario
-                    decimalCharacter: '.', // Caracter decimal
-                    currencySymbolPlacement: 's' // El símbolo del porcentaje va al final
-                }).set(rawValue * 1); // Multiplica por 100 para obtener el valor en porcentaje
-            }
-        });
     </script>
 @endsection

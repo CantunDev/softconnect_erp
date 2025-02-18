@@ -35,7 +35,10 @@ class BusinessRequest extends FormRequest
             'city' => 'required',
             'regime' => 'nullable',
             'business_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'idregiment_sat' => 'nullable'
+            'idregiment_sat' => 'nullable',
+            'color_primary' => 'nullable',
+            'color_secondary' => 'nullable',
+            'color_accent' => 'nullable',
         ];
     }
 }

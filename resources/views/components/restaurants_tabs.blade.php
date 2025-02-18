@@ -24,6 +24,7 @@
                                             style="color: {{ $restaurant[$i]->color_accent ?? '' }}"></i>
                                         Ventas {{ $restaurants[$i]->name }}
                                     </span>
+                                @can('update_restaurants')
                                     @if (!empty($restaurants[$i]->projections) && $restaurants[$i]->projections->count() > 0)
                                         <!-- Si tiene proyecciones, mostrar el ícono de editar -->
                                         <span class="ms-auto">
@@ -41,6 +42,7 @@
                                             </i>
                                         </span>
                                     @endif
+                                @endcan
                                 </button>
                             </h2>
                         </div>
@@ -50,8 +52,8 @@
                                 <div class="tab-pane active" id="vta-tab" role="tabpanel">
                                     <div class="float-end ms-2">
                                         <h5 class="font-size-12 price">
-                                            {{ $meta = $restaurants[$i]->projections->where('month', $month)->where('year', $year)->first()?->projected_sales ?? 'N/A' }}
-                                        </h5>
+                                            {{$meta = $restaurants[$i]->projections->where('month', $month)->where('year', $year)->first()?->projected_sales ?? 'N/A' }}                                        
+                                            </h5>
                                     </div>
                                     <h5 class="font-size-12 mb-2">Meta de venta</h5>
                                     <div class="float-end ms-2">
@@ -155,7 +157,7 @@
                                     <div class="float-end ms-2">
                                         <h5 class="font-size-12">
                                             {{-- meta_clientes / dias del mes * dias transcurridos --}}
-                                            {{ $meta_clientes_al_dia = ((int)$meta_clientes + 0) / ((int)$daysInMonth + 0) * ((int)$daysPass + 0) }}
+                                            {{ $meta_clientes_al_dia = round (((int)$meta_clientes + 0) / ((int)$daysInMonth + 0) * ((int)$daysPass + 0),2) }}
                                         </h5>
                                     </div>
                                     <h5 class="font-size-12 mb-2">Meta de clientes al dia {{ $daysPass }}</h5>

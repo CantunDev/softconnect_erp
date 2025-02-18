@@ -24,7 +24,7 @@
       <form class="row g-3" action="{{ route('business.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('POST')
-        <div class="col-sm-6 col-lg-4">
+        <div class="col-sm-6 col-lg-6">
           <label for="inputName" class="form-label">Nombre corto</label>
           <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" id="inputName"
             placeholder="Ej: Empresa Demo" value="{{ old('name') }}">
@@ -41,7 +41,30 @@
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
-
+        <div class="col-sm-6 col-lg-2">
+          <label for="color_primary" class="form-label">Color primario</label>
+          <input name="color_primary" type="color" class="form-control @error('name') is-invalid @enderror" id="color_primary"
+            placeholder="" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <label for="color_secondary" class="form-label">Color secundario</label>
+          <input name="color_secondary" type="color" class="form-control @error('name') is-invalid @enderror" id="color_secondary"
+            placeholder="" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <label for="color_accent" class="form-label">Color de Acento</label>
+          <input name="color_accent" type="color" class="form-control @error('name') is-invalid @enderror" id="color_accent"
+            placeholder="" value="{{ old('name') }}">
+          @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
         <div class="col-sm-4 col-md-3 col-lg-2">
           <label for="inputRfc" class="form-label">RFC</label>
           <input name="rfc" type="text" class="form-control text-uppercase @error('rfc') is-invalid @enderror"
