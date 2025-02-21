@@ -37,7 +37,6 @@ class DatabaseConnection
         //     }
         // }
         if ($businessSlug) {
-            // Buscar el restaurante por el slug o cname en la base de datos principal (MySQL)
             $restaurant = Restaurant::where('id', $businessSlug)->first();
             if ($restaurant) {
                 Log::info("Restaurante encontrado: {$restaurant->name}");

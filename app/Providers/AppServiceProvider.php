@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\DateHelper;
 use App\Models\Sfrt\Cheques;
 use App\Models\Sfrt\Group;
 use Carbon\Carbon;
@@ -38,7 +39,11 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // view()->composer('*', function ($view) {
         view()->composer(['layouts.master', 'dashboard'], function ($view) {
+
+            $user = Auth::user();
+
             $day = Carbon::now(); // Esto conserva la fecha como objeto Carbon
             $startOfMonth = Carbon::now()->startOfMonth()->format('d-m-y');
             $endOfMonth = Carbon::now()->endOfMonth()->format('d-m-y');
@@ -50,7 +55,6 @@ class AppServiceProvider extends ServiceProvider
             $daysPass = $day->day - 1;
             $rangeMonth = round(($daysPass / $daysInMonth) * 100, 2);
             if (Auth::check()) {
-                $user = Auth::user();
                 $restaurants = $user->restaurants;
                 // Array para almacenar las conexiones dinámicas
                 $connections = [];
@@ -86,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
                 $totalGeneral = 0;
                 $nopersonasGeneral = 0;
                 $chequePromedioSum = 0;
+                $chequePromedioFinal = 0;
 
                 foreach ($connections as $i => $connection) {
                     $total = $connection->table('cheques')
@@ -167,6 +172,20 @@ class AppServiceProvider extends ServiceProvider
                         ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
                         ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
                         ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        ->where('pagado', false) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('nopersonas');
+                    $noclientesTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('nopersonas');
+                    $totalclientesTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
                         // ->where('pagado', true) // Solo cheques pagados
                         ->where('cancelado', false) // Excluir cheques cancelados
                         ->sum('nopersonas');
@@ -215,6 +234,8 @@ class AppServiceProvider extends ServiceProvider
                     $resultsTemp->put("venta$i", [
                         'totalTemp' => round($totalTemp, 2),
                         'nopersonasTemp' => $nopersonasTemp,
+                        'noclientesTemp' => $noclientesTemp,
+                        'totalclientesTemp' => $totalclientesTemp,
                         'descuentosTemp' => round($descuentosTemp, 2),
                         'totalPaidTemp' => round($totalPaidTemp, 2),
                         'alimentosTemp' => $alimentosTemp,
@@ -229,12 +250,12 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with([
                 // 'clients_avg' => number_format($clients_avg,2),
-                'startOfMonth' => $startOfMonth,
-                'endOfMonth' => $endOfMonth,
-                'month' => $month,
-                'daysInMonth' => $daysInMonth,
-                'daysPass' => $daysPass,
-                'rangeMonth' => $rangeMonth,
+                'startOfMonth' => DateHelper::getStartOfMonth(),
+                'endOfMonth' => DateHelper::getEndOfMonth(),
+                'month' => DateHelper::getCurrentMonth(),
+                'daysInMonth' => DateHelper::getDaysInMonth(),
+                'daysPass' => DateHelper::getDaysPassed(),
+                'rangeMonth' => DateHelper::getMonthProgress(),
                 'restaurants' => $restaurants,
                 'results' => $results,
                 'resultsTemp' => $resultsTemp,

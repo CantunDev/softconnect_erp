@@ -7,14 +7,14 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title" key="t-menu">Menu</li>
+                {{-- <li class="menu-title" key="t-menu">Menu</li> --}}
 
-                <li>
+                {{-- <li>
                     <a href="{{ route('dashboard') }}" class="waves-effect">
-                        <i class="bx bx-home-circle"></i>
+                        <i class="bx bx--circle"></i>
                         <span key="t-dashboard">Dashboard</span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -48,78 +48,166 @@
             </li>
           </ul>
         </li> --}}
-        @role('Super-Admin')
-            <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="bx bx-briefcase-alt-2"></i>
-                        <span key="t-projects">Administración</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        @can('read_business')
-                            <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
-                        @endcan
-                        @can('read_restaurants')
-                            <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
-                        @endcan
-                        @can('read_users')
-                            <li><a href="{{ route('users.index') }}" key="t-p-overview">Usuarios</a></li>
-                        @endcan
-                        @can('read_roles')
-                            <li><a href="{{ route('roles_permissions.index') }}" key="t-create-new">Roles y permisos</a>
-                            @endcan
-                        </li>
-                    </ul>
-                </li>
-              @endrole
-                @can('read_restaurants')
-
-                @foreach (Auth::user()->restaurants as $restaurant)
+                @role('Super-Admin')
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bx-restaurant alt-2" style="color: {{ $restaurant->color_primary ?? ''}};"></i>
-                            <span key="t-restaurant">{{ $restaurant->name }}</span>
+                            <i class="bx bx-briefcase-alt-2"></i>
+                            <span key="t-projects">Administración</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li>
-                                <a href="{{route('business.home.index', ['business' => $restaurant->id]); }}">
-                                    <i class="mdi mdi-room-service"></i>
-                                    <span key="t-chat">Inicio</span>
-                                </a>
-                            </li>
-                        @can('read_business')
-
-                            <li>
-                                <a href="{{route('business.providers.index', ['business' => $restaurant->id]); }}">
-                                    <i class="bx bx-cart"></i>
-                                    <span key="t-chat">Proveedores</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('business.invoices.index', ['business' => $restaurant->id]); }}" class="waves-effect">
-                                    <i class="bx bx-receipt"></i>
-                                    <span key="t-chat">Facturas</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-money"></i>
-                                    <span key="t-projects">Operaciones</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{ route('business.payment_method.index', ['business' => $restaurant->id]); }}" key="t-p-grid">Metodo de pagos</a>
-                                    </li>
-                                    <li><a href="{{ route('business.expenses_categories.index', ['business' => $restaurant->id]); }}" key="t-p-list">Tipo de
-                                            gastos</a></li>
-                                    <li><a href="{{ route('business.expenses.index', ['business' => $restaurant->id]); }}" key="t-p-overview">Gastos</a></li>
-                                </ul>
-                            </li>
+                            @can('read_business')
+                                <li><a href="{{ route('business.index') }}" key="t-p-grid">Empresas</a></li>
+                            @endcan
+                            @can('read_restaurants')
+                                <li><a href="{{ route('restaurants.index') }}" key="t-p-list">Restaurantes</a></li>
+                            @endcan
+                            @can('read_users')
+                                <li><a href="{{ route('users.index') }}" key="t-p-overview">Usuarios</a></li>
+                            @endcan
+                            @can('read_roles')
+                                <li><a href="{{ route('roles_permissions.index') }}" key="t-create-new">Roles y permisos</a>
+                                </li>
                             @endcan
                         </ul>
                     </li>
-                @endforeach
+                @endrole
+
+                @if ($user = Auth::user())
+                    <li class="menu-title" key="t-menu">Menu</li>
+
+                    @if ($user->business->count())
+                        @foreach ($user->business as $i => $business)
+                            <li class="sub-menu">
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-circle"></i>
+                                    <span key="t-dashboard">{{ $business->name }}</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    @can('read_restaurants')
+                                        @foreach ($business->restaurants as $restaurant)
+                                            <li class="">
+                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                    <i class="bx bx-restaurant alt-2"
+                                                        style="color: {{ $restaurant->color_primary ?? '' }};"></i>
+                                                    <span key="t-restaurant">{{ $restaurant->name }}</span>
+                                                </a>
+                                                <ul class="sub-menu" aria-expanded="false">
+                                                    <li>
+                                                        <a
+                                                            href="{{ route('business.home.index', ['business' => $restaurant->id]) }}">
+                                                            <i class="mdi mdi-room-service"></i>
+                                                            <span key="t-chat">Inicio</span>
+                                                        </a>
+                                                    </li>
+                                                    @can('read_providers')
+                                                        <li>
+                                                            <a
+                                                                href="{{ route('business.providers.index', ['business' => $restaurant->id]) }}">
+                                                                <i class="bx bx-cart"></i>
+                                                                <span key="t-chat">Proveedores</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('read_invoices')
+                                                        <li>
+                                                            <a href="{{ route('business.invoices.index', ['business' => $restaurant->id]) }}"
+                                                                class="waves-effect">
+                                                                <i class="bx bx-receipt"></i>
+                                                                <span key="t-chat">Facturas</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                                <i class="bx bx-money"></i>
+                                                                <span key="t-projects">Operaciones</span>
+                                                            </a>
+                                                            <ul class="sub-menu" aria-expanded="false">
+                                                                <li><a href="{{ route('business.payment_method.index', ['business' => $restaurant->id]) }}"
+                                                                        key="t-p-grid">Metodo de pagos</a>
+                                                                </li>
+                                                                <li><a href="{{ route('business.expenses_categories.index', ['business' => $restaurant->id]) }}"
+                                                                        key="t-p-list">Tipo de
+                                                                        gastos</a></li>
+                                                                <li><a href="{{ route('business.expenses.index', ['business' => $restaurant->id]) }}"
+                                                                        key="t-p-overview">Gastos</a></li>
+                                                            </ul>
+                                                        </li>
+                                                    @endcan
+                                                </ul>
+                                            </li>
+                                        @endforeach
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endforeach
+                    @elseif($user->restaurants->count())
+                        @can('read_restaurants')
+                            @foreach ($user->restaurants as $restaurant)
+                                <li class="sub-menu">
+                                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                        <i class="bx bx-restaurant alt-2"
+                                            style="color: {{ $restaurant->color_primary ?? '' }};"></i>
+                                        <span key="t-restaurant">{{ $restaurant->name }}</span>
+                                    </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li>
+                                            <a href="{{ route('business.home.index', ['business' => $restaurant->id]) }}">
+                                                <i class="mdi mdi-room-service"></i>
+                                                <span key="t-chat">Inicio</span>
+                                            </a>
+                                        </li>
+                                        @can('read_providers')
+                                            <li>
+                                                <a
+                                                    href="{{ route('business.providers.index', ['business' => $restaurant->id]) }}">
+                                                    <i class="bx bx-cart"></i>
+                                                    <span key="t-chat">Proveedores</span>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('read_invoices')
+                                            <li>
+                                                <a href="{{ route('business.invoices.index', ['business' => $restaurant->id]) }}"
+                                                    class="waves-effect">
+                                                    <i class="bx bx-receipt"></i>
+                                                    <span key="t-chat">Facturas</span>
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                    <i class="bx bx-money"></i>
+                                                    <span key="t-projects">Operaciones</span>
+                                                </a>
+                                                <ul class="sub-menu" aria-expanded="false">
+                                                    <li><a href="{{ route('business.payment_method.index', ['business' => $restaurant->id]) }}"
+                                                            key="t-p-grid">Metodo de pagos</a>
+                                                    </li>
+                                                    <li><a href="{{ route('business.expenses_categories.index', ['business' => $restaurant->id]) }}"
+                                                            key="t-p-list">Tipo de
+                                                            gastos</a></li>
+                                                    <li><a href="{{ route('business.expenses.index', ['business' => $restaurant->id]) }}"
+                                                            key="t-p-overview">Gastos</a></li>
+                                                </ul>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endforeach
+                        @endcan
+                    @else
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="bx bx-circle"></i>
+                                <span key="t-dashboard">Sin empresas</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
 
 
-                @endcan
+
 
 
                 {{-- <li class="menu-title" key="t-apps">Apps</li> --}}

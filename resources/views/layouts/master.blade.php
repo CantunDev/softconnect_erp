@@ -134,7 +134,7 @@
         if (!isNaN(rawValue)) {
             new AutoNumeric(element, {
                 currencySymbol: '%', // El símbolo es el de porcentaje
-                decimalPlaces: 2, // Establece dos decimales
+                decimalPlaces: 1, // Establece dos decimales
                 //   digitGrkoupSeparator: ',', // Si lo necesitas, puedes agregar separador de miles
                 percentage: true, // Activa la opción de porcentaje
                 scaleDecimalPlaces: 2, // Controla la cantidad de decimales

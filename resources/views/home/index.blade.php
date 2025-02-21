@@ -108,7 +108,10 @@
                                             <tbody>
                                                 @foreach ($cortes as $corte)
                                                     <tr>
-                                                        <td>{{ $corte->dia }}</td>
+                                                        <td>
+                                                            {{ ucfirst(\Carbon\Carbon::parse($corte->dia)->isoFormat('ddd')) }}
+                                                            {{ \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM') }}
+                                                        </td>
                                                         <td class="text-center">{{ $corte->total_clientes }}</td>
                                                         <td class="price">{{ $corte->total_venta }}</td>
                                                         <td class="price">{{ $corte->total_iva }}</td>
@@ -164,20 +167,27 @@
                                                 style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->business->first()->color_accent ?? '' }}">
                                                 <tr>
                                                     <th class="text-center" data-priority="1">Fecha</th>
-                                                    <th class="text-center" data-priority="1">Total de alimentos</th>
-                                                    <th class="text-center" data-priority="1">Porcentaje de alimentos</th>
-                                                    <th class="text-center" data-priority="3">Total de bebidas</th>
-                                                    <th class="text-center" data-priority="3">Porcentaje de bebidas</th>
+                                                    <th class="text-center" data-priority="1">Total Ali</th>
+                                                    <th class="text-center" data-priority="1">Desc Ali</th>
+                                                    <th class="text-center" data-priority="1">% Ali</th>
+                                                    <th class="text-center" data-priority="3">Total Beb</th>
+                                                    <th class="text-center" data-priority="1">Desc Beb</th>
+                                                    <th class="text-center" data-priority="3">% Beb</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($cortes as $corte)
                                                     <tr>
-                                                        <td class="text-center">{{ $corte->dia }}</td>
-                                                        <td class="price text-center">{{ $corte->total_alimentos }}</td>
-                                                        <td class="price text-center">0</td>
-                                                        <td class="price text-center">{{ $corte->total_bebidas }}</td>
-                                                        <td class="price text-center">0</td>
+                                                        <td>
+                                                            {{ ucfirst(\Carbon\Carbon::parse($corte->dia)->isoFormat('ddd')) }}
+                                                            {{ \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM') }}
+                                                        </td>
+                                                        <td class="price text-center">{{ $alimentos = $corte->total_alimentos }}</td>
+                                                        <td class="price text-center">{{ $corte->total_dalimentos }}</td>
+                                                        <td class="percentage text-center">{{ round((($alimentos * 100) / $corte->total_venta),2) }}</td>
+                                                        <td class="price text-center">{{ $bebidas = $corte->total_bebidas }}</td>
+                                                        <td class="price text-center">{{ $corte->total_dbebidas}}</td>
+                                                        <td class="percentage text-center">{{ round((($bebidas * 100) / $corte->total_venta),2) }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -219,7 +229,7 @@
                             <div class="row">
                                 <div class="table-rep-plugin mt-2 ">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="datatable"
+                                        <table id="table_clientes"
                                             class="table table-sm table-bordered dt-responsive nowrap w-100">
                                             <thead
                                                 style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->business->first()->color_accent ?? '' }}">
@@ -235,7 +245,10 @@
                                             <tbody>
                                                 @foreach ($cortes as $corte)
                                                     <tr>
-                                                        <td>{{ $corte->dia }}</td>
+                                                        <td>
+                                                            {{ ucfirst(\Carbon\Carbon::parse($corte->dia)->isoFormat('ddd')) }}
+                                                            {{ \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM') }}
+                                                        </td>
                                                         <td class="text-center">{{ $corte->total_cuentas }}</td>
                                                         <td class="text-center">{{ $corte->total_clientes }}</td>
                                                         <td class="text-center price">
@@ -261,25 +274,51 @@
 @endsection
 @section('js')
 <script>
+ $(document).ready(function () {
+        $('#table_clientes').DataTable();
+    });
+</script>
+<script>
     var chartData = {
         days: @json($days), // Días del mes
-        days_total: @json($days_total) // Totales de alimentos por día
+        days_total: @json($days_total), // Totales de alimentos por día
+        projection_day: @json($projections_total), // Meta de ventas por día
+        projection_avg: @json($projections_avg) // Promedio de ventas por día
     };
 
-    // Asegurar que el color esté limpio sin #
-    var primaryColor = @json($restaurant->color_primary) ? "#{{ ltrim($restaurant->color_primary, '#') }}" : "#C62300"; // Si está vacío, usa color de respaldo
+    // Asegurar que el color primario esté limpio sin #
+    var primaryColor = @json($restaurant->color_primary) ? "#{{ ltrim($restaurant->color_primary, '#') }}" : "#C62300";
+
+    // Definir colores de los marcadores según las condiciones
+    var discreteMarkers = chartData.days_total.map((ventaReal, index) => {
+        let metaDiaria = chartData.projection_day[index] || 0;
+        let promedioDiario = chartData.projection_avg[index] || 0;
+        let color = "#00ff00"; // Verde (si supera la meta)
+
+        if (ventaReal < metaDiaria && ventaReal >= promedioDiario) {
+            color = "#FFA500"; // Naranja (si está debajo de la meta pero sobre el promedio)
+        } else if (ventaReal < promedioDiario) {
+            color = "#FF0000"; // Rojo (si está debajo del promedio)
+        }
+
+        return {
+            seriesIndex: 0, // Índice de la serie "Venta Real"
+            dataPointIndex: index, // Índice del punto de datos
+            fillColor: color, // Color del marcador
+            strokeColor: "#000000", // Borde del marcador (opcional)
+            size: 6 // Tamaño del marcador
+        };
+    });
 
     var options = {
         chart: {
             type: 'line',
             height: 350,
             zoom: { enabled: true },
-            toolbar: { show: true },
-            style: { textcolor: primaryColor } // 🔹 Asegurar color en el título
-
+            toolbar: { show: true }
         },
         tooltip: {
-            theme: 'dark' // Cambia el tema del tooltip a oscuro
+            theme: 'dark'
         },
         plotOptions: {
             bar: {
@@ -288,7 +327,7 @@
                 distributed: true
             }
         },
-        colors: [primaryColor], // 🔹 Configurar el color manualmente aquí
+        colors: [primaryColor, '#56021F', '#003092'],
         dataLabels: {
             enabled: true,
             formatter: function(val) {
@@ -300,14 +339,24 @@
             offsetY: -10,
             style: {
                 fontSize: '12px',
-                colors: [primaryColor] // 🔹 Asegurar que usa el color correcto
+                colors: [primaryColor]
             },
             background: { enabled: false }
         },
-        series: [{
-            name: 'Venta',
-            data: chartData.days_total
-        }],
+        stroke: {
+            width: [5, 2, 2],
+            curve: ['straight', 'monotoneCubic',]
+        },
+        series: [
+            {
+                name: 'Venta Real',
+                data: chartData.days_total 
+            },
+            {
+                name: "Meta Vta Diaria",
+                data: chartData.projection_day
+            },
+        ],
         xaxis: {
             categories: chartData.days,
             axisBorder: { show: true },
@@ -321,15 +370,19 @@
             floating: true,
             offsetY: 330,
             align: 'center',
-            style: { color: primaryColor } // 🔹 Asegurar color en el título
+            style: { color: primaryColor }
         },
-        markers: { size: 5 },
+        markers: {
+            size: [0,5, 1, 1], // Tamaño base de los marcadores
+            discrete: discreteMarkers // Se asignan colores individuales,
+        },
         legend: { show: false }
     };
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
 </script>
+
 <script>
     var chartData = {
         days: @json($days),
@@ -453,10 +506,38 @@
     var chartData = {
         days: @json($days),
         days_total_client: @json($days_total_client), // Clientes por día
-        days_total_ticket: @json($days_total_ticket) // Ticket promedio por día
+        days_total_ticket: @json($days_total_ticket), // Ticket promedio por día
+        days_total_check: @json($projections_check),
+        days_total_avg_check: @json($projections_check_avg)
     };
     var primaryColor = @json($restaurant->color_primary) ? "#{{ ltrim($restaurant->color_primary, '#') }}" : "#F14A00"; // Si está vacío, usa color de respaldo
     var secondaryColor = @json($restaurant->color_secondary) ? "#{{ ltrim($restaurant->color_secondary, '#') }}" : "#006A67"; // Si está vacío, usa color de respaldo
+   
+    var discreteMarkers = chartData.days_total_ticket.map((tktPromedio, index) => {
+        let metaDiaria = chartData.days_total_check[index] || 0;
+        let promedioDiario = chartData.days_total_avg_check[index] || 0;
+        let color = "#00ff00"; // Verde (si supera la meta)
+        console.log(`Index ${index}:`, {
+        tktPromedio,
+        metaDiaria,
+        promedioDiario
+    });
+
+        if (tktPromedio < metaDiaria && tktPromedio >= promedioDiario) {
+            color = "#FFA500"; // Naranja (si está debajo de la meta pero sobre el promedio)
+        } else if (tktPromedio < promedioDiario) {
+            color = "#FF0000"; // Rojo (si está debajo del promedio)
+        }
+        console.log(`Color asignado en index ${index}:`, color);
+
+        return {
+            seriesIndex: 1, // Índice de la serie "Venta Real"
+            dataPointIndex: index, // Índice del punto de datos
+            fillColor: color, // Color del marcador
+            strokeColor: "#000000", // Borde del marcador (opcional)
+            size: 6 // Tamaño del marcador
+        };
+    });
 
     var options = {
         chart: {
@@ -479,24 +560,36 @@
             },
             autoSelected: 'zoom' // Configura zoom como la herramienta inicial
         },
-        colors: [primaryColor, secondaryColor],
-        series: [{
-                name: 'Clientes',
-                type: 'column',
-                data: chartData.days_total_client
+        colors: [primaryColor, secondaryColor, '#56021F', '#003092'], // Agregar un color extra
+        series: [
+            {
+                 name: 'Clientes',
+             type: 'column',
+                 data: chartData.days_total_client
             },
             {
-                name: "Ticket Promedio",
+                name: "Tkt Promedio",
                 type: 'line',
                 data: chartData.days_total_ticket
             },
+            {
+                name: "Meta Tkt Pro",
+                type: 'line',
+                data: chartData.days_total_check
+            },
+            {
+                name: "Tkt Pro",
+                type: 'line',
+                data: chartData.days_total_avg_check
+            },
         ],
         stroke: {
-            width: [0, 4], // Grosor: columna no tiene borde, línea tiene grosor 4
-            curve: 'smooth' // Línea suavizada
+            width: [0,5,2,2], // Grosor: columna no tiene borde, línea tiene grosor 4
+            curve: ['straight', 'monotoneCubic', 'straight']
         },
         markers: {
-            size: 5,
+            size: [1,5, 1, 1], // Tamaño base de los marcadores
+            discrete: discreteMarkers // Se asignan colores individuales,
         },
         plotOptions: {
             bar: {
