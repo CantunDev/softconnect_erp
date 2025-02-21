@@ -58,10 +58,12 @@
                                 </div>
                                 <div class="col-xl-3">
                                     <div class="col">
+                                        @if (Auth::user()->business->count())
                                         <img src="{{ Auth::user()->business->first()->business_file ?? 'https://avatar.oxro.io/avatar.svg?name=' . urlencode(Auth::user()->business->first()->business_name) }}"
-                                            alt="" class="avatar-md rounded-circle d-block mx-auto">
-                                        <span>{{ Auth::user()->business->pluck('business_name')[0] ?? '' }}</span>
+                                        alt="" class="avatar-md rounded-circle d-block mx-auto">
+                                    <span>{{ Auth::user()->business->pluck('business_name')[0] ?? '' }}</span>
 
+                                        @endif
                                     </div>
                                 </div>
                             </div>
