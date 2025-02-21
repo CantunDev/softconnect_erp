@@ -71,7 +71,8 @@
                     </ul>
                 </li>
               @endrole
-                @can('read_restaurants')
+        
+              @can('read_restaurants')
 
                 @foreach (Auth::user()->restaurants as $restaurant)
                     <li>
@@ -86,7 +87,7 @@
                                     <span key="t-chat">Inicio</span>
                                 </a>
                             </li>
-                        @can('read_business')
+                        @can('read_providers')
 
                             <li>
                                 <a href="{{route('business.providers.index', ['business' => $restaurant->id]); }}">
@@ -94,12 +95,15 @@
                                     <span key="t-chat">Proveedores</span>
                                 </a>
                             </li>
+                            @endcan
+                            @can('read_invoices')
                             <li>
                                 <a href="{{ route('business.invoices.index', ['business' => $restaurant->id]); }}" class="waves-effect">
                                     <i class="bx bx-receipt"></i>
                                     <span key="t-chat">Facturas</span>
                                 </a>
                             </li>
+                            
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                                     <i class="bx bx-money"></i>

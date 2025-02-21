@@ -111,7 +111,7 @@
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12 price">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                {{ $resultsTemp['venta' . $restaurants[$i]->id]['totalTemp'] }}
+                                                {{ $gral = $resultsTemp['venta' . $restaurants[$i]->id]['totalTemp'] }}
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Venta Gral</h5>
@@ -125,7 +125,9 @@
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12">
                                                 {{-- <i class="bx bx-wallet text-primary font-size-12 align-middle me-1"></i> --}}
-                                                {{ $resultsTemp['venta' . $restaurants[$i]->id]['nopersonasTemp'] }}
+                                                <span class="text-danger">{{ $resultsTemp['venta' . $restaurants[$i]->id]['nopersonasTemp'] }}</span> |
+                                                <span class="text-success">{{ $resultsTemp['venta' . $restaurants[$i]->id]['noclientesTemp'] }}</span>=
+                                                <span class="text-primary">{{ $resultsTemp['venta' . $restaurants[$i]->id]['totalclientesTemp'] }}</span> 
 
                                             </h5>
                                         </div>
@@ -148,14 +150,16 @@
                                         </div>
                                         <h5 class="font-size-12 mb-2">Cheque Promedio</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{ $resultsTemp['venta' . $restaurants[$i]->id]['alimentosTemp'] }}
+                                            <h5 class="font-size-12">
+                                                <span class="price"> {{ $ta =$resultsTemp['venta' . $restaurants[$i]->id]['alimentosTemp'] }}</span> |
+                                                <span class="percentage"> {{ round( (($ta * 100)/$gral ),1)}}  </span>
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Alimentos</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                {{ $resultsTemp['venta' . $restaurants[$i]->id]['bebidasTemp'] }}
+                                            <h5 class="font-size-12">
+                                                <span class="price"> {{ $tb =$resultsTemp['venta' . $restaurants[$i]->id]['bebidasTemp'] }}</span> |
+                                                <span class="percentage"> {{ round( (($tb * 100)/$gral ),1)}} </span>
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Bebidas</h5>

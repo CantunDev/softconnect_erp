@@ -167,6 +167,20 @@ class AppServiceProvider extends ServiceProvider
                         ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
                         ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
                         ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        ->where('pagado', false) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('nopersonas');
+                    $noclientesTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
+                        ->where('pagado', true) // Solo cheques pagados
+                        ->where('cancelado', false) // Excluir cheques cancelados
+                        ->sum('nopersonas');
+                    $totalclientesTemp = $connection->table($tabla)
+                        ->whereMonth('fecha', $currentMonth) // Filtrar por el mes actual
+                        ->whereYear('fecha', $currentYear)  // Filtrar por el año actual
+                        ->whereDate('fecha', $dateCheque) // Filtrar específicamente por el día de hoy
                         // ->where('pagado', true) // Solo cheques pagados
                         ->where('cancelado', false) // Excluir cheques cancelados
                         ->sum('nopersonas');
@@ -215,6 +229,8 @@ class AppServiceProvider extends ServiceProvider
                     $resultsTemp->put("venta$i", [
                         'totalTemp' => round($totalTemp, 2),
                         'nopersonasTemp' => $nopersonasTemp,
+                        'noclientesTemp' => $noclientesTemp,
+                        'totalclientesTemp' => $totalclientesTemp,
                         'descuentosTemp' => round($descuentosTemp, 2),
                         'totalPaidTemp' => round($totalPaidTemp, 2),
                         'alimentosTemp' => $alimentosTemp,
