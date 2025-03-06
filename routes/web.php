@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChequesController;
 use App\Http\Controllers\Controller;
@@ -22,11 +23,12 @@ Route::get('/', function () {
     return redirect('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::get('/info', [InfoController::class, 'index'])->name('info');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -74,7 +76,14 @@ Route::middleware('auth')->group(function () {
         Route::resource('payment_method', PaymentMethodController::class);
         Route::resource('expenses_categories', ExpensesCategoriesController::class);
         Route::resource('expenses', ExpensesController::class);
-
+        Route::prefix('{restaurants}')->name('restaurants.')->group(function () {
+            Route::resource('home', HomeController::class);
+            Route::resource('providers', ProvidersController::class);
+            Route::resource('invoices', InvoicesController::class);
+            Route::resource('payment_method', PaymentMethodController::class);
+            Route::resource('expenses_categories', ExpensesCategoriesController::class);
+            Route::resource('expenses', ExpensesController::class);
+        });
     });
     
 });

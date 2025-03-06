@@ -51,7 +51,8 @@
   <!-- Begin page -->
   <div id="layout-wrapper">
     @include('layouts.partials.header')
-    @include('layouts.partials.sidebar')
+    {{-- @include('layouts.partials.sidebar') --}}
+    <x-left-sidebar />
 
     <!-- ============================================================== -->
     <!-- Start right Content here -->

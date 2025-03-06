@@ -9,22 +9,32 @@ class InfoController extends Controller
 {
     public function index(Request $request)
     {
-        $serverName = "192.168.193.29\\NATIONALSOFT"; // Usa doble barra invertida
+        
+        $serverName = "192.168.193.194\\NATIONALSOFT";
         $connectionInfo = [
             "Database" => "softrestaurant10",
             "UID" => "sa",
             "PWD" => "National09",
             "CharacterSet" => "UTF-8",
-            "TrustServerCertificate" => true // Desactiva la validación del certificado
+            "Encrypt" => false,
+            "TrustServerCertificate" => true
         ];
-
+        
         $conn = sqlsrv_connect($serverName, $connectionInfo);
 
-        if ($conn) {
-            echo "Conexión exitosa";
+        if (!$conn) {
+            echo "Conexión fallida: <br>";
+            foreach (sqlsrv_errors() as $error) {
+                echo "SQLSTATE: " . $error['SQLSTATE'] . "<br>";
+                echo "Code: " . $error['code'] . "<br>";
+                echo "Message: " . $error['message'] . "<br>";
+            }
+
         } else {
-            echo "Error en la conexión: ";
-            print_r(sqlsrv_errors());
+            echo "Conexión exitosa";
+
         }
+        
+        
     }
 }

@@ -70,7 +70,7 @@ class AppServiceProvider extends ServiceProvider
                         'password' => 'National09', // Reemplaza con la contraseña real
                         'prefix_indexes' => true,
                         'encrypt' => env('DB_ENCRYPT', 'no'), // Cambiar a 'yes' si se requiere conexión cifrada
-                        'trust_server_certificate' => env('DB_TRUST_CERTIFICATE', true),
+                        'trust_server_certificate' => env('DB_TRUST_CERTIFICATE', 'no'),
                         'strict' => false,
                     ]);
                     // Purge para evitar conflictos con configuraciones anteriores
