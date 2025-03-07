@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
+
 
 class Business extends Model
 {
@@ -18,8 +20,27 @@ class Business extends Model
         'color_primary',
         'color_secondary',
         'color_accent',
+        'slug'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Generar automáticamente el slug al crear un negocio
+        static::saving(function ($business) {
+            if ($business->isDirty('name') || empty($business->slug)) {
+                $business->slug = Str::slug($business->name);
+            }
+        });
+    }
+
+    // Obtener el negocio por slug en lugar de ID
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+    
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'users_business', 'business_id', 'user_id');

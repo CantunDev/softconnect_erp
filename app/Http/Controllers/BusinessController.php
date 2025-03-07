@@ -16,6 +16,7 @@ class BusinessController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $business = Business::with(['users', 'restaurants'])->withTrashed();
             return DataTables::of($business)
@@ -131,6 +132,7 @@ class BusinessController extends Controller
      */
     public function edit($id)
     {
+
         $business = Business::with('business_restaurants')->findOrFail($id);
         $restaurants = Restaurant::unassigned($id)->get();
         return view('business.edit', compact('business', 'restaurants'));

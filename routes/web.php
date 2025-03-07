@@ -69,7 +69,7 @@ Route::middleware(['auth','verified'])->group(function () {
         // });
         // Route::resource('providers', ProvidersController::class);
     // });
-    Route::prefix('{business}')->name('business.')->group(function () {
+    Route::prefix('{business:slug}')->name('business.')->group(function () {
         Route::resource('home', HomeController::class);
         Route::resource('providers', ProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
