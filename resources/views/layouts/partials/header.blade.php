@@ -281,11 +281,22 @@
         </div>
       </div> --}}
 
-      <div class="dropdown d-none d-lg-inline-block ms-1">
+      <div class="d-flex d-lg-inline-block font-size-20 mt-1 ms-1">
         <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
           <i class="bx bx-fullscreen"></i>
         </button>
       </div>
+
+      <div class="d-flex align-items-center font-size-20 mb-1 ms-1">
+        <i class="bx bx-sun bx-spin mt-1 me-2"></i>
+        <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="theme-toggle">
+        </div>
+        <i class="bx bx-moon bx-tada mt-1" style="margin-left: -0.25rem;"></i>
+    </div>
+
+    <input class="theme-choice d-none" type="checkbox" id="light-mode-switch" checked>
+    <input class="theme-choice d-none" type="checkbox" id="dark-mode-switch">
 
       {{-- <div class="dropdown d-inline-block">
         <button type="button" class="btn header-item noti-icon waves-effect"
@@ -406,12 +417,6 @@
               <span>{{ __('Log Out') }}</span></button>
           </form>
         </div>
-      </div>
-
-      <div class="dropdown d-inline-block">
-        <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
-          <i class="bx bx-cog bx-spin"></i>
-        </button>
       </div>
 
     </div>

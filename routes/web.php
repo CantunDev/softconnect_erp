@@ -28,7 +28,7 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth','verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::get('/info', [InfoController::class, 'index'])->name('info');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -70,13 +70,14 @@ Route::middleware(['auth','verified'])->group(function () {
         // Route::resource('providers', ProvidersController::class);
     // });
     Route::prefix('{business:slug}')->name('business.')->group(function () {
-        Route::resource('home', HomeController::class);
+        Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
         Route::resource('providers', ProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
         Route::resource('payment_method', PaymentMethodController::class);
         Route::resource('expenses_categories', ExpensesCategoriesController::class);
-        Route::resource('expenses', ExpensesController::class);
-        Route::prefix('{restaurants}')->name('restaurants.')->group(function () {
+        Route::resource('expenses', ExpensesController::class); 
+        Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
+            Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
             Route::resource('home', HomeController::class);
             Route::resource('providers', ProvidersController::class);
             Route::resource('invoices', InvoicesController::class);

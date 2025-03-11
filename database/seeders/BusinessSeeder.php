@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Business;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class BusinessSeeder extends Seeder
 {

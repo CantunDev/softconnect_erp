@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use \Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Restaurant extends Model
 {
@@ -25,7 +26,26 @@ class Restaurant extends Model
         'color_primary',
         'color_secondary',
         'color_accent',
+        'slug'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Generar automáticamente el slug al crear un negocio
+        static::saving(function ($restaurants) {
+            if ($restaurants->isDirty('name') || empty($restaurants->slug)) {
+                $restaurants->slug = Str::slug($restaurants->name);
+            }
+        });
+    }
+
+    // Obtener el negocio por slug en lugar de ID
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     /**
      * Get the user's full name.
