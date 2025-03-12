@@ -77,11 +77,18 @@
 
                     @if ($user->business->count())
                         @foreach ($user->business as $i => $business)
-                            <li class="sub-menu">
+                            <li>
                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                                     <i class="bx bx-circle"></i>
                                     <span key="t-dashboard">{{ $business->name }}</span>
                                 </a>
+                                <li>
+                                  <a
+                                      href="/">
+                                      <i class="mdi mdi-room-service"></i>
+                                      <span key="t-chat">Dashboard</span>
+                                  </a>
+                              </li>
                                 <ul class="sub-menu" aria-expanded="false">
                                     @can('read_restaurants')
                                         @foreach ($business->restaurants as $restaurant)

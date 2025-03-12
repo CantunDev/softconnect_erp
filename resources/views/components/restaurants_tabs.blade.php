@@ -106,7 +106,10 @@
                                     <div class="float-end ms-2">
                                         <h5 class="font-size-12 price">
                                             {{-- vta_real / dias transcurridos --}}
-                                            {{ $promedio_vta_real = $vta_real / $daysPass }}
+                                            @php
+                                            $promedio_vta_real = $daysPass > 0 ? $vta_real / $daysPass : 0;
+                                        @endphp
+                                        
                                         </h5>
                                     </div>
                                     <h5 class="font-size-12 mb-2">PROM VTA DIARIA</h5>

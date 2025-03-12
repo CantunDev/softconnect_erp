@@ -212,8 +212,8 @@ class AppServiceProvider extends ServiceProvider
                         ->sum('totalbebidas');
 
                     // if ($totalTemp != 0) {
-                    if ($nopersonasTemp > 0) {
-                        $chequePromedioTemp = round(($totalTemp / $nopersonasTemp), 2);
+                    if ($totalclientesTemp > 0) {
+                        $chequePromedioTemp = round(($totalTemp / $totalclientesTemp), 2);
                     } else {
                         $chequePromedioTemp = 0; // O un valor predeterminado que tenga sentido
                     }                        // } 
