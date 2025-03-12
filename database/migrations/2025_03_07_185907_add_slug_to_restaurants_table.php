@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('business', 'slug')) {
+        if (!Schema::hasColumn('restaurants', 'slug')) {
             Schema::table('restaurants', function (Blueprint $table) {
                 $table->string('slug')->unique()->after('name');
             });
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (Schema::hasColumn('business', 'slug')) {
+        if (Schema::hasColumn('restaurants', 'slug')) {
             Schema::table('restaurants', function (Blueprint $table) {
                 $table->dropColumn('slug');
             });
