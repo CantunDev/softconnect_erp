@@ -154,14 +154,14 @@
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12">
                                                 <span class="price"> {{ $ta =$resultsTemp['venta' . $restaurants[$i]->id]['alimentosTemp'] }}</span> |
-                                                <span class="percentage"> {{ round( (($ta * 100)/$gral ),1)}}  </span>
+                                                <span class="percentage">    {{ $gral != 0 ? round((($ta * 100) / $gral), 1) : 0 }}</span>
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Alimentos</h5>
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12">
                                                 <span class="price"> {{ $tb =$resultsTemp['venta' . $restaurants[$i]->id]['bebidasTemp'] }}</span> |
-                                                <span class="percentage"> {{ round( (($tb * 100)/$gral ),1)}} </span>
+                                                <span class="percentage"> {{     $gral != 0 ? round((($tb * 100) / $gral), 1) : 0 }}                                                }} </span>
                                             </h5>
                                         </div>
                                         <h5 class="font-size-12 mb-2">Bebidas</h5>
