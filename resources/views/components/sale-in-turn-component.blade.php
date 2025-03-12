@@ -65,6 +65,8 @@
                                             <div class="float-end ms-2">
                                                 <h5 class="font-size-12 price">
                                                     <!-- Datos dinámicos aquí -->
+                                                 {{-- {{ $results }} --}}
+                                                    @dd($results)
                                                 </h5>
                                             </div>
                                             <h5 class="font-size-12 mb-2">Venta Gral</h5>
