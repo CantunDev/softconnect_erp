@@ -71,6 +71,7 @@ Route::middleware(['auth','verified'])->group(function () {
     // });
     Route::prefix('{business:slug}')->name('business.')->group(function () {
         Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+        Route::resource('projections', ProjectionController::class);
         Route::resource('providers', ProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
         Route::resource('payment_method', PaymentMethodController::class);
@@ -79,6 +80,7 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
             Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
             Route::resource('home', HomeController::class);
+            Route::resource('projections', ProjectionController::class);
             Route::resource('providers', ProvidersController::class);
             Route::resource('invoices', InvoicesController::class);
             Route::resource('payment_method', PaymentMethodController::class);

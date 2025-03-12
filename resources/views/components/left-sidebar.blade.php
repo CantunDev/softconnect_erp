@@ -258,7 +258,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('business.dashboard', ['business' => $bs->slug]) }}">
+                                    <a href="{{ route('business.projections.index', ['business' => $bs->slug]) }}">
                                         <i class="bx bx-line-chart"></i>
                                         <span>Proyecciones</span>
                                     </a>
@@ -296,6 +296,12 @@
                                                         href="{{ route('business.restaurants.home.index', ['business' => $bs->slug, 'restaurants' => $rest->slug]) }}">
                                                         <i class="mdi mdi-room-service"></i>
                                                         <span key="t-chat">Inicio</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('business.restaurants.projections.index', ['business' => $bs->slug, 'restaurants' => $rest->slug]) }}">
+                                                        <i class="bx bx-line-chart"></i>
+                                                        <span>Proyecciones</span>
                                                     </a>
                                                 </li>
                                                 <li>
@@ -388,9 +394,15 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a href="{{ route('business.home.index', ['business' => $rest->id]) }}">
+                                    <a href="{{ route('business.restaurants.dashboard', ['business' => $bs->slug,'restaurants' => $rest->slug ]) }}">
                                         <i class="mdi mdi-room-service"></i>
                                         <span key="t-chat">Inicio</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('business.dashboard', ['business' => $bs->slug]) }}">
+                                        <i class="bx bx-line-chart"></i>
+                                        <span>Proyecciones</span>
                                     </a>
                                 </li>
                                 @can('read_providers')
@@ -442,10 +454,15 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a
-                                        href="{{ route('business.restaurants.home.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
+                                    <a href="{{ route('business.restaurants.dashboard', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
                                         <i class="mdi mdi-room-service"></i>
                                         <span key="t-chat">Inicio</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('business.restaurants.projections.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
+                                        <i class="bx bx-line-chart"></i>
+                                        <span>Proyecciones</span>
                                     </a>
                                 </li>
                                 @can('read_providers')

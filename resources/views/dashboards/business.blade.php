@@ -6,5 +6,5 @@
 @section('content')
     <x-date-component/>
     <x-sale-in-turn-component :restaurants="$restaurants"/>
-
+    <x-all-sales-component />
 @endsection
