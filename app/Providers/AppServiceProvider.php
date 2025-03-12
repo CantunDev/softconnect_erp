@@ -213,6 +213,7 @@ class AppServiceProvider extends ServiceProvider
 
                     // if ($totalTemp != 0) {
                     if ($totalclientesTemp > 0) {
+                        $chequePromedioTemp = round(($totalTemp / $totalclientesTemp), 2);
                     } else {
                         $chequePromedioTemp = 0; // O un valor predeterminado que tenga sentido
                     }                        // } 
