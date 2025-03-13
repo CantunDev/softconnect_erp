@@ -70,8 +70,8 @@ class SaleInTurnComponent extends Component
                 // Obtener datos temporales
                 $tempChequeData = $this->getTempChequeData($connection, $tabla, $currentMonth, $currentYear, $dateCheque);
 
-                // Almacenar los resultados
-                $this->results[] = [
+                // Almacenar los resultados con la clave dinámica
+                $this->results['venta' . $restaurant->id] = [
                     'name' => $restaurant->name,
                     'total' => $chequeData['total'],
                     'nopersonas' => $chequeData['nopersonas'],
