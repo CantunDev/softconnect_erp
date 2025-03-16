@@ -21,7 +21,7 @@ class ProjectionController extends Controller
         $user = Auth::user();
         $rest = $restaurants;
         // return $business->id;
-        // if ($request->ajax()) {
+        if ($request->ajax()) {
             $restaurants = Restaurant::with('business')->withTrashed();
 
             // Filtrar según el rol del usuario
@@ -40,20 +40,35 @@ class ProjectionController extends Controller
                     });
                 }
             }
-        return DataTables::of($restaurants)
-            ->addIndexColumn()
-            ->rawColumns([''])
-            ->make(true);
-        // }
+            return DataTables::of($restaurants)
+                ->addIndexColumn()
+                ->addColumn('name', function ($result) {
+                    return $name = '
+                    <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->name . '</a></h5>
+                    <p class="text-muted mb-0">' . $result->business->name . '</p>';
+                })
+                ->addColumn('action', function ($result) {
+                    $opciones = '';
+                    $opciones .= '<a href="' . route('business.restaurants.projections.create', [
+                        'business' => $result->business->slug,
+                        'restaurants' => $result->slug,
+                    ]) . '" class="btn btn-sm text-primary action-icon icon-dual-warning p-1">
+                        <i class="mdi mdi-chart-timeline-variant-shimmer font-size-18"></i>
+                    </a>';
+                    return $opciones;
+                })
+                ->rawColumns(['name', 'action'])
+                ->make(true);
+        }
         return view('projections.index', compact('restaurants'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Business $business, Restaurant $restaurants)
     {
-        //
+        return view('projections.create', compact('restaurants'));   
     }
 
     /**
