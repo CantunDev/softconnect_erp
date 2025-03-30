@@ -34,10 +34,10 @@
         }
     </style>
     <form
-        action="{{ route('business.restaurants.projections.store', ['business' => $restaurants->business->slug, 'restaurants' => $restaurants->slug]) }}"
+        action="{{ route('business.restaurants.projections.update', ['business' => $restaurants->business->slug, 'restaurants' => $restaurants->slug, 'projection' => $restaurants->id]) }}"
         method="post">
         @csrf
-        @method('POST')
+        @method('PUT')
         <input type="hidden" value="{{ $year }}" class="" name="year">
         <input type="hidden" value="{{ $restaurants->id }}" class="" name="restaurant_id">
         <div class="row">
@@ -45,11 +45,12 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h1 class="card-title mb-0">Registrar Proyecciones Mensuales para
+                            <h1 class="card-title mb-0">Actualizar Proyecciones Mensuales para
                                 <span>{{ $restaurants->name }}</span>
                                 {{ $year }}
                             </h1>
-                            <button onclick="clearProyections()" type="button" class="btn btn-secondary waves-effect btn-label waves-light">
+                            <button onclick="clearProjections()" type="button"
+                                class="btn btn-secondary waves-effect btn-label waves-light">
                                 <i class="mdi mdi-trash-can-outline label-icon"></i> Borrar Metas
                             </button>
                         </div>
@@ -78,51 +79,51 @@
                                                 <p class="mb-0"><span
                                                         class="fw-medium text-uppercase">{{ $monthName }}</span></p>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="" style="width: 90px;">
-                                                    <input type="text" value="0" class="price_cl"
-                                                        name="projected_sales[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
+                                                    <input type="text"
+                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_sales : 0 }}"
+                                                        class="clear" name="projected_sales[]"
+                                                        {{ !Auth::user()->hasRole('Super-Admin') && $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 90px;">
-                                                    <input type="text" value="0" class=""
-                                                        name="projected_costs[]"
+                                                    <input type="text"
+                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_costs : 0 }}"
+                                                        class="clear" name="projected_costs[]"
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 90px;">
-                                                    <input type="text" value="0" class=""
-                                                        name="projected_profit[]"
+                                                    <input type="text"
+                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_profit : 0 }}"
+                                                        class="clear" name="projected_profit[]"
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 60px;">
-                                                    <input type="text" value="0" class=""
-                                                        name="projected_tax[]"
+                                                    <input type="text"
+                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_tax : 0 }}"
+                                                        class="clear" name="projected_tax[]"
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 60px;">
-                                                    <input type="text" value="0" class=""
-                                                        name="projected_check[]"
+                                                    <input type="text"
+                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_check : 0 }}"
+                                                        class="clear" name="projected_check[]"
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            {{-- <td style="align-items: center;">
-                                        <div class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove">
-                                            <a href="#removeItemModal" data-bs-toggle="modal" class="action-icon text-danger"> <i class="mdi mdi-trash-can font-size-18"></i></a>
-                                        </div>
-                                    </td> --}}
                                         </tr>
                                     @endforeach
 
@@ -136,8 +137,8 @@
                             </div> <!-- end col -->
                             <div class="col-sm-6">
                                 <div class="text-sm-end mt-2 mt-sm-0">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="mdi mdi-skip-next me-1"></i> Registrar Proyecciones </button>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="mdi mdi-skip-next me-1"></i> Actualizar Proyecciones </button>
                                 </div>
                             </div> <!-- end col -->
                         </div> <!-- end row-->
@@ -149,28 +150,63 @@
 @endsection
 @section('js')
     <script>
-        $(document).ready(function() {
-            // Inicializar TouchSpin y Cleave.js para cada input
-            $("input[name='projected_sales[]'], input[name='projected_costs[]'], input[name='projected_profit[]'], input[name='projected_tax[]'], input[name='projected_check[]']")
-                .each(function() {
-                    // Inicializar TouchSpin
-                    $(this).TouchSpin({
-                        verticalbuttons: true,
-                        min: 0,
-                        max: 100000000,
-                        step: 1,
-                        decimals: 0,
-                        boostat: 5,
-                        maxboostedstep: 10,
-                        verticalupclass: 'bi bi-chevron-up',
-                        verticaldownclass: 'bi bi-chevron-down',
-                    });
-                });
-        });
+       $(document).ready(function() {
+    // Selector de inputs (mejorado para eficiencia)
+    $("input[name^='projected_']").each(function() {
+        const $input = $(this);
+        
+        // Verificar si el campo es readonly (bloqueado por tu condición Blade)
+        if ($input.prop('readonly')) {
+            // Bloquear completamente (estilo + evitar TouchSpin)
+            $input.TouchSpin({
+                verticalbuttons: true,
+                min: 0,
+                max: 0,
+                maxboostedstep: 10,
+                verticalupclass: 'bi dash',
+                verticaldownclass: 'bi dash'
+            });
+        } else {
+            // Inicializar TouchSpin SOLO en campos editables
+            $input.TouchSpin({
+                verticalbuttons: true,
+                min: 0,
+                max: 100000000,
+                step: 1,
+                decimals: 0,
+                boostat: 5,
+                maxboostedstep: 10,
+            });
+        }
+    });
+}); 
     </script>
     <script>
-        function clearProyections(){
-            alert('Limpiar Proyecciones?');
+        function clearProjections() {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción reseteará todas las proyecciones a 0 y no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Limpiar solo campos editables (no readonly)
+                    document.querySelectorAll('.clear').forEach(input => {
+                        if (!input.readOnly) input.value = "0";
+                    });
+
+                    // Notificación de éxito
+                    Swal.fire(
+                        '¡Borrado!',
+                        'Las proyecciones fueron reseteadas a 0.',
+                        'success'
+                    );
+                }
+            });
         }
     </script>
 @endsection

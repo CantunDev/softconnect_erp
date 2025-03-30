@@ -8,12 +8,12 @@ use App\Services\DynamicConnectionService;
 
 class DashboardController extends Controller
 {
-    protected $connectionService;
+    // protected $connectionService;
 
-    public function __construct(DynamicConnectionService $connectionService)
-    {
-        $this->connectionService = $connectionService;
-    }
+    // public function __construct(DynamicConnectionService $connectionService)
+    // {
+    //     $this->connectionService = $connectionService;
+    // }
 
     public function index()
     {

@@ -62,7 +62,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('business.dashboard', ['business' => $bs->slug]) }}">
+                                    <a href="{{ route('business.projections.index', ['business' => $bs->slug]) }}">
                                         <i class="bx bx-line-chart"></i>
                                         <span>Proyecciones</span>
                                     </a>
@@ -460,12 +460,11 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('business.restaurants.projections.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
+                                        <a href="{{ route('business.restaurants.projections.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
                                         <i class="bx bx-line-chart"></i>
                                         <span>Proyecciones</span>
                                     </a>
                                 </li>
-                                @can('read_providers')
                                     <li>
                                         <a
                                             href="{{ route('business.restaurants.providers.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
@@ -473,7 +472,6 @@
                                             <span key="t-chat">Proveedores</span>
                                         </a>
                                     </li>
-                                @endcan
                                 @can('read_invoices')
                                     <li>
                                         <a

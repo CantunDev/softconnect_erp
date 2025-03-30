@@ -51,4 +51,13 @@ class DateHelper
         $daysInMonth = self::getDaysInMonth();
         return round(($daysPassed / $daysInMonth) * 100, 2);
     }
+    
+    public static function getMonthsOfYear()
+    {
+        $months = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $months[$month] = Carbon::create()->month($month)->translatedFormat('F');
+        }
+        return $months;
+    }
 }
