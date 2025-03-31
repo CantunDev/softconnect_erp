@@ -78,7 +78,7 @@
                                                 <p class="mb-0"><span
                                                         class="fw-medium text-uppercase">{{ $monthName }}</span></p>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="" style="width: 90px;">
                                                     <input type="text" value="0" class="price_cl"
@@ -86,7 +86,7 @@
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 90px;">
                                                     <input type="text" value="0" class=""
@@ -94,7 +94,7 @@
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 90px;">
                                                     <input type="text" value="0" class=""
@@ -102,7 +102,7 @@
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 60px;">
                                                     <input type="text" value="0" class=""
@@ -110,7 +110,7 @@
                                                         {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
                                                 </div>
                                             </td>
-                                            <td>gola</td>
+                                            <td></td>
                                             <td style="align-items: center;">
                                                 <div class="me-1" style="width: 60px;">
                                                     <input type="text" value="0" class=""

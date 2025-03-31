@@ -21,7 +21,7 @@ class ProjectionController extends Controller
     public function index(Request $request, Business $business, Restaurant $restaurants)
     {
         $user = Auth::user();
-        // return $this->getFilteredRoute($user);
+        $this->getFilteredRoute($user);
 
         if ($request->ajax()) {
             $restaurants = $this->getFilteredRoute($user);
@@ -196,43 +196,58 @@ class ProjectionController extends Controller
 
     public function getFilteredRoute($user)
     {
-        // Obtener el slug de la empresa y el restaurante desde la URL
-        $businessSlug = request()->segment(1); // Primer segmento de la URL (ej: "corazon-contento")
-        $restaurantSlug = request()->segment(2); // Segundo segmento de la URL (ej: "perro-cafe")
-
-        // Iniciar la consulta de restaurantes
-        $restaurants = Restaurant::with('projections');
-
-        // Si el usuario no es Super-Admin, aplicar filtros según sus permisos
+        $businessSlug = request()->segment(1);
+        $restaurantSlug = request()->segment(2);
+    
+        $restaurants = Restaurant::with(['projections', 'business']);
+    
+        // Caso especial: restaurante sin empresa (segmento 1 = "rest")
+        if ($businessSlug === 'rest') {
+            if ($restaurantSlug) {
+                // Mostrar un restaurante específico sin empresa
+                $restaurants->whereNull('business_id')
+                            ->where('slug', $restaurantSlug);
+            } else {
+                // Mostrar todos los restaurantes sin empresa
+                $restaurants->whereNull('business_id');
+            }
+    
+            // Aplicar filtros de permisos si no es Super-Admin
+            if (!$user->hasRole('Super-Admin')) {
+                $restaurants->whereHas('users', function ($query) use ($user) {
+                    $query->where('id', $user->id);
+                });
+            }
+    
+            return $restaurants->get();
+        }
+    
+        // Para usuarios no Super-Admin, aplicar filtros de permisos
         if (!$user->hasRole('Super-Admin')) {
             if ($user->business !== 'null' && $user->business == 'rest') {
-                // Filtrar restaurantes por la empresa y que estén relacionados con el usuario
                 $restaurants->whereHas('business', function ($query) use ($businessSlug) {
                     $query->where('slug', $businessSlug);
                 })->whereHas('users', function ($query) use ($user) {
                     $query->where('id', $user->id);
                 });
             } else {
-                // Si el usuario no tiene empresa, filtrar solo por sus restaurantes asignados
                 $restaurants->whereHas('users', function ($query) use ($user) {
                     $query->where('id', $user->id);
                 });
             }
         }
-
-        // Si la URL contiene un restaurante, filtrar por el slug del restaurante
+    
+        // Si hay segmento 2 (restaurantSlug), filtrar por restaurante específico
         if ($restaurantSlug && $restaurantSlug !== 'projections') {
             $restaurants->where('slug', $restaurantSlug);
         }
-
-        // Si la URL solo contiene la empresa, filtrar por el slug de la empresa
-        if ($businessSlug && !$restaurantSlug) {
+        // Si solo hay segmento 1 (businessSlug), filtrar por empresa
+        elseif ($businessSlug) {
             $restaurants->whereHas('business', function ($query) use ($businessSlug) {
                 $query->where('slug', $businessSlug);
             });
         }
-
-        // Obtener los restaurantes filtrados
+    
         return $restaurants->get();
     }
 }

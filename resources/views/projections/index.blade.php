@@ -8,43 +8,39 @@
             Proyecciones
         @endslot
         @slot('bcPrevLink')
-            {{ route('business.providers.index', ['business' => request()->route('business')]) }}
+            {{ route('business.projections.index', ['business' => request()->route('business')]) }}
         @endslot
         @slot('bcActiveText')
             Listado
         @endslot
     @endcomponent
-    <div class="card">
-        <div class="card-body border-bottom">
-            <div class="d-flex align-items-center">
-                <h5 class="mb-0 card-title flex-grow-1">Lista de proveedores </h5>
-                @can('create_providers')
-                    <div class="flex-shrink-0">
-                        <a href="{{ route('business.providers.create', ['business' => request()->route('business')]) }}"
-                            class="btn btn-primary">Nuevo</a>
-                    </div>
-                @endcan
+
+    <div class="row">
+        <div class="card" style="border: 2px solid #ccc">
+            <div class="card-body border-bottom">
+                <div class="d-flex align-items-center">
+                    <h5 class="mb-0 card-title flex-grow-1">Lista de Proyecciones </h5>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="table_projections"
-                    class="table table-sm align-middle dt-responsive nowrap w-100 table-check text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col" colspan="7">{{$business->business_name}}</th>
-                        </tr>
-                        <tr>
-                            <th scope="col" class="px-4 py-3">#</th>
-                            <th scope="col" class="px-4 py-3">Restaurante</th>
-                            <th scope="col" class="px-4 py-3">Proyecciones</th>
-                            <th scope="col" class="px-4 py-3">Ganancia</th>
-                            <th scope="col" class="px-4 py-3">Clientes</th>
-                            <th scope="col" class="px-4 py-3">Costo Venta</th>
-                            <th scope="col" class="px-4 py-3"></th>
-                        </tr>
-                    </thead>
-                    {{-- <tfoot>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="table_projections"
+                        class="table table-sm align-middle dt-responsive nowrap w-100 table-check text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="7">{{ $business->business_name }}</th>
+                            </tr>
+                            <tr>
+                                <th scope="col" class="px-4 py-3">#</th>
+                                <th scope="col" class="px-4 py-3">Restaurante</th>
+                                <th scope="col" class="px-4 py-3">Proyecciones</th>
+                                <th scope="col" class="px-4 py-3">Ganancia</th>
+                                <th scope="col" class="px-4 py-3">Clientes</th>
+                                <th scope="col" class="px-4 py-3">Costo Venta</th>
+                                <th scope="col" class="px-4 py-3"></th>
+                            </tr>
+                        </thead>
+                        {{-- <tfoot>
                         <tr>
                             <th colspan="2" style="text-align:right">Total:</th>
                             <th id="total-projections">$0.00</th>
@@ -53,10 +49,84 @@
                             <th colspan="2"></th>
                         </tr>
                     </tfoot> --}}
-                </table>
-                <!-- end table -->
+                    </table>
+                    <!-- end table -->
+                </div>
+                <!-- end table responsive -->
             </div>
-            <!-- end table responsive -->
+        </div>
+    </div>
+    <x-date-component></x-date-component>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card" style="border: 2px solid #ccc">
+                <div class="card-body">
+                    <p class="text-muted mb-4"><i class="mdi mdi-finance h2 text-warning align-middle mb-0 me-3"></i>
+                        Proyectado </p>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div>
+                                <h5>$ 9134.39</h5>
+                                <p class="text-muted text-truncate mb-0">+ 0.0012 ( 0.2 % ) <i
+                                        class="mdi mdi-arrow-up ms-1 text-success"></i></p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                <div id="area-sparkline-chart-1" data-colors='["--bs-warning"]' class="apex-charts"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card" style="border: 2px solid #ccc">
+                <div class="card-body">
+                    <p class="text-muted mb-4"><i class="mdi mdi-account-group h2 text-info align-middle mb-0 me-3"></i>
+                        Clientes </p>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div>
+                                <h5>$ 245.44</h5>
+                                <p class="text-muted text-truncate mb-0">- 4.102 ( 0.1 % ) <i
+                                        class="mdi mdi-arrow-down ms-1 text-danger"></i></p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                <div id="area-sparkline-chart-2" data-colors='["--bs-primary"]' class="apex-charts"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card" style="border: 2px solid #ccc">
+                <div class="card-body">
+                    <p class="text-muted mb-4"><i class="mdi mdi-account-cash h2 text-success align-middle mb-0 me-3"></i>
+                        Cheque Promedio </p>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div>
+                                <h5>$ 63.61</h5>
+                                <p class="text-muted text-truncate mb-0">+ 1.792 ( 0.1 % ) <i
+                                        class="mdi mdi-arrow-up ms-1 text-success"></i></p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                <div id="area-sparkline-chart-3" data-colors='["--bs-info"]' class="apex-charts"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 @endsection
