@@ -83,7 +83,8 @@
                                                 <div class="" style="width: 90px;">
                                                     <input type="text" value="0" class="price_cl"
                                                         name="projected_sales[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
+                                                        {{-- {{ $currentMonth > $monthNumber ? 'readonly' : '' }} --}}
+                                                        >
                                                 </div>
                                             </td>
                                             <td></td>
@@ -91,7 +92,8 @@
                                                 <div class="me-1" style="width: 90px;">
                                                     <input type="text" value="0" class=""
                                                         name="projected_costs[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
+                                                        {{-- {{ $currentMonth > $monthNumber ? 'readonly' : '' }} --}}
+                                                        >
                                                 </div>
                                             </td>
                                             <td></td>
@@ -99,7 +101,8 @@
                                                 <div class="me-1" style="width: 90px;">
                                                     <input type="text" value="0" class=""
                                                         name="projected_profit[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
+                                                        {{-- {{ $currentMonth > $monthNumber ? 'readonly' : '' }} --}}
+                                                        >
                                                 </div>
                                             </td>
                                             <td></td>
@@ -107,7 +110,8 @@
                                                 <div class="me-1" style="width: 60px;">
                                                     <input type="text" value="0" class=""
                                                         name="projected_tax[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
+                                                        {{-- {{ $currentMonth > $monthNumber ? 'readonly' : '' }} --}}
+                                                        >
                                                 </div>
                                             </td>
                                             <td></td>
@@ -115,7 +119,8 @@
                                                 <div class="me-1" style="width: 60px;">
                                                     <input type="text" value="0" class=""
                                                         name="projected_check[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
+                                                        {{-- {{ $currentMonth > $monthNumber ? 'readonly' : '' }} --}}
+                                                        >
                                                 </div>
                                             </td>
                                             {{-- <td style="align-items: center;">

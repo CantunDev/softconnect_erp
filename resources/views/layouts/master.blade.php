@@ -251,6 +251,33 @@
             }
         });
     </script>
+    <script>
+         document.addEventListener("DOMContentLoaded", function() {
+            // Simula una carga de datos (puedes reemplazar esto con una llamada AJAX)
+            setTimeout(function() {
+                // Itera sobre cada restaurante
+                document.querySelectorAll('.row').forEach((row, index) => {
+                    // Oculta el skeleton
+                    const skeletonTotal = document.getElementById(`skeleton-total`);
+                    if (skeletonTotal) {
+                        skeletonTotal.style.display = 'none';
+                    }
+
+                    // Muestra el contenido real
+                    const realContentTotal = document.getElementById(`real-content-total`);
+                    if (realContentTotal) {
+                        realContentTotal.style.display = 'block';
+                    }                    
+                        // Si no hay errores, muestra el contenido normal
+                        const dataContentTotal = document.getElementById(`data-content-total`);
+                        if (dataContentTotal) {
+                            dataContentTotal.style.display = 'block';
+                     }
+                });
+            }, 2000); // Simula un retraso de 2 segundos
+            const errorAlertTotal = document.getElementById('error-alert');
+        });
+    </script>
     @yield('js')
 </body>
 

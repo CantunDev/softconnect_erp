@@ -21,7 +21,7 @@ class ProjectionController extends Controller
     public function index(Request $request, Business $business, Restaurant $restaurants)
     {
         $user = Auth::user();
-        $this->getFilteredRoute($user);
+        $restaurants = $this->getFilteredRoute($user);
 
         if ($request->ajax()) {
             $restaurants = $this->getFilteredRoute($user);
