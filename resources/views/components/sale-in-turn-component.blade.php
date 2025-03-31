@@ -126,31 +126,25 @@
                                             <h5 class="font-size-12 mb-2">Cheque Promedio</h5>
                                             <div class="float-end ms-2">
                                                 <h5 class="font-size-12">
-                                                    @if (isset($results['venta' . $restaurant->id]))
-                                                    {{-- Acceso a los datos --}}
-                                                    
-                                                    <span class="price">{{ $ta = $results['venta' . $restaurant->id]['tempChequeData']['alimentosTemp'] }}</span>
-                                                    <span class="percentage"> {{ round(($ta * 100 )/$gral, 1) }}</span>
-
-                                                    @else
-                                                        {{-- Valor por defecto si no hay datos --}}
-                                                        {{ $ta = 0 }}
-                                                    @endif
+                                                    @php
+                                                    $ta = isset($results['venta' . $restaurant->id]) ? $results['venta' . $restaurant->id]['tempChequeData']['alimentosTemp'] : 0;
+                                                    $percentage_ta = $gral != 0 ? round(($ta * 100) / $gral, 1) : 0;
+                                                @endphp
+                                                
+                                                <span class="price">{{ $ta }}</span>
+                                                <span class="percentage">{{ $percentage_ta }}</span>
                                                 </h5>
                                             </div>
                                             <h5 class="font-size-12 mb-2">Alimentos</h5>
                                             <div class="float-end ms-2">
                                                 <h5 class="font-size-12">
-                                                    @if (isset($results['venta' . $restaurant->id]))
-                                                    {{-- Acceso a los datos --}}
-                                                    
-                                                    <span class="price">{{ $tb = $results['venta' . $restaurant->id]['tempChequeData']['bebidasTemp'] }}</span>
-                                                    <span class="percentage"> {{ round(($tb * 100 )/$gral, 1) }}</span>
-
-                                                    @else
-                                                        {{-- Valor por defecto si no hay datos --}}
-                                                        {{ $tb = 0 }}
-                                                    @endif
+                                                    @php
+                                                    $tb = isset($results['venta' . $restaurant->id]) ? $results['venta' . $restaurant->id]['tempChequeData']['bebidasTemp'] : 0;
+                                                    $percentage_tb = $gral != 0 ? round(($tb * 100) / $gral, 1) : 0;
+                                                @endphp
+                                                
+                                                <span class="price">{{ $tb }}</span>
+                                                <span class="percentage">{{ $percentage_tb }}</span>
                                                 </h5>
                                             </div>
                                             <h5 class="font-size-12 mb-2">Bebidas</h5>
