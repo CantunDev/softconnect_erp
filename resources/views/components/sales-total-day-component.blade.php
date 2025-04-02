@@ -1,4 +1,4 @@
-<div class="row" style="border: 2px solid #ccc; color: '#000';">
+<div class="row rounded" style=" border: 2px solid #ccc; --bs-gutter-x: 0;">
     <div class="col-12">
         <div class="card card-h-100">
             <!-- Skeleton Loading -->
@@ -40,7 +40,7 @@
                 </div>
                 @else --}}
                 <div class="card-body" id="data-content-total">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">
                             <i class="bx bx-restaurant me-2"></i>Resumen General
                         </h4>
@@ -125,7 +125,11 @@
                             <div class="metric-card-sm">
                                 <h6>Ticket Promedio</h6>
                                 <h4>${{ number_format($totals['chequePromedioTemp'], 2) }}</h4>
+                                {{-- <div class="text-primary mt-3">
+                                    <i class="bx bx-group"></i>
+                                </div> --}}
                             </div>
+                            
                         </div>
                         <div class="col-6 col-md-3 mb-3">
                             <div class="metric-card-sm">
