@@ -1,165 +1,201 @@
 <div class="row">
-    <div class="col-md-12 col-xl-12">
-        <div class="card">
-            <div class="card-body">
-                <!-- Skeleton Placeholder -->
-                <div class="skeleton" id="skeleton-total">
-                    <div class="skeleton-line" style="width: 50%; height: 20px; margin-bottom: 15px;"></div>
+    <div class="col-12">
+        <div class="card card-h-100">
+            <!-- Skeleton Loading -->
+            <div class="skeleton" id="skeleton-total">
+                <div class="skeleton-header"></div>
+                <div class="skeleton-body">
+                    <div class="skeleton-line" style="width: 70%; height: 25px; margin-bottom: 20px;"></div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="skeleton-line" style="width: 80%; height: 15px; margin-bottom: 10px;"></div>
-                            <div class="skeleton-line" style="width: 60%; height: 12px;"></div>
+                        <div class="col-6">
+                            <div class="skeleton-line" style="width: 90%; height: 15px; margin-bottom: 10px;"></div>
+                            <div class="skeleton-line" style="width: 70%; height: 20px;"></div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="skeleton-line" style="width: 80%; height: 15px; margin-bottom: 10px;"></div>
-                            <div class="skeleton-line" style="width: 60%; height: 12px;"></div>
+                        <div class="col-6">
+                            <div class="skeleton-line" style="width: 90%; height: 15px; margin-bottom: 10px;"></div>
+                            <div class="skeleton-line" style="width: 70%; height: 20px;"></div>
                         </div>
                     </div>
+                    <div class="skeleton-divider"></div>
                     <div class="row mt-3">
-                        <div class="col-md-3">
-                            <div class="skeleton-line" style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
+                        @for($i = 0; $i < 4; $i++)
+                        <div class="col-6 col-md-3">
+                            <div class="skeleton-line" style="width: 80%; height: 12px; margin-bottom: 5px;"></div>
+                            <div class="skeleton-line" style="width: 60%; height: 15px;"></div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="skeleton-line" style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="skeleton-line" style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="skeleton-line" style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
-                        </div>
+                        @endfor
                     </div>
                 </div>
+            </div>
 
-                <!-- Contenido real (oculto inicialmente) -->
-                <div class="real-content" id="real-content-total" style="display: none;">
-                    @if(count($errors) > 0)
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach($errors as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+            <!-- Contenido Real -->
+            <div class="real-content" id="real-content-total" style="display: none;">
+                @if(count($errors) > 0)
+                <div class="alert alert-danger m-3">
+                    <ul class="mb-0">
+                        @foreach($errors as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @else
+                <div class="card-body" id="data-content-total">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">
+                            <i class="bx bx-restaurant me-2"></i>Resumen General
+                        </h4>
+                        <div>
+                            <span class="badge bg-{{ $totals['turnoStatus'] == 'Cerrado' ? 'success' : ($totals['turnoStatus'] == 'Abierto' ? 'warning' : 'info') }}">
+                                {{ $totals['turnoStatus'] }} - {{ $totals['fechaTurno'] }}
+                            </span>
+                            <span class="badge bg-primary ms-2">
+                                {{ $totals['restaurantesIncluidos'] }} Restaurantes
+                            </span>
                         </div>
-                    @else
-                        <div id="data-content-total">
-                            <div class="accordion accordion-flush" id="accordionFlush-1">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header d-flex justify-content-between align-items-center">
-                                        <button class="accordion-button fw-medium collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapse-total" 
-                                            aria-expanded="false"
-                                            aria-controls="flush-collapse-total">
-                                            <i class="bx bx-food-menu font-size-12 align-middle me-1"></i>
-                                            <span>Venta General del Día</span>
-                                        </button>
-                                        <div class="d-flex align-items-center ms-2">
-                                            <span class="badge bg-{{ $totals['turnoStatus'] == 'Cerrado' ? 'success' : ($totals['turnoStatus'] == 'Abierto' ? 'warning' : 'info') }} me-2">
-                                                {{ $totals['turnoStatus'] }} - {{ $totals['fechaTurno'] }}
-                                            </span>
-                                            <small class="text-muted">{{ $totals['restaurantesIncluidos'] }} restaurantes</small>
-                                        </div>
-                                    </h2>
-                                    
-                                    <div id="flush-collapse-total" class="accordion-collapse collapse show"
-                                        aria-labelledby="flush-heading-total"
-                                        data-bs-parent="#accordionFlush-1">
-                                        <div class="accordion-body text-muted pt-0">
-                                            <div class="tab-pane active" id="cheques-tab-1"
-                                                role="tabpanel">
-                                                <!-- Fila 1: Totales principales -->
-                                                <div class="row mb-3">
-                                                    <div class="col-md-6">
-                                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                                            <h5 class="font-size-12 mb-0">Venta General</h5>
-                                                            <h5 class="font-size-12 mb-0 price">${{ number_format($totals['totalTemp'], 2) }}</h5>
-                                                        </div>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="font-size-12 mb-0">Venta Cobrada</h5>
-                                                            <h5 class="font-size-12 mb-0 price">${{ number_format($totals['totalPaidTemp'], 2) }}</h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                                            <h5 class="font-size-12 mb-0">Clientes Atendidos</h5>
-                                                            <h5 class="font-size-12 mb-0">{{ $totals['totalclientesTemp'] }}</h5>
-                                                        </div>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="font-size-12 mb-0">Ticket Promedio</h5>
-                                                            <h5 class="font-size-12 mb-0">${{ number_format($totals['chequePromedioTemp'], 2) }}</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Fila 2: Detalles adicionales -->
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="font-size-12 mb-0">Descuentos</h5>
-                                                            <h5 class="font-size-12 mb-0">${{ number_format($totals['descuentosTemp'], 2) }}</h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="font-size-12 mb-0">Alimentos</h5>
-                                                            <h5 class="font-size-12 mb-0">${{ number_format($totals['alimentosTemp'], 2) }}</h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="font-size-12 mb-0">Bebidas</h5>
-                                                            <h5 class="font-size-12 mb-0">${{ number_format($totals['bebidasTemp'], 2) }}</h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="font-size-12 mb-0">Personas</h5>
-                                                            <h5 class="font-size-12 mb-0">{{ $totals['noclientesTemp'] }}</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                    </div>
+
+                    <!-- Main Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="metric-card">
+                                <h6>Venta Total</h6>
+                                <h3 class="text-primary">${{ number_format($totals['totalTemp'], 2) }}</h3>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" 
+                                         style="width: {{ $totals['totalTemp'] > 0 ? 100 : 0 }}%" 
+                                         aria-valuenow="{{ $totals['totalTemp'] }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="{{ $totals['totalTemp'] * 1.2 }}">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                        <div class="col-md-6">
+                            <div class="metric-card">
+                                <h6>Venta Cobrada</h6>
+                                <h3 class="text-success">${{ number_format($totals['totalPaidTemp'], 2) }}</h3>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ $totals['totalTemp'] > 0 ? round(($totals['totalPaidTemp']/$totals['totalTemp'])*100) : 0 }}%" 
+                                         aria-valuenow="{{ $totals['totalPaidTemp'] }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="{{ $totals['totalTemp'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Metrics -->
+                    <div class="row">
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="metric-card-sm">
+                                <h6>Clientes</h6>
+                                <h4>{{ $totals['totalclientesTemp'] }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="metric-card-sm">
+                                <h6>Ticket Promedio</h6>
+                                <h4>${{ number_format($totals['chequePromedioTemp'], 2) }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="metric-card-sm">
+                                <h6>Alimentos</h6>
+                                <h4>${{ number_format($totals['alimentosTemp'], 2) }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="metric-card-sm">
+                                <h6>Bebidas</h6>
+                                <h4>${{ number_format($totals['bebidasTemp'], 2) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <small class="text-muted">
+                            <i class="bx bx-time-five me-1"></i> Actualizado: {{ now()->format('H:i:s') }}
+                        </small>
+                        <div>
+                            <small class="text-muted me-2">
+                                Descuentos: ${{ number_format($totals['descuentosTemp'], 2) }}
+                            </small>
+                            <small class="text-muted">
+                                Personas: {{ $totals['noclientesTemp'] }}
+                            </small>
+                        </div>
+                    </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
 
-<!-- Script para manejar el skeleton loading -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Simular carga de datos (en producción, esto sería manejado por Livewire o AJAX)
+    // Simular carga de datos
     setTimeout(function() {
         document.getElementById('skeleton-total').style.display = 'none';
         document.getElementById('real-content-total').style.display = 'block';
-        document.getElementById('data-content-total').style.display = 'block';
-    }, 1000);
+    }, 800);
 });
 </script>
 
 <style>
+.card-h-100 {
+    min-height: 100%;
+}
 .skeleton {
-    padding: 1rem;
+    padding: 1.5rem;
+}
+.skeleton-header {
+    height: 25px;
+    width: 50%;
+    margin-bottom: 1.5rem;
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.skeleton-body {
+    padding: 0 0.5rem;
+}
+.skeleton-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 1.5rem 0;
 }
 .skeleton-line {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    background: #f0f0f0;
     border-radius: 4px;
+    animation: shimmer 1.5s infinite linear;
+    background-size: 200% 100%;
+}
+.metric-card {
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    height: 100%;
+}
+.metric-card-sm {
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: #f9f9f9;
+    height: 100%;
+}
+.metric-card h6, .metric-card-sm h6 {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+.metric-card h3, .metric-card-sm h4 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }
 @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
-}
-.price {
-    color: #405189;
-    font-weight: 600;
 }
 </style>
