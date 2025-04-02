@@ -125,11 +125,7 @@
                             <div class="metric-card-sm">
                                 <h6>Ticket Promedio</h6>
                                 <h4>${{ number_format($totals['chequePromedioTemp'], 2) }}</h4>
-                                {{-- <div class="text-primary mt-3">
-                                    <i class="bx bx-group"></i>
-                                </div> --}}
                             </div>
-                            
                         </div>
                         <div class="col-6 col-md-3 mb-3">
                             <div class="metric-card-sm">
@@ -202,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
     background-size: 200% 100%;
 }
 .metric-card {
-    background: #f9f9f9;
+    /* background: #f9f9f9; */
     padding: 1rem;
     border-radius: 8px;
     height: 100%;
@@ -210,7 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
 .metric-card-sm {
     padding: 0.75rem;
     border-radius: 6px;
-    background: #f9f9f9;
+    margin-bottom: 0.25rem;
+    /* background: #f9f9f9; */
     height: 100%;
 }
 .metric-card h6, .metric-card-sm h6 {
