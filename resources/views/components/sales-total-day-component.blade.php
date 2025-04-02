@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" style="border: 2px solid #ccc; color: '#000';">
     <div class="col-12">
         <div class="card card-h-100">
             <!-- Skeleton Loading -->
@@ -30,7 +30,7 @@
 
             <!-- Contenido Real -->
             <div class="real-content" id="real-content-total" style="display: none;">
-                @if(count($errors) > 0)
+                {{-- @if(count($errors) > 0)
                 <div class="alert alert-danger m-3">
                     <ul class="mb-0">
                         @foreach($errors as $error)
@@ -38,14 +38,14 @@
                         @endforeach
                     </ul>
                 </div>
-                @else
+                @else --}}
                 <div class="card-body" id="data-content-total">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="card-title mb-0">
                             <i class="bx bx-restaurant me-2"></i>Resumen General
                         </h4>
                         <div>
-                            <span class="badge bg-{{ $totals['turnoStatus'] == 'Cerrado' ? 'success' : ($totals['turnoStatus'] == 'Abierto' ? 'warning' : 'info') }}">
+                            <span class="badge bg-{{ $totals['turnoStatus'] == 'Cerrado' ? 'warning' : ($totals['turnoStatus'] == 'Abierto' ? 'success' : 'info') }}">
                                 {{ $totals['turnoStatus'] }} - {{ $totals['fechaTurno'] }}
                             </span>
                             <span class="badge bg-primary ms-2">
@@ -88,10 +88,37 @@
 
                     <!-- Secondary Metrics -->
                     <div class="row">
-                        <div class="col-6 col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             <div class="metric-card-sm">
-                                <h6>Clientes</h6>
-                                <h4>{{ $totals['totalclientesTemp'] }}</h4>
+                                <h6 class="mb-3">Detalle de Clientes</h6>
+                                <div class="row">
+                                    <!-- Clientes Atendidos -->
+                                    <div class="col-4 text-center border-end">
+                                        <div class="text-muted small">Atendidos</div>
+                                        <h4 class="mb-0">{{ $totals['noclientesTemp'] }}</h4>
+                                        <div class="text-success small mt-1">
+                                            <i class="bx bx-user-check"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Clientes en Piso -->
+                                    <div class="col-4 text-center border-end">
+                                        <div class="text-muted small">En Piso</div>
+                                        <h4 class="mb-0">{{ $totals['nopersonasTemp'] }}</h4>
+                                        <div class="text-warning small mt-1">
+                                            <i class="bx bx-user"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Clientes Totales -->
+                                    <div class="col-4 text-center">
+                                        <div class="text-muted small">Totales</div>
+                                        <h4 class="mb-0">{{ $totals['totalclientesTemp'] }}</h4>
+                                        <div class="text-primary small mt-1">
+                                            <i class="bx bx-group"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-6 col-md-3 mb-3">
@@ -116,20 +143,17 @@
 
                     <!-- Additional Info -->
                     <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                        <small class="text-muted">
+                        <small class="text-info">
                             <i class="bx bx-time-five me-1"></i> Actualizado: {{ now()->format('H:i:s') }}
                         </small>
                         <div>
-                            <small class="text-muted me-2">
+                            <small class="text-info me-2">
                                 Descuentos: ${{ number_format($totals['descuentosTemp'], 2) }}
-                            </small>
-                            <small class="text-muted">
-                                Personas: {{ $totals['noclientesTemp'] }}
                             </small>
                         </div>
                     </div>
                 </div>
-                @endif
+                {{-- @endif --}}
             </div>
         </div>
     </div>
