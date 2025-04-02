@@ -32,7 +32,14 @@
                                         >
                                         <i class="bx bx-food-menu font-size-12 align-middle me-1"></i>
                                         Venta General de Ventas
+                                        
                                     </button>
+                                    <div>
+                                        <span class="badge badge-{{ $totals['turnoStatus'] == 'Cerrado' ? 'success' : ($totals['turnoStatus'] == 'Abierto' ? 'warning' : 'info') }}">
+                                            {{ $totals['turnoStatus'] }} - {{ $totals['fechaTurno'] }}
+                                        </span>
+                                        <small class="text-muted ml-2">{{ $totals['restaurantesIncluidos'] }} restaurantes</small>
+                                    </div>
                                 </h2>
                             </div>
                             <div id="flush-collapse-total" class="accordion-collapse collapse show"

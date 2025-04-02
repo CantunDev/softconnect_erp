@@ -14,6 +14,7 @@ class SalesTotalDayComponent extends Component
     public $errors = [];
     public $totals = [];
     public $colSize;
+    public $currentDate;
 
     /**
      * Create a new component instance.
@@ -21,9 +22,21 @@ class SalesTotalDayComponent extends Component
     public function __construct($restaurants, DynamicConnectionService $connectionService)
     {
         $this->restaurants = $restaurants;
-        $this->colSize = 12; // Siempre ocupará todo el ancho
+        $this->colSize = 12;
+        $this->currentDate = now()->toDateString();
 
         // Inicializar totales
+        $this->initializeTotals();
+
+        foreach ($this->restaurants as $restaurant) {
+            $this->processRestaurantData($restaurant, $connectionService);
+        }
+
+        $this->calculateAverages();
+    }
+
+    private function initializeTotals()
+    {
         $this->totals = [
             'total' => 0,
             'nopersonas' => 0,
@@ -37,69 +50,130 @@ class SalesTotalDayComponent extends Component
             'alimentosTemp' => 0,
             'bebidasTemp' => 0,
             'chequePromedioTemp' => 0,
+            'turnoStatus' => 'Sin datos',
+            'fechaTurno' => $this->currentDate,
+            'restaurantesIncluidos' => 0
         ];
+    }
 
-        foreach ($this->restaurants as $i => $restaurant) {
-            $connectionResult = $connectionService->configureConnection($restaurant);
+    private function processRestaurantData($restaurant, $connectionService)
+    {
+        $connectionResult = $connectionService->configureConnection($restaurant);
 
-            if ($connectionResult['success']) {
-                $connection = $connectionResult['connection'];
-                $currentMonth = now()->month;
-                $currentYear = now()->year;
+        if ($connectionResult['success']) {
+            $connection = $connectionResult['connection'];
+            $currentMonth = now()->month;
+            $currentYear = now()->year;
 
-                // Obtener datos de la base de datos
-                $chequeData = $this->getChequeData($connection, $currentMonth, $currentYear);
+            // Obtener los últimos turnos
+            $lastTurno = $this->getLastTurno($connection, 'cheques');
+            $lastTurnoTemp = $this->getLastTurno($connection, 'tempcheques');
 
-                // Obtener el último turno
-                $lastTurno = $this->getLastTurno($connection, 'cheques');
-                $lastTurnoTemp = $this->getLastTurno($connection, 'tempcheques');
+            // Determinar qué turno usar
+            $turnoData = $this->determineTurnoToUse($lastTurno, $lastTurnoTemp);
+            
+            // Solo procesar si es del día actual
+            if ($this->isSameDay($turnoData['fecha'])) {
+                $this->processValidTurno($connection, $restaurant, $turnoData, $currentMonth, $currentYear);
+            }
+        } else {
+            $this->errors[] = "Error en {$restaurant->name}: " . $connectionResult['message'];
+        }
+    }
 
-                $tabla = null;
-                $dateCheque = null;
+    private function determineTurnoToUse($lastTurno, $lastTurnoTemp)
+    {
+        // Si ambos turnos existen
+        if ($lastTurno && $lastTurnoTemp) {
+            $fechaTurno = Carbon::parse($lastTurno->fecha);
+            $fechaTurnoTemp = Carbon::parse($lastTurnoTemp->fecha);
 
-                // Decidir cuál turno usar (igual que en el componente original)
-                if ($lastTurno && $lastTurnoTemp) {
-                    if (Carbon::parse($lastTurno->fecha)->gt(Carbon::parse($lastTurnoTemp->fecha))) {
-                        $tabla = 'cheques';
-                        $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
-                    } else {
-                        $tabla = 'tempcheques';
-                        $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
-                    }
-                } elseif ($lastTurno) {
-                    $tabla = 'cheques';
-                    $dateCheque = Carbon::parse($lastTurno->fecha)->toDateTimeString();
-                } elseif ($lastTurnoTemp) {
-                    $tabla = 'tempcheques';
-                    $dateCheque = Carbon::parse($lastTurnoTemp->fecha)->toDateTimeString();
-                } else {
-                    $tabla = 'tempcheques';
-                    $dateCheque = now()->toDateString();
-                }
-
-                // Obtener datos temporales
-                $tempChequeData = $this->getTempChequeData($connection, $tabla, $currentMonth, $currentYear, $dateCheque);
-
-                // Sumar los valores al total general
-                $this->totals['total'] += $chequeData['total'];
-                $this->totals['nopersonas'] += $chequeData['nopersonas'];
-                
-                $this->totals['totalTemp'] += $tempChequeData['totalTemp'];
-                $this->totals['nopersonasTemp'] += $tempChequeData['nopersonasTemp'];
-                $this->totals['noclientesTemp'] += $tempChequeData['noclientesTemp'];
-                $this->totals['totalclientesTemp'] += $tempChequeData['totalclientesTemp'];
-                $this->totals['descuentosTemp'] += $tempChequeData['descuentosTemp'];
-                $this->totals['totalPaidTemp'] += $tempChequeData['totalPaidTemp'];
-                $this->totals['alimentosTemp'] += $tempChequeData['alimentosTemp'];
-                $this->totals['bebidasTemp'] += $tempChequeData['bebidasTemp'];
-
+            // Preferir el turno cerrado si es más reciente o del mismo día
+            if ($fechaTurno->gt($fechaTurnoTemp) || $fechaTurno->isSameDay($fechaTurnoTemp)) {
+                return [
+                    'tabla' => 'cheques',
+                    'status' => 'Cerrado',
+                    'fecha' => $lastTurno->fecha
+                ];
             } else {
-                // Almacenar el mensaje de error
-                $this->errors[] = "Error en {$restaurant->name}: " . $connectionResult['message'];
+                return [
+                    'tabla' => 'tempcheques',
+                    'status' => 'Abierto',
+                    'fecha' => $lastTurnoTemp->fecha
+                ];
+            }
+        } elseif ($lastTurno) {
+            return [
+                'tabla' => 'cheques',
+                'status' => 'Cerrado',
+                'fecha' => $lastTurno->fecha
+            ];
+        } elseif ($lastTurnoTemp) {
+            return [
+                'tabla' => 'tempcheques',
+                'status' => 'Abierto',
+                'fecha' => $lastTurnoTemp->fecha
+            ];
+        }
+
+        // Default (no debería ocurrir si hay datos)
+        return [
+            'tabla' => 'tempcheques',
+            'status' => 'Abierto',
+            'fecha' => now()
+        ];
+    }
+
+    private function isSameDay($fechaTurno)
+    {
+        return Carbon::parse($fechaTurno)->isSameDay($this->currentDate);
+    }
+
+    private function processValidTurno($connection, $restaurant, $turnoData, $currentMonth, $currentYear)
+    {
+        // Obtener datos del turno
+        $chequeData = $this->getChequeData($connection, $currentMonth, $currentYear);
+        $tempChequeData = $this->getTempChequeData(
+            $connection, 
+            $turnoData['tabla'], 
+            $currentMonth, 
+            $currentYear, 
+            $turnoData['fecha']
+        );
+
+        // Actualizar estado general del turno
+        if ($this->totals['restaurantesIncluidos'] == 0) {
+            $this->totals['turnoStatus'] = $turnoData['status'];
+            $this->totals['fechaTurno'] = Carbon::parse($turnoData['fecha'])->toDateString();
+        } else {
+            // Si hay mezcla de estados, marcamos como "Mixto"
+            if ($this->totals['turnoStatus'] != $turnoData['status']) {
+                $this->totals['turnoStatus'] = 'Mixto';
             }
         }
 
-        // Calcular promedios generales
+        // Sumar los valores al total general
+        $this->sumToTotals($chequeData, $tempChequeData);
+        $this->totals['restaurantesIncluidos']++;
+    }
+
+    private function sumToTotals($chequeData, $tempChequeData)
+    {
+        $this->totals['total'] += $chequeData['total'];
+        $this->totals['nopersonas'] += $chequeData['nopersonas'];
+        
+        $this->totals['totalTemp'] += $tempChequeData['totalTemp'];
+        $this->totals['nopersonasTemp'] += $tempChequeData['nopersonasTemp'];
+        $this->totals['noclientesTemp'] += $tempChequeData['noclientesTemp'];
+        $this->totals['totalclientesTemp'] += $tempChequeData['totalclientesTemp'];
+        $this->totals['descuentosTemp'] += $tempChequeData['descuentosTemp'];
+        $this->totals['totalPaidTemp'] += $tempChequeData['totalPaidTemp'];
+        $this->totals['alimentosTemp'] += $tempChequeData['alimentosTemp'];
+        $this->totals['bebidasTemp'] += $tempChequeData['bebidasTemp'];
+    }
+
+    private function calculateAverages()
+    {
         $this->totals['chequePromedio'] = $this->totals['nopersonas'] > 0 
             ? round(($this->totals['total'] / $this->totals['nopersonas']), 2) 
             : 0;
@@ -109,9 +183,6 @@ class SalesTotalDayComponent extends Component
             : 0;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
         return view('components.sales-total-day-component', [
@@ -120,9 +191,6 @@ class SalesTotalDayComponent extends Component
         ]);
     }
 
-    /**
-     * Obtiene los datos de los cheques.
-     */
     private function getChequeData($connection, $currentMonth, $currentYear)
     {
         $total = $connection->table('cheques')
@@ -145,9 +213,6 @@ class SalesTotalDayComponent extends Component
         ];
     }
 
-    /**
-     * Obtiene el último turno de la tabla especificada.
-     */
     private function getLastTurno($connection, $table)
     {
         return $connection->table($table)
@@ -156,79 +221,25 @@ class SalesTotalDayComponent extends Component
             ->first();
     }
 
-    /**
-     * Obtiene los datos temporales de los cheques.
-     */
-    private function getTempChequeData($connection, $tabla, $currentMonth, $currentYear, $dateCheque)
+    private function getTempChequeData($connection, $table, $currentMonth, $currentYear, $dateCheque)
     {
-        $totalTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('cancelado', false)
-            ->sum('total');
+        $date = Carbon::parse($dateCheque);
 
-        $totalPaidTemp = $connection->table($tabla)
+        $query = $connection->table($table)
             ->whereMonth('fecha', $currentMonth)
             ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('pagado', true)
-            ->where('cancelado', false)
-            ->sum('total');
-
-        $nopersonasTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('pagado', false)
-            ->where('cancelado', false)
-            ->sum('nopersonas');
-
-        $noclientesTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('pagado', true)
-            ->where('cancelado', false)
-            ->sum('nopersonas');
-
-        $totalclientesTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('cancelado', false)
-            ->sum('nopersonas');
-
-        $descuentosTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('cancelado', false)
-            ->sum('descuentoimporte');
-
-        $alimentosTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('cancelado', false)
-            ->sum('totalalimentos');
-
-        $bebidasTemp = $connection->table($tabla)
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->whereDate('fecha', $dateCheque)
-            ->where('cancelado', false)
-            ->sum('totalbebidas');
+            ->whereDate('fecha', $date->toDateString())
+            ->where('cancelado', false);
 
         return [
-            'totalTemp' => $totalTemp,
-            'nopersonasTemp' => $nopersonasTemp,
-            'noclientesTemp' => $noclientesTemp,
-            'totalclientesTemp' => $totalclientesTemp,
-            'descuentosTemp' => $descuentosTemp,
-            'totalPaidTemp' => $totalPaidTemp,
-            'alimentosTemp' => $alimentosTemp,
-            'bebidasTemp' => $bebidasTemp,
+            'totalTemp' => $query->sum('total'),
+            'totalPaidTemp' => $query->clone()->where('pagado', true)->sum('total'),
+            'nopersonasTemp' => $query->clone()->where('pagado', false)->sum('nopersonas'),
+            'noclientesTemp' => $query->clone()->where('pagado', true)->sum('nopersonas'),
+            'totalclientesTemp' => $query->clone()->sum('nopersonas'),
+            'descuentosTemp' => $query->clone()->sum('descuentoimporte'),
+            'alimentosTemp' => $query->clone()->sum('totalalimentos'),
+            'bebidasTemp' => $query->clone()->sum('totalbebidas'),
         ];
     }
 }
