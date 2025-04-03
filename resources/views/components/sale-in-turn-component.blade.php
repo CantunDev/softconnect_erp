@@ -49,7 +49,7 @@
                                             data-bs-target="#flush-collapse-{{ $index }}" aria-expanded="true"
                                             aria-controls="flush-collapse-{{ $index }}">
                                             <i class="bx bx-food-menu font-size-12 align-middle me-1"></i>
-                                            Venta Al Dia
+                                            Venta Al Dia {{$restaurant->name}}
                                         </button>
                                     </h2>
                                 </div>

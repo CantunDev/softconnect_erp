@@ -30,6 +30,11 @@ class DateHelper
         return Carbon::now()->daysInMonth;
     }
 
+    public static function getCurrentDay()
+    {
+        return Carbon::now()->day;
+    }
+
     public static function getCurrentMonth()
     {
         return Carbon::now()->month;

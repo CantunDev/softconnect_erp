@@ -1,4 +1,4 @@
-<div class="row mt-2">
+<div class="row">
     <div class="col-xl-12">
         <div class="card" style="border: 2px solid #ccc">
             <div class="card-body">
