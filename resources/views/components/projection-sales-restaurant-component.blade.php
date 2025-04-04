@@ -53,7 +53,7 @@
                                             <h5 class="font-size-12 price">
                                                 @if (isset($results['venta' . $restaurant->id]))
                                                     {{-- Acceso a los datos --}}
-                                                    {{ $result['venta' . $restaurant->id]['total'] }}
+                                                    {{ $results['venta' . $restaurant->id]['total'] }}
                                                 @else
                                                     {{-- Valor por defecto si no hay datos --}}
                                                     {{ $gral = 0 }}
