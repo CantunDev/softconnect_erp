@@ -10,54 +10,70 @@ use Illuminate\View\Component;
 
 class ProjectionSalesRestaurantComponent extends Component
 {
+    /**
+     * Create a new component instance.
+     */
+
     public $restaurants;
     public $colSize;
     public $results = [];
     public $errors = [];
+    public $projection = [];
 
     public function __construct($restaurants, DynamicConnectionService $connectionService, DateHelper $date)
     {
         $this->restaurants = $restaurants;
         $this->colSize = $this->calculateColSize(count($restaurants));
-        
+
         foreach ($this->restaurants as $i => $restaurant) {
+            $currentMonth = $date->getCurrentMonth(); //Mes actual
+            $currentYear = $date->getCurrentYear(); //Año actual
+            $currentDay = $date->getCurrentDay(); //Dia actual
+            $daysInMonth = $date->getDaysInMonth(); //Total de dias en el mes 
+
+            // Funcion para obtener las metas por año y mes 
+            $projection = $this->getRestaurantProjection($restaurant, $currentYear, $currentMonth);
+
+            // Funcion para obtener la conexion por restaurante 
             $connectionResult = $connectionService->configureConnection($restaurant);
+
+            //  Almacenamiento de metas 
+            $this->projection['sales' . $restaurant->id] = [
+                'projected_sales' => $projection['projected_sales'],
+                'projected_tax' => $projection['projected_tax'],
+                'projected_check' => $projection['projected_check'],
+            ];
             
             if ($connectionResult['success']) {
                 $connection = $connectionResult['connection'];
-                $currentMonth = $date->getCurrentMonth();
-                $currentYear = $date->getCurrentYear();
-                $currentDay = $date->getCurrentDay();
-                $daysInMonth = $date->getDaysInMonth();
-                
-                // Obtener datos de ventas
                 $chequeData = $this->getChequeData($connection, $currentMonth, $currentYear);
-                
-                // Obtener datos temporales (para ventas del día)
-                $tempChequeData = $this->getTempChequeData($connection, $currentMonth, $currentYear);
-                
-                // Obtener proyecciones del restaurante
-                $projection = $this->getRestaurantProjection($restaurant, $currentYear, $currentMonth);
-                
-                // Calcular todas las métricas
-                $metrics = $this->calculateAllMetrics(
-                    $chequeData,
-                    $tempChequeData,
-                    $projection,
-                    $currentDay,
-                    $daysInMonth
-                );
-                
-                // Almacenar resultados
                 $this->results['venta' . $restaurant->id] = [
                     'name' => $restaurant->name,
-                    'data' => array_merge($chequeData, $tempChequeData),
-                    'projection' => $projection,
-                    'metrics' => $metrics,
-                    'color_primary' => $restaurant->color_primary ?? '#ccc',
-                    'color_accent' => $restaurant->color_accent ?? '#000'
+                    'total' => $chequeData['total'],
+                    'nopersonas' => $chequeData['nopersonas'],
+                    'chequePromedio' => $chequeData['chequePromedio'],
+                ];
+
+                // Calculos para las metas mensuales
+                 $goals = $this->getGoals($chequeData,$projection,$date);
+
+                 $this->projection['goals' . $restaurant->id] = [
+                    'dailySalesGoal' => $goals['dailySalesGoal'],
+                    'salesGoalToDate' => $goals['salesGoalToDate'],
+                    'diffProyectionGoal' => $goals['diffProyectionGoal'],
+                    'goals_daily' => $goals['goals_daily'],
+                    'sales_avg_daily' => $goals['sales_avg_daily'],
+                    'goals_sales_projected' => $goals['goals_sales_projected'],
+                    'sales_difference' => $goals['sales_difference'],
+                    'sales_difference' => $goals['sales_difference'],
+                    'goals_tax' => $goals['goals_tax'],
+                    'taxGoalToDate' => $goals['taxGoalToDate'],
+                    'tax_difference' => $goals['tax_difference'],
+                    'check_avg_daily' => $goals['check_avg_daily'],
+                    'check_defficit' => $goals['check_defficit']
                 ];
             } else {
+                // Almacenar el mensaje de error
                 $this->errors[] = "Error en {$restaurant->name}: " . $connectionResult['message'];
             }
         }
@@ -71,138 +87,153 @@ class ProjectionSalesRestaurantComponent extends Component
             default => 4,
         };
     }
-
-    private function getChequeData($connection, $month, $year)
+    /*
+    * Obtencion de las metas por año y mes para cada restaurante
+    */
+    private function getRestaurantProjection($restaurant, $currentYear, $currentMonth)
     {
-        return [
-            'total' => $connection->table('cheques')
-                ->whereMonth('fecha', $month)
-                ->whereYear('fecha', $year)
-                ->where('pagado', true)
-                ->where('cancelado', false)
-                ->sum('total'),
-                
-            'nopersonas' => $connection->table('cheques')
-                ->whereMonth('fecha', $month)
-                ->whereYear('fecha', $year)
-                ->where('pagado', true)
-                ->where('cancelado', false)
-                ->sum('nopersonas'),
-                
-            'chequePromedio' => $connection->table('cheques')
-                ->whereMonth('fecha', $month)
-                ->whereYear('fecha', $year)
-                ->where('pagado', true)
-                ->where('cancelado', false)
-                ->avg('total') ?? 0
-        ];
-    }
-
-    private function getTempChequeData($connection, $month, $year)
-    {
-        $today = now()->format('Y-m-d');
-        
-        return [
-            'totalTemp' => $connection->table('tempcheques')
-                ->whereMonth('fecha', $month)
-                ->whereYear('fecha', $year)
-                ->whereDate('fecha', $today)
-                ->where('cancelado', false)
-                ->sum('total'),
-                
-            'totalclientesTemp' => $connection->table('tempcheques')
-                ->whereMonth('fecha', $month)
-                ->whereYear('fecha', $year)
-                ->whereDate('fecha', $today)
-                ->where('cancelado', false)
-                ->sum('nopersonas'),
-                
-            'chequePromedioTemp' => $connection->table('tempcheques')
-                ->whereMonth('fecha', $month)
-                ->whereYear('fecha', $year)
-                ->whereDate('fecha', $today)
-                ->where('cancelado', false)
-                ->avg('total') ?? 0
-        ];
-    }
-
-    private function getRestaurantProjection($restaurant, $year, $month)
-    {
-        if (!isset($restaurant->projections) || empty($restaurant->projections)) {
-            return [
-                'sales_goal' => 0,
-                'clients_goal' => 0,
-                'avg_check_goal' => 0
-            ];
-        }
-        
         foreach ($restaurant->projections as $projection) {
-            if ($projection->year == $year && $projection->month == $month) {
+            if ($projection->year == $currentYear && $projection->month == $currentMonth) {
                 return [
-                    'sales_goal' => $projection->projected_sales,
-                    'clients_goal' => $projection->projected_clients,
-                    'avg_check_goal' => $projection->projected_avg_check
+                    'projected_sales' => $projection->projected_sales,
+                    'projected_costs' => $projection->projected_costs,
+                    'projected_profit' => $projection->projected_profit,
+                    'projected_tax'   => $projection->projected_tax,
+                    'projected_check' => $projection->projected_check
                 ];
             }
         }
-        
-        return [
-            'sales_goal' => 0,
-            'clients_goal' => 0,
-            'avg_check_goal' => 0
-        ];
     }
-
-    private function calculateAllMetrics($chequeData, $tempChequeData, $projection, $currentDay, $daysInMonth)
+    /**
+     * Obtiene los datos de los cheques.
+     */
+    private function getChequeData($connection, $currentMonth, $currentYear)
     {
-        // Cálculos de ventas
-        $dailySalesGoal = $projection['sales_goal'] / $daysInMonth;
-        $salesGoalToDate = $dailySalesGoal * $currentDay;
-        $salesPercentage = $salesGoalToDate > 0 ? ($tempChequeData['totalTemp'] / $salesGoalToDate) * 100 : 0;
-        $salesReach = $tempChequeData['totalTemp'] - $salesGoalToDate;
-        $salesDeficit = $projection['sales_goal'] - $chequeData['total'];
-        $dailySalesAverage = $currentDay > 0 ? $tempChequeData['totalTemp'] / $currentDay : 0;
-        $monthlySalesProjection = $dailySalesAverage * $daysInMonth;
-        $salesProjectionDiff = $monthlySalesProjection - $projection['sales_goal'];
+        $total = $connection->table('cheques')
+            ->whereMonth('fecha', $currentMonth)
+            ->whereYear('fecha', $currentYear)
+            ->where('pagado', true)
+            ->where('cancelado', false)
+            ->sum('total');
 
-        // Cálculos de clientes
-        $dailyClientsGoal = $projection['clients_goal'] / $daysInMonth;
-        $clientsGoalToDate = $dailyClientsGoal * $currentDay;
-        $clientsPercentage = $clientsGoalToDate > 0 ? ($tempChequeData['totalclientesTemp'] / $clientsGoalToDate) * 100 : 0;
-        $clientsReach = $tempChequeData['totalclientesTemp'] - $clientsGoalToDate;
+        $nopersonas = $connection->table('cheques')
+            ->whereMonth('fecha', $currentMonth)
+            ->whereYear('fecha', $currentYear)
+            ->where('pagado', true)
+            ->where('cancelado', false)
+            ->sum('nopersonas');
 
-        // Cálculos de cheques promedio
-        $checkDeficit = $projection['avg_check_goal'] - $tempChequeData['chequePromedioTemp'];
+        $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
 
         return [
-            'sales' => [
-                'daily_goal' => round($dailySalesGoal, 2),
-                'goal_to_date' => round($salesGoalToDate, 2),
-                'percentage' => round($salesPercentage, 2),
-                'reach' => round($salesReach, 2),
-                'deficit' => round($salesDeficit, 2),
-                'daily_average' => round($dailySalesAverage, 2),
-                'monthly_projection' => round($monthlySalesProjection, 2),
-                'projection_diff' => round($salesProjectionDiff, 2)
-            ],
-            'clients' => [
-                'daily_goal' => round($dailyClientsGoal, 2),
-                'goal_to_date' => round($clientsGoalToDate, 2),
-                'percentage' => round($clientsPercentage, 2),
-                'reach' => round($clientsReach, 2)
-            ],
-            'checks' => [
-                'deficit' => round($checkDeficit, 2)
-            ]
+            'total' => $total,
+            'nopersonas' => $nopersonas,
+            'chequePromedio' => $chequePromedio,
         ];
     }
 
+    /**
+     * Calcula todas las proyecciones y métricas requeridas
+     */
+    private function getGoals( $projection, $chequeData, $date)
+    {
+      
+        /**
+         *  ---------- VENTAS ---------
+         * META VENTA AL DIA = meta / dias del mes * dias analizados 
+         * ALCANCE AL DIA = venta real al dia / meta clientes a la fecha * 100
+         * DIF/PROY = Venta real al dia - meta de venta a la fecha
+         * DEFICIT = alcance - 100
+         * META VENTA DIARIA = meta / dias del mes
+         * PROMEDIO VENTA DIARIA = vta_real / dias transcurridos
+         * PROYECCION AL CIERRE = promedio venta * dias del mes
+         * DIFERENCIA = proyectado - meta 
+         * ----------- CLIENTES ------------ 
+         * META DE CLIENTES AL DIA = meta_clientes / dias del mes * dias transcurridos 
+         * ALCACNE AL DIA = venta real al dia / meta clientes a la fecha * 100
+         * DIF/PROY =  meta_clientes - clientes al dia 
+         * ------------ CHEQUE PROMEDIO -------------
+         * CHEQUE PROMEDIO = Venta real / Clientes 
+         * metacheques - promedio cheque actual
+         */
+
+         /*VENTAS*/
+        $sales_total = $chequeData['total'];
+        $tax_total = $chequeData['nopersonas'];
+        $check_avg = $chequeData['chequePromedio'];
+
+        $dailySalesGoal = ($projection['projected_sales'] / $date->getDaysInMonth())  *  $date->getDaysPassed();
+        $salesGoalToDate = $projection['projected_tax'] != 0  ? ($projection['projected_sales'] / $projection['projected_tax']) * 100 : 0;
+        $diffProyectionGoal =  /*$chequeData['total']*/ $sales_total != 0 ? $sales_total : 0;
+        $salesDeficit = $salesGoalToDate - 100;
+        $goals_daily = $projection['projected_sales'] != 0 ? ($projection['projected_sales'] / $date->getDaysInMonth()): 0; 
+        $sales_avg_daily = $sales_total / $date->getDaysPassed();
+        $goals_sales_projected = $sales_avg_daily * $date->getDaysInMonth();
+        $sales_difference = $goals_sales_projected - $projection['projected_sales'];
+         /*CLIENTES*/
+         $goals_tax =  $projection['projected_tax'] != 0 ? ($projection['projected_tax'] / $date->getDaysInMonth() ) * $date->getDaysPassed() : 0;
+         $taxGoalToDate = ($sales_total / $projection['projected_tax']) * 100;
+         $tax_difference = $projection['projected_tax'] != 0 ? ($projection['projected_tax'] - $tax_total ): 0;
+         /*TICKET PROMEDIO*/
+         $check_avg_daily = $sales_total / $tax_total;
+         $check_defficit = $projection['projected_check'] - $check_avg;
+        // $salesPercentage = $salesGoalToDate > 0 ? ($tempChequeData['totalTemp'] / $salesGoalToDate) * 100 : 0;
+        // $salesReach = $tempChequeData['totalTemp'] - $salesGoalToDate;
+        // $salesDeficit = $salesGoal - $chequeData['total'];
+        // $dailySalesAverage = $currentDay > 0 ? $tempChequeData['totalTemp'] / $currentDay : 0;
+        // $monthlySalesProjection = $dailySalesAverage * $daysInMonth;
+        // $salesProjectionDiff = $monthlySalesProjection - $salesGoal;
+
+        // $dailyClientsGoal = $clientsGoal / $daysInMonth;
+        // $clientsGoalToDate = $dailyClientsGoal * $currentDay;
+        // $clientsPercentage = $clientsGoalToDate > 0 ? ($tempChequeData['totalclientesTemp'] / $clientsGoalToDate) * 100 : 0;
+        // $clientsReach = $tempChequeData['totalclientesTemp'] - $clientsGoalToDate;
+
+        // $checkDeficit = $avgCheckGoal - $tempChequeData['chequePromedioTemp'];
+        return [
+            'dailySalesGoal' => round($dailySalesGoal, 2),
+            'salesGoalToDate' => round($salesGoalToDate, 2),
+            'diffProyectionGoal' => round($diffProyectionGoal, 2),
+            'salesDefict' => round($salesDeficit,2),
+            'goals_daily' => round($goals_daily,2),
+            'sales_avg_daily' => round($sales_avg_daily,2),
+            'goals_sales_projected' => round($goals_sales_projected,2),
+            'sales_difference' => round($sales_difference,2),
+            'goals_tax' => round($goals_tax,2),
+            'taxGoalToDate' => round($taxGoalToDate,2),
+            'tax_difference' => round($tax_difference,2),
+            'check_avg_daily' => round($check_avg_daily,2),
+            'check_defficit' => round($check_defficit)
+    ];
+
+        // return [
+        //     'sales' => [
+        //         'daily_goal' => round($dailySalesGoal, 2),
+        //         'goal_to_date' => round($salesGoalToDate, 2),
+        //         'percentage' => round($salesPercentage, 2),
+        //         'reach' => round($salesReach, 2),
+        //         'deficit' => round($salesDeficit, 2),
+        //         'daily_average' => round($dailySalesAverage, 2),
+        //         'monthly_projection' => round($monthlySalesProjection, 2),
+        //         'projection_diff' => round($salesProjectionDiff, 2)
+        //     ],
+        //     'clients' => [
+        //         'daily_goal' => round($dailyClientsGoal, 2),
+        //         'goal_to_date' => round($clientsGoalToDate, 2),
+        //         'percentage' => round($clientsPercentage, 2),
+        //         'reach' => round($clientsReach, 2)
+        //     ],
+        //     'checks' => [
+        //         'deficit' => round($checkDeficit, 2)
+        //     ]
+        // ];
+    }
+
+    /**
+     * Get the view / contents that represent the component.
+     */
     public function render(): View|Closure|string
     {
-        return view('components.projection-sales-restaurant-component', [
-            'results' => $this->results,
-            'errors' => $this->errors,
-            'colSize' => $this->colSize
-        ]);
+        return view('components.projection-sales-restaurant-component');
     }
 }
