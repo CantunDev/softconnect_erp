@@ -196,7 +196,7 @@ class ProjectionSalesRestaurantComponent extends Component
             'dailySalesGoal' => round($dailySalesGoal, 2),
             'salesGoalToDate' => round($salesGoalToDate, 2),
             'diffProyectionGoal' => round($diffProyectionGoal, 2),
-            'salesDefict' => round($salesDeficit,2),
+            'salesDeficit' => round($salesDeficit,2),
             'goals_daily' => round($goals_daily,2),
             'sales_avg_daily' => round($sales_avg_daily,2),
             'goals_sales_projected' => round($goals_sales_projected,2),
