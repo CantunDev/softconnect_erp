@@ -48,7 +48,7 @@
                                             </h5>
                                         </div>
                                         <!-- Meta de venta al día -->
-                                        <h5 class="font-size-12 mb-2">Meta de venta al día {{$currentDay}}</h5>
+                                        <h5 class="font-size-12 mb-2">Meta de venta al día {{ $currentDay }}</h5>
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12 price">
                                                 @if (isset($results['venta' . $restaurant->id]))
@@ -228,7 +228,7 @@
                                         </div>
 
                                         <!-- Meta de clientes al día -->
-                                        <h5 class="font-size-12 mb-2">Meta de clientes al día {{$currentDay}}</h5>
+                                        <h5 class="font-size-12 mb-2">Meta de clientes al día {{ $currentDay }}</h5>
                                         <div class="float-end ms-2">
                                             @if (isset($results['venta' . $restaurant->id]))
                                                 {{-- Acceso a los datos --}}
@@ -241,20 +241,23 @@
 
                                         <!-- Clientes reales al día -->
                                         <h5 class="font-size-12 mb-2">Clientes al día real</h5>
-                                        <div class="float-end ms-2">
-                                            @if (isset($projection['goals' . $restaurant->id]))
-                                                {{-- Acceso a los datos --}}
-                                                {{ $projection['goals' . $restaurant->id]['taxGoalToDate'] }}
-                                            @else
-                                                {{-- Valor por defecto si no hay datos --}}
-                                                {{ 0 }}
-                                            @endif
+                                        <div class="float-end ms-2 ">
+                                            <h5 class="font-size-12 percentage">
+                                                @if (isset($projection['goals' . $restaurant->id]))
+                                                    {{-- Acceso a los datos --}}
+                                                    {{ $projection['goals' . $restaurant->id]['taxGoalToDate'] }}
+                                                @else
+                                                    {{-- Valor por defecto si no hay datos --}}
+                                                    {{ 0 }}
+                                                @endif
+                                            </h5>
+
                                         </div>
 
                                         <!-- Alcance al día (%) -->
                                         <h5 class="font-size-12 mb-2">Alcance al día</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 percentage">
+                                            <h5 class="font-size-12 ">
                                                 @if (isset($projection['goals' . $restaurant->id]))
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['tax_difference'] }}
@@ -298,9 +301,9 @@
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12 price">
                                                 @if (isset($projection['sales' . $restaurant->id]))
-                                                    {{  $projection['sales' . $restaurant->id]['projected_check'] }}
+                                                    {{ $projection['sales' . $restaurant->id]['projected_check'] }}
                                                 @else
-                                                    {{  0 }}
+                                                    {{ 0 }}
                                                 @endif
                                             </h5>
                                         </div>
@@ -308,10 +311,10 @@
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12 price">
                                                 @if (isset($projection['goals' . $restaurant->id]))
-                                                {{ $projection['goals' . $restaurant->id]['check_avg_daily'] }}
-                                            @else
-                                                {{ 0 }}
-                                            @endif
+                                                    {{ $projection['goals' . $restaurant->id]['check_avg_daily'] }}
+                                                @else
+                                                    {{ 0 }}
+                                                @endif
                                                 {{-- ${{ number_format($restaurantData['projection']['avg_check_goal'], 2) }} --}}
                                             </h5>
                                         </div>
@@ -321,10 +324,11 @@
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12 price">
                                                 @if (isset($projection['goals' . $restaurant->id]))
-                                                {{ $projection['goals' . $restaurant->id]['check_defficit'] }}
-                                            @else
-                                                {{ 0 }}
-                                            @endif                                            </h5>
+                                                    {{ $projection['goals' . $restaurant->id]['check_defficit'] }}
+                                                @else
+                                                    {{ 0 }}
+                                                @endif
+                                            </h5>
                                         </div>
 
                                         <!-- Déficit -->
