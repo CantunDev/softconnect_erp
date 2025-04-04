@@ -329,7 +329,7 @@
                                         <div class="float-end ms-2">
                                             @if (isset($projection['goals' . $restaurant->id]))
                                                 <h5 class="font-size-12 price"
-                                                    style="color: {{ projection['goals' . $restaurant->id]['check_defficit'] < 0 ? 'red' : 'green' }};">
+                                                    style="color: {{ $projection['goals' . $restaurant->id]['check_defficit'] < 0 ? 'red' : 'green' }};">
                                                     {{ $projection['goals' . $restaurant->id]['check_defficit'] }}
                                                 @else
                                                     {{ 0 }}
