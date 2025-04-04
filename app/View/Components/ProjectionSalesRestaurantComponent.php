@@ -19,12 +19,13 @@ class ProjectionSalesRestaurantComponent extends Component
     public $results = [];
     public $errors = [];
     public $projection = [];
-
+    public $currentDay;
     public function __construct($restaurants, DynamicConnectionService $connectionService, DateHelper $date)
     {
         $this->restaurants = $restaurants;
         $this->colSize = $this->calculateColSize(count($restaurants));
-
+        $this->currentDay = $date->getCurrentDay();
+        
         foreach ($this->restaurants as $i => $restaurant) {
             $currentMonth = $date->getCurrentMonth(); //Mes actual
             $currentYear = $date->getCurrentYear(); //Año actual
