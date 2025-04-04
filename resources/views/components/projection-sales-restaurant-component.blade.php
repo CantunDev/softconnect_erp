@@ -78,7 +78,7 @@
                                         <!-- Alcance al día (%) -->
                                         <h5 class="font-size-12 mb-2">Alcance al día</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 percentage">
+                                            <h5 class="font-size-12 price">
                                                 @if (isset($projection['goals' . $restaurant->id]))
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['diffProyectionGoal'] }}
