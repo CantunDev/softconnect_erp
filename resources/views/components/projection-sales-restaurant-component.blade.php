@@ -78,15 +78,17 @@
                                         <!-- Alcance al día (%) -->
                                         <h5 class="font-size-12 mb-2">Alcance al día</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price">
-                                                @if (isset($projection['goals' . $restaurant->id]))
+                                            @if (isset($projection['goals' . $restaurant->id]))
+                                                <h5 class="font-size-12 price"
+                                                    style="color: {{ $projection['goals' . $restaurant->id]['diffProyectionGoal'] < 0 ? 'red' : 'green' }};">
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['diffProyectionGoal'] }}
                                                 @else
                                                     {{-- Valor por defecto si no hay datos --}}
                                                     {{ 0 }}
-                                                @endif
-                                            </h5>
+                                                </h5>
+                                            @endif
+
                                         </div>
 
                                         <!-- Diferencia ($) -->
@@ -230,7 +232,7 @@
                                         <!-- Meta de clientes al día -->
                                         <h5 class="font-size-12 mb-2">Meta de clientes al día {{ $currentDay }}</h5>
                                         <div class="float-end ms-2">
-                                            
+
                                             @if (isset($results['venta' . $restaurant->id]))
                                                 {{-- Acceso a los datos --}}
                                                 {{ $results['venta' . $restaurant->id]['nopersonas'] }}
@@ -258,7 +260,8 @@
                                         <!-- Alcance al día (%) -->
                                         <h5 class="font-size-12 mb-2">Alcance al día</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12" style="color: {{ $projection['goals' . $restaurant->id]['tax_difference'] < 0 ? 'red' : 'green' }};">
+                                            <h5 class="font-size-12"
+                                                style="color: {{ $projection['goals' . $restaurant->id]['tax_difference'] < 0 ? 'red' : 'green' }};">
                                                 @if (isset($projection['goals' . $restaurant->id]))
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['tax_difference'] }}
