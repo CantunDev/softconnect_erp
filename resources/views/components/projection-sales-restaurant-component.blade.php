@@ -232,7 +232,7 @@
                                         <!-- Meta de clientes al día -->
                                         <h5 class="font-size-12 mb-2">Meta de clientes al día {{ $currentDay }}</h5>
                                         <div class="float-end ms-2">
-
+                                            <h5 class="font-size-12 percentage">
                                             @if (isset($results['venta' . $restaurant->id]))
                                                 {{-- Acceso a los datos --}}
                                                 {{ $results['venta' . $restaurant->id]['nopersonas'] }}
@@ -240,6 +240,7 @@
                                                 {{-- Valor por defecto si no hay datos --}}
                                                 {{ 0 }}
                                             @endif
+                                            </h5>
                                         </div>
 
                                         <!-- Clientes reales al día -->
