@@ -230,9 +230,9 @@
                                         <!-- Meta de clientes al día -->
                                         <h5 class="font-size-12 mb-2">Meta de clientes al día {{$currentDay}}</h5>
                                         <div class="float-end ms-2">
-                                            @if (isset($results['ventas' . $restaurant->id]))
+                                            @if (isset($results['venta' . $restaurant->id]))
                                                 {{-- Acceso a los datos --}}
-                                                {{ $results['ventas' . $restaurant->id]['nopersonas'] }}
+                                                {{ $results['venta' . $restaurant->id]['nopersonas'] }}
                                             @else
                                                 {{-- Valor por defecto si no hay datos --}}
                                                 {{ 0 }}
