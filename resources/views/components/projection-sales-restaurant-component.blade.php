@@ -94,19 +94,17 @@
                                         <!-- Diferencia ($) -->
                                         <h5 class="font-size-12 mb-2">DIF/PROY ($)</h5>
                                         <div class="float-end ms-2">
-                                            {{-- <h5 class="font-size-12 {{ $restaurantData['metrics']['sales']['reach'] >= 0 ? 'text-success' : 'text-danger' }}">
-                                                ${{ number_format($restaurantData['metrics']['sales']['reach'], 2) }}
-                                            </h5> --}}
-                                            <h5 class="font-size-12 price">
-
-                                                @if (isset($projection['goals' . $restaurant->id]))
+                                            @if (isset($projection['goals' . $restaurant->id]))
+                                                <h5 class="font-size-12 price"
+                                                    style="color: {{ 100 - $alcance_vta > 0 ? 'red' : 'green' }};">
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['salesDeficit'] }}
                                                 @else
                                                     {{-- Valor por defecto si no hay datos --}}
                                                     {{ 0 }}
-                                                @endif
-                                            </h5>
+                                                </h5>
+                                            @endif
+
                                         </div>
 
                                         <!-- Déficit total -->
