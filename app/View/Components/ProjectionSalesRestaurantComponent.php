@@ -202,7 +202,7 @@ class ProjectionSalesRestaurantComponent extends Component
             'sales_avg_daily' => round($sales_avg_daily,2),
             'goals_sales_projected' => round($goals_sales_projected,2),
             'sales_difference' => round($sales_difference,2),
-            'goals_tax' => round($goals_tax,2),
+            'goals_tax' => ceil(round($goals_tax,2)),
             'taxGoalToDate' => ceil($taxGoalToDate),
             'tax_difference' => round($tax_difference,2),
             'check_avg_daily' => round($check_avg_daily,2),
