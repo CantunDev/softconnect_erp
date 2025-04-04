@@ -50,7 +50,7 @@ class ProjectionSalesRestaurantComponent extends Component
                 
 
                 // Calculos para las metas mensuales
-                 $goals = $this->getGoals($chequeData,$projection,$date);
+                 $goals = $this->getGoals($projection, $chequeData,$date);
 
                  $this->results['venta' . $restaurant->id] = [
                     'name' => $restaurant->name,
@@ -58,7 +58,7 @@ class ProjectionSalesRestaurantComponent extends Component
                     'nopersonas' => $chequeData['nopersonas'],
                     'chequePromedio' => $chequeData['chequePromedio'],
                 ];
-                
+
                  $this->projection['goals' . $restaurant->id] = [
                     'dailySalesGoal' => $goals['dailySalesGoal'],
                     'salesGoalToDate' => $goals['salesGoalToDate'],
@@ -110,29 +110,29 @@ class ProjectionSalesRestaurantComponent extends Component
      * Obtiene los datos de los cheques.
      */
     private function getChequeData($connection, $currentMonth, $currentYear)
-    {
-        $total = $connection->table('cheques')
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->where('pagado', true)
-            ->where('cancelado', false)
-            ->sum('total');
+{
+    $total = $connection->table('cheques')
+        ->whereMonth('fecha', $currentMonth)
+        ->whereYear('fecha', $currentYear)
+        ->where('pagado', true)
+        ->where('cancelado', false)
+        ->sum('total') ?? 0; // Asegurar un valor por defecto
 
-        $nopersonas = $connection->table('cheques')
-            ->whereMonth('fecha', $currentMonth)
-            ->whereYear('fecha', $currentYear)
-            ->where('pagado', true)
-            ->where('cancelado', false)
-            ->sum('nopersonas');
+    $nopersonas = $connection->table('cheques')
+        ->whereMonth('fecha', $currentMonth)
+        ->whereYear('fecha', $currentYear)
+        ->where('pagado', true)
+        ->where('cancelado', false)
+        ->sum('nopersonas') ?? 0; // Asegurar un valor por defecto
 
-        $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
+    $chequePromedio = $nopersonas > 0 ? round(($total / $nopersonas), 2) : 0;
 
-        return [
-            'total' => $total,
-            'nopersonas' => $nopersonas,
-            'chequePromedio' => $chequePromedio,
-        ];
-    }
+    return [
+        'total' => $total,
+        'nopersonas' => $nopersonas,
+        'chequePromedio' => $chequePromedio,
+    ];
+}
 
     /**
      * Calcula todas las proyecciones y métricas requeridas
@@ -160,9 +160,9 @@ class ProjectionSalesRestaurantComponent extends Component
          */
 
          /*VENTAS*/
-        $sales_total = $chequeData['total'];
-        $tax_total = $chequeData['nopersonas'];
-        $check_avg = $chequeData['chequePromedio'];
+         $sales_total = $chequeData['total'] ?? 0;
+         $tax_total = $chequeData['nopersonas'] ?? 0;
+         $check_avg = $chequeData['chequePromedio'] ?? 0;
 
         $dailySalesGoal = ($projection['projected_sales'] / $date->getDaysInMonth())  *  $date->getDaysPassed();
         $salesGoalToDate = $projection['projected_tax'] != 0  ? ($projection['projected_sales'] / $projection['projected_tax']) * 100 : 0;
