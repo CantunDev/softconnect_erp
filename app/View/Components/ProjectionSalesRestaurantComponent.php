@@ -66,7 +66,7 @@ class ProjectionSalesRestaurantComponent extends Component
                     'goals_daily' => $goals['goals_daily'],
                     'sales_avg_daily' => $goals['sales_avg_daily'],
                     'goals_sales_projected' => $goals['goals_sales_projected'],
-                    'sales_difference' => $goals['sales_difference'],
+                    'salesDeficit' => $goals['salesDeficit'],
                     'sales_difference' => $goals['sales_difference'],
                     'goals_tax' => $goals['goals_tax'],
                     'taxGoalToDate' => $goals['taxGoalToDate'],
