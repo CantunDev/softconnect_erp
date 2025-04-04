@@ -64,7 +64,7 @@
                                         <!-- Venta real al día -->
                                         <h5 class="font-size-12 mb-2">Venta real al día</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 percentaje">
+                                            <h5 class="font-size-12 percentage">
                                                 @if (isset($projection['goals' . $restaurant->id]))
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['salesGoalToDate'] }}
@@ -95,7 +95,7 @@
                                         <h5 class="font-size-12 mb-2">DIF/PROY ($)</h5>
                                         <div class="float-end ms-2">
                                             @if (isset($projection['goals' . $restaurant->id]))
-                                                <h5 class="font-size-12 percentaje"
+                                                <h5 class="font-size-12 percentage"
                                                     style="color: {{ $projection['goals' . $restaurant->id]['salesDeficit'] > 0 ? 'red' : 'green' }};">
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['salesDeficit'] }}
