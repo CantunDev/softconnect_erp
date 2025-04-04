@@ -47,16 +47,18 @@ class ProjectionSalesRestaurantComponent extends Component
             if ($connectionResult['success']) {
                 $connection = $connectionResult['connection'];
                 $chequeData = $this->getChequeData($connection, $currentMonth, $currentYear);
-                $this->results['venta' . $restaurant->id] = [
+                
+
+                // Calculos para las metas mensuales
+                 $goals = $this->getGoals($chequeData,$projection,$date);
+
+                 $this->results['venta' . $restaurant->id] = [
                     'name' => $restaurant->name,
                     'total' => $chequeData['total'],
                     'nopersonas' => $chequeData['nopersonas'],
                     'chequePromedio' => $chequeData['chequePromedio'],
                 ];
-
-                // Calculos para las metas mensuales
-                 $goals = $this->getGoals($chequeData,$projection,$date);
-
+                
                  $this->projection['goals' . $restaurant->id] = [
                     'dailySalesGoal' => $goals['dailySalesGoal'],
                     'salesGoalToDate' => $goals['salesGoalToDate'],
