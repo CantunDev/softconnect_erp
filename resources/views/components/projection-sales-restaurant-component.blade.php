@@ -327,14 +327,15 @@
                                         <!-- Cheque promedio actual -->
                                         <h5 class="font-size-12 mb-2">Cheque prom actual</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12 price"
-                                                style="color: {{ $projection['goals' . $restaurant->id]['check_defficit'] < 0 ? 'red' : 'green' }};">
-                                                @if (isset($projection['goals' . $restaurant->id]))
+                                            @if (isset($projection['goals' . $restaurant->id]))
+                                                <h5 class="font-size-12 price"
+                                                    style="color: {{ projection['goals' . $restaurant->id]['check_defficit'] < 0 ? 'red' : 'green' }};">
                                                     {{ $projection['goals' . $restaurant->id]['check_defficit'] }}
                                                 @else
                                                     {{ 0 }}
-                                                @endif
-                                            </h5>
+                                                </h5>
+                                            @endif
+
                                         </div>
 
                                         <!-- Déficit -->

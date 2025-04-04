@@ -25,30 +25,30 @@ class ProjectionSalesRestaurantComponent extends Component
         $this->restaurants = $restaurants;
         $this->colSize = $this->calculateColSize(count($restaurants));
         $this->currentDay = $date->getCurrentDay();
-        
+
         foreach ($this->restaurants as $i => $restaurant) {
             $currentMonth = $date->getCurrentMonth(); //Mes actual
             $currentYear = $date->getCurrentYear(); //Año actual
             $currentDay = $date->getCurrentDay(); //Dia actual
-            $daysInMonth = $date->getDaysInMonth(); //Total de dias en el mes 
+            $daysInMonth = $date->getDaysInMonth(); //Total de dias en el mes
 
-            // Funcion para obtener las metas por año y mes 
+            // Funcion para obtener las metas por año y mes
             $projection = $this->getRestaurantProjection($restaurant, $currentYear, $currentMonth);
 
-            // Funcion para obtener la conexion por restaurante 
+            // Funcion para obtener la conexion por restaurante
             $connectionResult = $connectionService->configureConnection($restaurant);
 
-            //  Almacenamiento de metas 
+            //  Almacenamiento de metas
             $this->projection['sales' . $restaurant->id] = [
                 'projected_sales' => $projection['projected_sales'],
                 'projected_tax' => $projection['projected_tax'],
                 'projected_check' => $projection['projected_check'],
             ];
-            
+
             if ($connectionResult['success']) {
                 $connection = $connectionResult['connection'];
                 $chequeData = $this->getChequeData($connection, $currentMonth, $currentYear);
-                
+
 
                 // Calculos para las metas mensuales
                  $goals = $this->getGoals($projection, $chequeData,$date);
@@ -140,23 +140,23 @@ class ProjectionSalesRestaurantComponent extends Component
      */
     private function getGoals( $projection, $chequeData, $date)
     {
-      
+
         /**
          *  ---------- VENTAS ---------
-         * META VENTA AL DIA = meta / dias del mes * dias analizados 
+         * META VENTA AL DIA = meta / dias del mes * dias analizados
          * ALCANCE AL DIA = venta real al dia / meta clientes a la fecha * 100
          * DIF/PROY = Venta real al dia - meta de venta a la fecha
          * DEFICIT = alcance - 100
          * META VENTA DIARIA = meta / dias del mes
          * PROMEDIO VENTA DIARIA = vta_real / dias transcurridos
          * PROYECCION AL CIERRE = promedio venta * dias del mes
-         * DIFERENCIA = proyectado - meta 
-         * ----------- CLIENTES ------------ 
-         * META DE CLIENTES AL DIA = meta_clientes / dias del mes * dias transcurridos 
+         * DIFERENCIA = proyectado - meta
+         * ----------- CLIENTES ------------
+         * META DE CLIENTES AL DIA = meta_clientes / dias del mes * dias transcurridos
          * ALCACNE AL DIA = venta real al dia / meta clientes a la fecha * 100
-         * DIF/PROY =  meta_clientes - clientes al dia 
+         * DIF/PROY =  meta_clientes - clientes al dia
          * ------------ CHEQUE PROMEDIO -------------
-         * CHEQUE PROMEDIO = Venta real / Clientes 
+         * CHEQUE PROMEDIO = Venta real / Clientes
          * metacheques - promedio cheque actual
          */
 
@@ -170,7 +170,7 @@ class ProjectionSalesRestaurantComponent extends Component
         $salesGoalToDate = $dailySalesGoal != 0  ? ($sales_total / $dailySalesGoal) * 100 : 0;
         $diffProyectionGoal =  /*$chequeData['total']*/ $dailySalesGoal != 0 ?(  $sales_total - $dailySalesGoal ): 0;
         $salesDeficit =  100 - $salesGoalToDate ;
-        $goals_daily = $projection['projected_sales'] != 0 ? ($projection['projected_sales'] / $date->getDaysInMonth()): 0; 
+        $goals_daily = $projection['projected_sales'] != 0 ? ($projection['projected_sales'] / $date->getDaysInMonth()): 0;
         $sales_avg_daily = $sales_total / $date->getDaysPassed();
         $goals_sales_projected = $sales_avg_daily * $date->getDaysInMonth();
         $sales_difference = $goals_sales_projected - $projection['projected_sales'];
@@ -181,10 +181,12 @@ class ProjectionSalesRestaurantComponent extends Component
          $goals_tax =  $projection['projected_tax'] != 0 ? (((int)$projection['projected_tax']+0) / ((int)$date->getDaysInMonth()+0 ) * ((int)$date->getDaysPassed()+0)) : 0;
         //  {{-- venta real al dia / meta clientes a la fecha * 100 --}}
         $taxGoalToDate = ($goals_tax != 0) ? ($tax_total / $goals_tax) * 100 : 0;
-        $tax_difference = $projection['projected_tax'] != 0 ? ($projection['projected_tax'] - $tax_total ): 0;
+        // <h5 class="font-size-12" style="color: {{ $clientes_total - $meta_clientes_al_dia < 0 ? 'red' : 'green' }};">
+        $tax_difference = $projection['projected_tax'] != 0 ? ($tax_total - $projection['projected_tax'] ): 0;
          /*TICKET PROMEDIO*/
          $check_avg_daily = $sales_total / $tax_total;
-         $check_defficit = $projection['projected_check'] - $check_avg;
+        //  {{ $avg_cheq - (float)$meta_cheques }}
+         $check_defficit = $check_avg - $projection['projected_check'] ;
         // $salesPercentage = $salesGoalToDate > 0 ? ($tempChequeData['totalTemp'] / $salesGoalToDate) * 100 : 0;
         // $salesReach = $tempChequeData['totalTemp'] - $salesGoalToDate;
         // $salesDeficit = $salesGoal - $chequeData['total'];
