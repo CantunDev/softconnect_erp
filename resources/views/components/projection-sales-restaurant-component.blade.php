@@ -242,9 +242,9 @@
                                         <!-- Clientes reales al día -->
                                         <h5 class="font-size-12 mb-2">Clientes al día real</h5>
                                         <div class="float-end ms-2">
-                                            @if (isset($projection['goals' . $restaurant->id]))
+                                            @if (isset($results['ventas' . $restaurant->id]))
                                                 {{-- Acceso a los datos --}}
-                                                {{ $projection['goals' . $restaurant->id]['tax_difference'] }}
+                                                {{ $results['ventas' . $restaurant->id]['nopersonas'] }}
                                             @else
                                                 {{-- Valor por defecto si no hay datos --}}
                                                 {{ 0 }}
