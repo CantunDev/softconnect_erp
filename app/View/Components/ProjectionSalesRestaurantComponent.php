@@ -175,7 +175,8 @@ class ProjectionSalesRestaurantComponent extends Component
         $sales_difference = $goals_sales_projected - $projection['projected_sales'];
          /*CLIENTES*/
         //  {{-- meta_clientes / dias del mes * dias transcurridos --}}
-         $goals_tax =  $projection['projected_tax'] != 0 ? ($projection['projected_tax'] / $date->getDaysInMonth() ) * $date->getDaysPassed() : 0;
+        // {{ $meta_clientes_al_dia = round (((int)$meta_clientes + 0) / ((int)$daysInMonth + 0) * ((int)$daysPass + 0),2) }}
+         $goals_tax =  $projection['projected_tax'] != 0 ? ($projection['projected_tax']+0 / $date->getDaysInMonth()+0 ) * $date->getDaysPassed()+0 : 0;
         //  {{-- venta real al dia / meta clientes a la fecha * 100 --}}
          $taxGoalToDate = ($sales_total / $goals_tax) * 1; 
          $tax_difference = $projection['projected_tax'] != 0 ? ($projection['projected_tax'] - $tax_total ): 0;
