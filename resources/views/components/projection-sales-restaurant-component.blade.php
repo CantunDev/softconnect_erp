@@ -219,7 +219,7 @@
                                             <h5 class="font-size-12">
                                                 @if (isset($projection['goals' . $restaurant->id]))
                                                     {{-- Acceso a los datos --}}
-                                                    {{ $projection['goals' . $restaurant->id]['goals_tax'] }}
+                                                    {{ $projection['goals' . $restaurant->id]['taxGoalToDate'] }}
                                                 @else
                                                     {{-- Valor por defecto si no hay datos --}}
                                                     {{ 0 }}
