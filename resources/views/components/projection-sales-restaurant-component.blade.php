@@ -164,15 +164,17 @@
                                             {{-- <h5 class="font-size-12 price">
                                                 ${{ number_format($restaurantData['metrics']['sales']['monthly_projection'], 2) }}
                                             </h5> --}}
-                                            <h5 class="font-size-12 price">
-                                                @if (isset($projection['goals' . $restaurant->id]))
+                                            @if (isset($projection['goals' . $restaurant->id]))
+                                                <h5 class="font-size-12 price"
+                                                    style="color: {{ $projection['goals' . $restaurant->id]['sales_difference'] < 0 ? 'red' : 'green' }};">
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['sales_difference'] }}
                                                 @else
                                                     {{-- Valor por defecto si no hay datos --}}
                                                     {{ 0 }}
-                                                @endif
-                                            </h5>
+                                                </h5>
+                                            @endif
+
                                         </div>
 
                                         <!-- Diferencia proyectada -->
@@ -294,7 +296,8 @@
                                     Cheques
                                 </button>
                             </h2>
-                            <div id="flush-collapseChecks{{ $index }}" class="accordion-collapse collapse show"
+                            <div id="flush-collapseChecks{{ $index }}"
+                                class="accordion-collapse collapse show"
                                 aria-labelledby="flush-headingChecks{{ $index }}"
                                 data-bs-parent="#accordionFlush{{ $index }}">
                                 <div class="accordion-body text-muted">
