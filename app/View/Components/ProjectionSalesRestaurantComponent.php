@@ -106,6 +106,15 @@ class ProjectionSalesRestaurantComponent extends Component
                 ];
             }
         }
+        // Si no se encontró proyección, devolver valores por defecto
+        return [
+            'projected_sales' => 0,
+            'projected_cost' => 0,
+            'projected_profit' => 0,
+            'projected_tax'   => 0,
+            'projected_check' => 0,
+        ];
+
     }
     /**
      * Obtiene los datos de los cheques.
