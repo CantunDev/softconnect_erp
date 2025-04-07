@@ -233,13 +233,13 @@
                                         <h5 class="font-size-12 mb-2">Meta de clientes al día {{ $currentDay }}</h5>
                                         <div class="float-end ms-2">
                                             <h5 class="font-size-12">
-                                            @if (isset($results['venta' . $restaurant->id]))
-                                                {{-- Acceso a los datos --}}
-                                                {{ $results['venta' . $restaurant->id]['nopersonas'] }}
-                                            @else
-                                                {{-- Valor por defecto si no hay datos --}}
-                                                {{ 0 }}
-                                            @endif
+                                                @if (isset($results['venta' . $restaurant->id]))
+                                                    {{-- Acceso a los datos --}}
+                                                    {{ $results['venta' . $restaurant->id]['nopersonas'] }}
+                                                @else
+                                                    {{-- Valor por defecto si no hay datos --}}
+                                                    {{ 0 }}
+                                                @endif
                                             </h5>
                                         </div>
 
@@ -261,16 +261,17 @@
                                         <!-- Alcance al día (%) -->
                                         <h5 class="font-size-12 mb-2">Alcance al día</h5>
                                         <div class="float-end ms-2">
-                                            <h5 class="font-size-12"
-                                                style="color: {{ $projection['goals' . $restaurant->id]['tax_difference'] < 0 ? 'red' : 'green' }};">
-                                                @if (isset($projection['goals' . $restaurant->id]))
+                                            @if (isset($projection['goals' . $restaurant->id]))
+                                                <h5 class="font-size-12"
+                                                    style="color: {{ $projection['goals' . $restaurant->id]['tax_difference'] < 0 ? 'red' : 'green' }};">
                                                     {{-- Acceso a los datos --}}
                                                     {{ $projection['goals' . $restaurant->id]['tax_difference'] }}
                                                 @else
                                                     {{-- Valor por defecto si no hay datos --}}
                                                     {{ 0 }}
-                                                @endif
-                                            </h5>
+                                                </h5>
+                                            @endif
+
                                         </div>
 
                                         <!-- Diferencia en clientes -->
