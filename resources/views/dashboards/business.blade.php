@@ -9,3 +9,4 @@
     <x-sales-total-day-component :restaurants="$restaurants" />
     <x-projection-sales-restaurant-component :restaurants="$restaurants" />
 @endsection
+
