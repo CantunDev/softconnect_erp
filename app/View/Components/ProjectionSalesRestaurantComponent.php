@@ -40,9 +40,9 @@ class ProjectionSalesRestaurantComponent extends Component
 
             //  Almacenamiento de metas
             $this->projection['sales' . $restaurant->id] = [
-                'projected_sales' => $projection['projected_sales'],
-                'projected_tax' => $projection['projected_tax'],
-                'projected_check' => $projection['projected_check'],
+                'projected_sales' => $projection['projected_sales'] ?? 0,
+                'projected_tax' => $projection['projected_tax'] ?? 0,
+                'projected_check' => $projection['projected_check'] ?? 0,
             ];
 
             if ($connectionResult['success']) {
@@ -93,29 +93,29 @@ class ProjectionSalesRestaurantComponent extends Component
     /*
     * Obtencion de las metas por año y mes para cada restaurante
     */
-    private function getRestaurantProjection($restaurant, $currentYear, $currentMonth)
-    {
-        foreach ($restaurant->projections as $projection) {
-            if ($projection->year == $currentYear && $projection->month == $currentMonth) {
-                return [
-                    'projected_sales' => $projection->projected_sales,
-                    'projected_costs' => $projection->projected_costs,
-                    'projected_profit' => $projection->projected_profit,
-                    'projected_tax'   => $projection->projected_tax,
-                    'projected_check' => $projection->projected_check
-                ];
+        private function getRestaurantProjection($restaurant, $currentYear, $currentMonth)
+        {
+            foreach ($restaurant->projections as $projection) {
+                if ($projection->year == $currentYear && $projection->month == $currentMonth) {
+                    return [
+                        'projected_sales' => $projection->projected_sales,
+                        'projected_costs' => $projection->projected_costs,
+                        'projected_profit' => $projection->projected_profit,
+                        'projected_tax'   => $projection->projected_tax,
+                        'projected_check' => $projection->projected_check
+                    ];
+                }
             }
-        }
-        // Si no se encontró proyección, devolver valores por defecto
-        return [
-            'projected_sales' => 0,
-            'projected_cost' => 0,
-            'projected_profit' => 0,
-            'projected_tax'   => 0,
-            'projected_check' => 0,
-        ];
+            // Si no se encontró proyección, devolver valores por defecto
+            return [
+                'projected_sales' => 0,
+                'projected_cost' => 0,
+                'projected_profit' => 0,
+                'projected_tax'   => 0,
+                'projected_check' => 0,
+            ];
 
-    }
+        }
     /**
      * Obtiene los datos de los cheques.
      */
