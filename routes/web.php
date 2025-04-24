@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChequesController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectionController;
+use App\Http\Controllers\ProjectionDayController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\RolesPermissionsController;
@@ -26,9 +28,12 @@ Route::get('/', function () {
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware(['auth','verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+// Ruta para la validación AJAX del email
+Route::post('/check-email', [AuthenticatedSessionController::class, 'checkEmail'])
+    ->middleware('guest')
+    ->name('check-email');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/info', [InfoController::class, 'index'])->name('info');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -62,28 +67,29 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('permissions/', [FetchDataController::class, 'getPermissions'])->name('permissions.get');
     });
 
-    // Route::domain('{subdominio}.' . env('APP_URL'))->group(function () {
-        // Route::get('/', function ($subdominio) {
-        //     return "Bienvenido al subdominio: $subdominio";
-        // });
-        // Route::resource('providers', ProvidersController::class);
-    // });
     Route::prefix('{business:slug}')->name('business.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('projections', ProjectionController::class);
+        Route::get('/monthly', [ProjectionController::class, 'getProjectionsMonthly'])->name('projections_monthly.get');
         Route::resource('providers', ProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
         Route::resource('payment_method', PaymentMethodController::class);
         Route::resource('expenses_categories', ExpensesCategoriesController::class);
-        Route::resource('expenses', ExpensesController::class); 
+        Route::resource('expenses', ExpensesController::class);
+
         Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
-            Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::resource('home', HomeController::class);
-            Route::resource('projections', ProjectionController::class)->names([
-                'index' => 'projections.index',
-                'create' => 'projections.create',
-                // ... otros nombres necesarios
-            ]);
+
+            // Rutas normales de projections
+            Route::resource('projections', ProjectionController::class);
+
+            // Ruta simplificada para proyecciones mensuales
+            Route::prefix('projections/{month}')->name('projections.month.')->group(function () {
+                Route::resource('monthly', ProjectionDayController::class);
+
+            });
+            
             Route::resource('providers', ProvidersController::class);
             Route::resource('invoices', InvoicesController::class);
             Route::resource('payment_method', PaymentMethodController::class);
@@ -91,7 +97,6 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::resource('expenses', ExpensesController::class);
         });
     });
-    
 });
 
 require __DIR__ . '/auth.php';

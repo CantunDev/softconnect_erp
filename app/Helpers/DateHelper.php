@@ -65,4 +65,29 @@ class DateHelper
         }
         return $months;
     }
+
+    public static function getDaysOfCurrentMonth()
+    {
+        $days = [];
+        $currentMonth = self::getCurrentMonth();
+        $currentYear = self::getCurrentYear();
+        $daysInMonth = self::getDaysInMonth();
+        
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = Carbon::create($currentYear, $currentMonth, $day);
+            $days[$day] = [
+                // 'day_number' => $date->translatedFormat('j'), // Formato: día sin ceros iniciales
+                'day' => $day,
+                'day_name' => $date->translatedFormat('l'),
+                'short_name' => $date->translatedFormat('D ').' '. $date->format('Y-m-d'),     // Día abreviado (ej: "Lun")
+                'short_day' => $date->translatedFormat('D'),     // Día abreviado (ej: "Lun")
+                'full_date' => $date->format('Y-m-d'),          // Fecha completa (ej: "2023-11-05")
+                'formatted_date' => $date->translatedFormat('j F Y'), // Ej: "5 noviembre 2023"
+                'is_weekend' => $date->isWeekend(),             // Booleano si es fin de semana
+                'is_today' => $date->isToday()                  // Booleano si es hoy
+            ];
+        }
+        
+        return $days;
+    }
 }
