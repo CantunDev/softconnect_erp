@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DateHelper;
 use App\Models\Business;
 use App\Models\BusinessRestaurants;
 use App\Models\Projection;
@@ -9,6 +10,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use SebastianBergmann\GlobalState\Restorer;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProjectionController extends Controller
@@ -19,41 +21,75 @@ class ProjectionController extends Controller
     public function index(Request $request, Business $business, Restaurant $restaurants)
     {
         $user = Auth::user();
-        $rest = $restaurants;
-        // return $business->id;
-        // if ($request->ajax()) {
-            $restaurants = Restaurant::with('business')->withTrashed();
+        $restaurants = $this->getFilteredRoute($user);
 
-            // Filtrar según el rol del usuario
-            if (!$user->hasRole('Super-Admin')) {
-                if ($user->business !== 'null' && $user->business == 'rest') {
-                    // Filtrar restaurantes por la empresa y que estén relacionados con el usuario
-                    $restaurants->whereHas('business', function ($query) use ($business) {
-                        $query->where('id', $business->id);
-                    })->whereHas('users', function ($query) use ($user) {
-                        $query->where('id', $user->id);
-                    });
-                } else {
-                    // Si el usuario no tiene empresa, filtrar solo por sus restaurantes asignados
-                    $restaurants->whereHas('users', function ($query) use ($user) {
-                        $query->where('id', $user->id);
-                    });
-                }
-            }
-        return DataTables::of($restaurants)
-            ->addIndexColumn()
-            ->rawColumns([''])
-            ->make(true);
-        // }
-        return view('projections.index', compact('restaurants'));
+        if ($request->ajax()) {
+            $restaurants = $this->getFilteredRoute($user);
+
+            
+            return DataTables::of($restaurants)
+                ->addIndexColumn()
+                ->addColumn('name', function ($result) {
+                    return $name = '
+                    <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->name . '</a></h5>
+                    <p class="text-muted mb-0">' . $result->business->name . '</p>';
+                })
+                ->addColumn('projections', function ($result) {
+                    $year = DateHelper::getCurrentYear();
+                    // return '<span class="price">'.$result->getColumnSumByYear('projected_sales', $year, $result->id).' </span>';
+                    $value = $result->getColumnSumByYear('projected_sales', $year, $result->id);
+                    return '<span class="price">' . (is_numeric($value) ? $value : '0') . '</span>';
+                })
+                ->addColumn('profit', function ($result) {
+                    $year = DateHelper::getCurrentYear();
+                    return '<span class="price">' . $result->getColumnSumByYear('projected_profit', $year, $result->id) . ' </span>';
+                })
+                ->addColumn('tax', function ($result) {
+                    $year = DateHelper::getCurrentYear();
+                    return '<span class="">' . $result->getColumnSumByYear('projected_tax', $year, $result->id) . ' </span>';
+                })
+                ->addColumn('check', function ($result) {
+                    $year = DateHelper::getCurrentYear();
+                    return '<span class="price">' . $result->getColumnSumByYear('projected_check', $year, $result->id) . ' </span>';
+                })
+                ->addColumn('action', function ($result) {
+                    $opciones = '';
+                    if ($result->projections->isEmpty()) {
+                        $opciones .= '<a href="' . route('business.restaurants.projections.create', [
+                            'business' => $result->business->slug,
+                            'restaurants' => $result->slug,
+                        ]) . '" class="btn btn-sm text-primary action-icon icon-dual-warning p-1">
+                            <i class="mdi mdi-chart-timeline-variant-shimmer font-size-18"></i>
+                        </a>';
+                    } else {
+                        $opciones .= '<a href="' . route('business.restaurants.projections.edit', [
+                            'business' => $result->business->slug,
+                            'restaurants' => $result->slug,
+                            'projection' => $result->id
+                        ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1">
+                            <i class="mdi mdi-chart-timeline-variant-shimmer font-size-18"></i>
+                        </a>';
+                    }
+
+                    return $opciones;
+                })
+                ->rawColumns(['name', 'projections', 'profit', 'tax', 'check', 'action'])
+                ->make(true);
+        }
+        
+        return view('projections.index', compact('restaurants', 'business'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Business $business, Restaurant $restaurants)
     {
-        //
+        $months = DateHelper::getMonthsOfYear();
+        $year = DateHelper::getCurrentYear();
+        $currentMonth = DateHelper::getCurrentMonth();
+
+        return view('projections.create', compact('restaurants', 'months', 'year', 'currentMonth'));
     }
 
     /**
@@ -61,24 +97,30 @@ class ProjectionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'restaurant_id' => 'required|exists:restaurants,id',
-            'projected_sales' => 'required',
-            'projected_tax' => 'required',
-            'projected_check' => 'required',
-        ]);
-
-        Projection::create([
-            'restaurant_id' => $request->restaurant_id,
-            'month' => Carbon::now()->month,
-            'year' => Carbon::now()->year,
-            'projected_sales' => $request->projected_sales,
-            'projected_tax' => $request->projected_tax,
-            'projected_check' => $request->projected_check,
-            'created_at' =>  $day = Carbon::now(),
-        ]);
-
-        return response()->json(['success' => true]);
+        $restaurant = Restaurant::findOrFail($request->restaurant_id);
+        $business = BusinessRestaurants::with('business')->where('restaurant_id', $request->restaurant_id)->first();
+        if ($business) {
+            $business = $business->business->slug;
+        } else {
+            $business = 'rest';
+        }
+        foreach ($request->projected_sales as $key => $value) {
+            $data = array(
+                'restaurant_id' => $request->restaurant_id,
+                'year' => $request->year,
+                'month' => $request->month[$key],
+                'projected_sales' => $request->projected_sales[$key],
+                'projected_costs' => $request->projected_costs[$key],
+                'projected_profit' => $request->projected_profit[$key],
+                'projected_tax' => $request->projected_tax[$key],
+                'projected_check' => $request->projected_check[$key],
+                'created_at' => now(),
+                'updated_at' => now(),
+            );
+            $projections = Projection::insert($data);
+        }
+        return redirect()->route('business.restaurants.projections.index', ['business' => $business, 'restaurants' => $restaurant->slug])->with('success', 'Requisición almacenada');
+        // return response()->json(['success' => true]);
     }
 
     /**
@@ -92,40 +134,56 @@ class ProjectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Business $business, Restaurant $restaurants, $projections)
     {
-        $projection = Projection::where('restaurant_id', $id)->first();
-        if (!$projection) {
-            return response()->json(['error' => 'No encontrado'], 404);
-        }
+        $months = DateHelper::getMonthsOfYear();
+        $year = DateHelper::getCurrentYear();
+        $currentMonth = DateHelper::getCurrentMonth();
 
-        return response()->json($projection);
+        $projections = Projection::where('restaurant_id', $restaurants->id)
+            ->where('year', $year)
+            ->get();
+
+        $projectionsByMonth = [];
+        foreach ($months as $monthNumber => $monthName) {
+            $projection = $projections->firstWhere('month', $monthNumber);
+            $projectionsByMonth[$monthNumber] = $projection ? $projection : 0;
+        }
+        return view('projections.edit', compact('projections', 'projectionsByMonth', 'restaurants', 'currentMonth', 'months', 'year'));
+
+        // return response()->json($projection);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Business $business, Restaurant $restaurant, Request $request)
     {
-        $request->validate([
-            'projected_sales' => 'required|numeric',
-            'projected_tax' => 'required|integer',
-            'projected_check' => 'required|numeric',
-        ]);
-
-        $projection = Projection::where('restaurant_id', $id)->first();
-
-        if (!$projection) {
-            return response()->json(['error' => 'No encontrado'], 404);
+        $restaurant = Restaurant::findOrFail($request->restaurant_id);
+        $year = $request->year;
+        $projections = Projection::where('restaurant_id', $restaurant->id)
+            ->where('year', $year)
+            ->get();
+        $business = BusinessRestaurants::with(['business', 'restaurants'])->where('restaurant_id', $request->restaurant_id)->first();
+        if ($business) {
+            $business = $business->business->slug;
+        } else {
+            $business = 'rest';
         }
-
-        $projection->update([
-            'projected_sales' => $request->input('projected_sales'),
-            'projected_tax' => $request->input('projected_tax'),
-            'projected_check' => $request->input('projected_check'),
-        ]);
-
-        return response()->json(['success' => true]);
+        foreach ($request->projected_sales as $key => $value) {
+            $data = array(
+                'restaurant_id' => $request->restaurant_id,
+                'year' => $year,
+                'month' => $request->month[$key],
+                'projected_sales' => $request->projected_sales[$key],
+                'projected_costs' => $request->projected_costs[$key],
+                'projected_profit' => $request->projected_profit[$key],
+                'projected_tax' => $request->projected_tax[$key],
+                'projected_check' => $request->projected_check[$key],
+            );
+            $projections[$key]->update($data);
+        }
+        return redirect()->route('business.restaurants.projections.index', ['business' => $business, 'restaurants' => $restaurant->slug])->with('update', 'Requisición Actualizada');
     }
 
     /**
@@ -134,5 +192,62 @@ class ProjectionController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getFilteredRoute($user)
+    {
+        $businessSlug = request()->segment(1);
+        $restaurantSlug = request()->segment(2);
+    
+        $restaurants = Restaurant::with(['projections', 'business']);
+    
+        // Caso especial: restaurante sin empresa (segmento 1 = "rest")
+        if ($businessSlug === 'rest') {
+            if ($restaurantSlug) {
+                // Mostrar un restaurante específico sin empresa
+                $restaurants->whereNull('business_id')
+                            ->where('slug', $restaurantSlug);
+            } else {
+                // Mostrar todos los restaurantes sin empresa
+                $restaurants->whereNull('business_id');
+            }
+    
+            // Aplicar filtros de permisos si no es Super-Admin
+            if (!$user->hasRole('Super-Admin')) {
+                $restaurants->whereHas('users', function ($query) use ($user) {
+                    $query->where('id', $user->id);
+                });
+            }
+    
+            return $restaurants->get();
+        }
+    
+        // Para usuarios no Super-Admin, aplicar filtros de permisos
+        if (!$user->hasRole('Super-Admin')) {
+            if ($user->business !== 'null' && $user->business == 'rest') {
+                $restaurants->whereHas('business', function ($query) use ($businessSlug) {
+                    $query->where('slug', $businessSlug);
+                })->whereHas('users', function ($query) use ($user) {
+                    $query->where('id', $user->id);
+                });
+            } else {
+                $restaurants->whereHas('users', function ($query) use ($user) {
+                    $query->where('id', $user->id);
+                });
+            }
+        }
+    
+        // Si hay segmento 2 (restaurantSlug), filtrar por restaurante específico
+        if ($restaurantSlug && $restaurantSlug !== 'projections') {
+            $restaurants->where('slug', $restaurantSlug);
+        }
+        // Si solo hay segmento 1 (businessSlug), filtrar por empresa
+        elseif ($businessSlug) {
+            $restaurants->whereHas('business', function ($query) use ($businessSlug) {
+                $query->where('slug', $businessSlug);
+            });
+        }
+    
+        return $restaurants->get();
     }
 }

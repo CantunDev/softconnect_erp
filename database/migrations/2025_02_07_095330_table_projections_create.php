@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('projections', function (Blueprint $table) {
             $table->id();
             $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
-            $table->integer('year');
-            $table->integer('month');
+            $table->year('year');
+            $table->timestamp('month');
             $table->decimal('projected_sales', 10, 2);
             $table->decimal('actual_sales', 10, 2)->default(0);
             $table->decimal('projected_costs', 10, 2)->default(0);

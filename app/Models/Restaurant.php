@@ -91,4 +91,15 @@ class Restaurant extends Model
     {
         return $this->hasMany(Projection::class, 'restaurant_id', 'id');
     }
+
+    public function getColumnSumByYear(string $column, int $year, int $restaurantId = null): float
+    {
+        $query = Projection::where('year', $year);
+
+        if ($restaurantId) {
+            $query->where('restaurant_id', $restaurantId);
+        }
+
+        return $query->sum($column);
+    }
 }

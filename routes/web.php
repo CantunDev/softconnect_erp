@@ -28,7 +28,7 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth','verified'])->group(function () {
-     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::get('/info', [InfoController::class, 'index'])->name('info');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -37,7 +37,6 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('users', UsersController::class);
     Route::resource('business', BusinessController::class);
     Route::resource('restaurants', RestaurantsController::class);
-    Route::resource('projections', ProjectionController::class);
     Route::resource('cheques', ChequesController::class);
     Route::resource('roles_permissions', RolesPermissionsController::class);
 
@@ -80,7 +79,11 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
             Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
             Route::resource('home', HomeController::class);
-            Route::resource('projections', ProjectionController::class);
+            Route::resource('projections', ProjectionController::class)->names([
+                'index' => 'projections.index',
+                'create' => 'projections.create',
+                // ... otros nombres necesarios
+            ]);
             Route::resource('providers', ProvidersController::class);
             Route::resource('invoices', InvoicesController::class);
             Route::resource('payment_method', PaymentMethodController::class);
