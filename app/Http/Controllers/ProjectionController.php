@@ -6,10 +6,13 @@ use App\Helpers\DateHelper;
 use App\Models\Business;
 use App\Models\BusinessRestaurants;
 use App\Models\Projection;
+use App\Models\ProjectionDay;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
+use PhpParser\Node\Stmt\Foreach_;
 use SebastianBergmann\GlobalState\Restorer;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -21,12 +24,12 @@ class ProjectionController extends Controller
     public function index(Request $request, Business $business, Restaurant $restaurants)
     {
         $user = Auth::user();
+    
         $restaurants = $this->getFilteredRoute($user);
-
         if ($request->ajax()) {
             $restaurants = $this->getFilteredRoute($user);
 
-            
+
             return DataTables::of($restaurants)
                 ->addIndexColumn()
                 ->addColumn('name', function ($result) {
@@ -52,7 +55,10 @@ class ProjectionController extends Controller
                     $year = DateHelper::getCurrentYear();
                     return '<span class="price">' . $result->getColumnSumByYear('projected_check', $year, $result->id) . ' </span>';
                 })
-                ->addColumn('action', function ($result) {
+                ->addColumn('action', function ($result, DateHelper $date) {
+                    // $year = $date->getCurrentYear();
+                    // $month = $date->getCurrentMonth();
+                    $monthName = $date->getCurrentMonthName();
                     $opciones = '';
                     if ($result->projections->isEmpty()) {
                         $opciones .= '<a href="' . route('business.restaurants.projections.create', [
@@ -69,6 +75,24 @@ class ProjectionController extends Controller
                         ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1">
                             <i class="mdi mdi-chart-timeline-variant-shimmer font-size-18"></i>
                         </a>';
+                        if ($result->projections_days->isEmpty()) {
+                            $opciones .= '<a href="' . route('business.restaurants.projections.month.monthly.create', [
+                                'business' => $result->business->slug,
+                                'restaurants' => $result->slug,
+                                'month' =>  $monthName,
+                            ]) . '" class="btn btn-sm text-primary action-icon icon-dual-warning p-1">
+                            <i class="mdi mdi-calendar-today font-size-18"></i>
+                                </a>';
+                        } else {
+                            $opciones .= '<a href="' . route('business.restaurants.projections.month.monthly.edit', [
+                                'business' => $result->business->slug,
+                                'restaurants' => $result->slug,
+                                'month' =>  $monthName,
+                                'monthly' => $result->projections[0]->id
+                            ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1">
+                            <i class="mdi mdi-calendar-today font-size-18"></i>
+                                </a>';
+                        }
                     }
 
                     return $opciones;
@@ -76,7 +100,7 @@ class ProjectionController extends Controller
                 ->rawColumns(['name', 'projections', 'profit', 'tax', 'check', 'action'])
                 ->make(true);
         }
-        
+
         return view('projections.index', compact('restaurants', 'business'));
     }
 
@@ -194,34 +218,74 @@ class ProjectionController extends Controller
         //
     }
 
+    
+
+    public function getProjectionsMonthly(Request $request)
+    {
+        // $year = $request->input('year', date('Y'));
+        // $month = $request->input('month', date('m'));
+        $user = Auth::user();
+        // $projections = $this->getFilteredRoute($user);
+
+        // $month = DateHelper::getCurrentMonth();
+        // $year = DateHelper::getCurrentYear();
+        // $projections = ProjectionDay::query()
+        //  ->whereYear('date', $year)
+        //  ->whereMonth('date', $month)
+        //  ->where('restaurant_id', $restaurants[0]->id)
+        //  ->orderBy('date')
+        //  ->get();
+
+        // return $request()->segment(1);
+
+        if ($request->ajax()) {
+            $restaurants = $this->getFilteredRoute($user);
+            return DataTables::of($restaurants)
+                ->addIndexColumn()
+                ->addColumn('date', function ($result) {
+                    return $name = 'fecha';
+                })
+                ->rawColumns(['date', 'projections', 'profit', 'tax', 'check', 'action'])
+                ->make(true);
+        }
+
+        // return response()->json([
+        //     'data' => $projections,
+        //     'current_year' => $year,
+        //     'current_month' => $month,
+        //     'total_projected' => $projections,
+        //     'total_actual' => $projections
+        // ]);
+    }
+
     public function getFilteredRoute($user)
     {
         $businessSlug = request()->segment(1);
         $restaurantSlug = request()->segment(2);
-    
-        $restaurants = Restaurant::with(['projections', 'business']);
-    
+
+        $restaurants = Restaurant::with(['projections', 'business', 'projections_days']);
+
         // Caso especial: restaurante sin empresa (segmento 1 = "rest")
         if ($businessSlug === 'rest') {
             if ($restaurantSlug) {
                 // Mostrar un restaurante específico sin empresa
                 $restaurants->whereNull('business_id')
-                            ->where('slug', $restaurantSlug);
+                    ->where('slug', $restaurantSlug);
             } else {
                 // Mostrar todos los restaurantes sin empresa
                 $restaurants->whereNull('business_id');
             }
-    
+
             // Aplicar filtros de permisos si no es Super-Admin
             if (!$user->hasRole('Super-Admin')) {
                 $restaurants->whereHas('users', function ($query) use ($user) {
                     $query->where('id', $user->id);
                 });
             }
-    
+
             return $restaurants->get();
         }
-    
+
         // Para usuarios no Super-Admin, aplicar filtros de permisos
         if (!$user->hasRole('Super-Admin')) {
             if ($user->business !== 'null' && $user->business == 'rest') {
@@ -236,7 +300,7 @@ class ProjectionController extends Controller
                 });
             }
         }
-    
+
         // Si hay segmento 2 (restaurantSlug), filtrar por restaurante específico
         if ($restaurantSlug && $restaurantSlug !== 'projections') {
             $restaurants->where('slug', $restaurantSlug);
@@ -247,7 +311,7 @@ class ProjectionController extends Controller
                 $query->where('slug', $businessSlug);
             });
         }
-    
+
         return $restaurants->get();
     }
 }

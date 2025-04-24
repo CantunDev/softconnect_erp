@@ -29,4 +29,19 @@ class Projection extends Model
         'actual_check',
     ];
 
+    /**
+     * Scope para filtrar por restaurant
+     */
+    public function scopeForRestaurant($query, $restaurant)
+    {
+        return $query->where('restaurant_id', $restaurant);
+    }
+    /**
+     * Scope para filtrar por año y mes
+     */
+    public function scopeForDate($query, $year, $month)
+    {
+        return $query->where('year', $year)->where('month', $month);
+    }
+
 }

@@ -34,9 +34,9 @@
                                 <th scope="col" class="px-4 py-3">#</th>
                                 <th scope="col" class="px-4 py-3">Restaurante</th>
                                 <th scope="col" class="px-4 py-3">Proyecciones</th>
-                                <th scope="col" class="px-4 py-3">Ganancia</th>
-                                <th scope="col" class="px-4 py-3">Clientes</th>
                                 <th scope="col" class="px-4 py-3">Costo Venta</th>
+                                <th scope="col" class="px-4 py-3">Clientes</th>
+                                <th scope="col" class="px-4 py-3">Ticket Promedio</th>
                                 <th scope="col" class="px-4 py-3"></th>
                             </tr>
                         </thead>
@@ -57,7 +57,8 @@
         </div>
     </div>
     <x-date-component></x-date-component>
-    <x-projections-component :restaurants="$restaurants"/>
+    <x-projections-component :restaurants="$restaurants" />
+    <x-projections-dayli-component :restaurants="$restaurants" />
 @endsection
 
 @section('js')
@@ -163,4 +164,5 @@
             });
         });
     </script>
+  
 @endsection
