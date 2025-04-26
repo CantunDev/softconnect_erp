@@ -123,6 +123,8 @@ class SaleInTurnComponent extends Component
      */
     private function getRestaurantProjectionDaily($restaurant, $dateCheque)
     {
+        $dateCheque = Carbon::parse($dateCheque)->toDateTimeString();
+
         $projection = ProjectionDay::where('restaurant_id', $restaurant->id)
             ->where('date', $dateCheque)
             ->first();
