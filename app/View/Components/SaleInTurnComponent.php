@@ -2,28 +2,35 @@
 
 namespace App\View\Components;
 
+use App\Helpers\DateHelper;
+use App\Models\ProjectionDay;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use App\Services\DynamicConnectionService;
 use Carbon\Carbon;
+use Illuminate\Container\Attributes\DB;
 
 class SaleInTurnComponent extends Component
 {
     public $restaurants;
     public $errors = [];
     public $results = [];
+    public $projectionDaily = [];
     public $colSize;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($restaurants, DynamicConnectionService $connectionService)
+    public function __construct($restaurants, DynamicConnectionService $connectionService, DateHelper $date)
     {
         $this->restaurants = $restaurants;
         $this->colSize = $this->calculateColSize(count($restaurants));
 
         foreach ($this->restaurants as $i => $restaurant) {
+            $currentDay = $date->getCurrentDate(); //Dia actual
+            // $this->projectionDaily['daily'.$restaurant->id] = $this->getRestaurantProjectionDaily($restaurant, $currentDay);
+
             $connectionResult = $connectionService->configureConnection($restaurant);
 
             if ($connectionResult['success']) {
@@ -69,6 +76,7 @@ class SaleInTurnComponent extends Component
 
                 // Obtener datos temporales
                 $tempChequeData = $this->getTempChequeData($connection, $tabla, $currentMonth, $currentYear, $dateCheque);
+                 $this->projectionDaily['daily'.$restaurant->id] = $this->getRestaurantProjectionDaily($restaurant, $dateCheque);
 
                 // Almacenar los resultados con la clave dinámica
                 $this->results['venta' . $restaurant->id] = [
@@ -109,6 +117,37 @@ class SaleInTurnComponent extends Component
             'results' => $this->results,
         ]);
     }
+
+    /**
+     * Obtencion de las metas diarias
+     */
+    private function getRestaurantProjectionDaily($restaurant, $dateCheque)
+{
+    $projection = ProjectionDay::where('restaurant_id', $restaurant->id)
+        ->where('date', $dateCheque)
+        ->first();
+        // dd($restaurant->id, $currentDay, $projection); // 👈 pon esto
+
+    if (!$projection) {
+        return [
+            'dailySales' => [
+                'projected_day_sales' => 0,
+                'actual_day_sales' => 0,
+                'difference' => 0,
+            ]
+        ];
+    }
+
+    return [
+        'dailySales' => [
+            'projected_day_sales' => (float) $projection->projected_day_sales, // Convertimos a número
+            'actual_day_sales' => (float) ($projection->actual_day_sales ?? 0),
+            'difference' => (float) ($projection->actual_day_sales ?? 0) - (float) ($projection->projected_day_sales ?? 0),
+        ]
+    ];
+}
+
+    
 
     /**
      * Obtiene los datos de los cheques.

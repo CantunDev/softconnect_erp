@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DateHelper;
+use App\Models\ProjectionDay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\DynamicConnectionService;
@@ -45,6 +47,8 @@ class DashboardController extends Controller
                     ->whereHas('business',function($query) use ($user){
                         $query->whereIn('business_id', $user->business()->pluck('id'));
                     })->get();
+
+        
         return view('dashboards.business', ['restaurants' => $restaurants]);
     }
 

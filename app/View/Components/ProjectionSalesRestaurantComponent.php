@@ -19,7 +19,6 @@ class ProjectionSalesRestaurantComponent extends Component
     public $results = [];
     public $errors = [];
     public $projection = [];
-    public $projectionDaily = [];
     public $currentDay;
 
     public function __construct($restaurants, DynamicConnectionService $connectionService, DateHelper $date)
@@ -31,12 +30,10 @@ class ProjectionSalesRestaurantComponent extends Component
         foreach ($this->restaurants as $i => $restaurant) {
             $currentMonth = $date->getCurrentMonth(); //Mes actual
             $currentYear = $date->getCurrentYear(); //Año actual
-            $currentDay = $date->getCurrentDay(); //Dia actual
             $daysInMonth = $date->getDaysInMonth(); //Total de dias en el mes
 
             // Funcion para obtener las metas por año y mes
             $projection = $this->getRestaurantProjection($restaurant, $currentYear, $currentMonth);
-            $projectionDaily = $this->getRestaurantProjectionDaily($restaurant, $currentDay);
             // Funcion para obtener la conexion por restaurante
             $connectionResult = $connectionService->configureConnection($restaurant);
 
@@ -45,10 +42,6 @@ class ProjectionSalesRestaurantComponent extends Component
                 'projected_sales' => $projection['projected_sales'] ?? 0,
                 'projected_tax' => $projection['projected_tax'] ?? 0,
                 'projected_check' => $projection['projected_check'] ?? 0,
-            ];
-
-            $this->projectionDaily['daily'.$restaurant->id] = [
-                'dailySales' => $projectionDaily['projected_day_sales'] ?? 0
             ];
 
             if ($connectionResult['success']) {
@@ -101,32 +94,6 @@ class ProjectionSalesRestaurantComponent extends Component
         };
     }
 
-    /**
-     * Obtencion de las metas diarias
-     */
-    private function getRestaurantProjectionDaily($restaurant, $currentDay)
-    {
-        // Asegurarse que $currentDay tenga el formato correcto (Y-m-d)
-        $formattedDate = \Carbon\Carbon::parse($currentDay)->format('Y-m-d');
-        
-        foreach ($restaurant->projections_days as $projection) {
-            // Comparar fechas normalizadas
-            if (\Carbon\Carbon::parse($projection->date)->format('Y-m-d') == $formattedDate) {
-                return [
-                    'projected_day_sales' => $projection->projected_day_sales ?? 0,
-                    // 'actual_day_sales' => $projection->actual_day_sales ?? 0,
-                    // 'difference' => ($projection->actual_day_sales ?? 0) - ($projection->projected_day_sales ?? 0)
-                ];
-            }
-        }
-        
-        // Retorno por defecto si no encuentra la proyección
-        return [
-            'projected_day_sales' => 0,
-            // 'actual_day_sales' => 0,
-            // 'difference' => 0
-        ];
-    }
     /*
     * Obtencion de las metas por año y mes para cada restaurante
     */
