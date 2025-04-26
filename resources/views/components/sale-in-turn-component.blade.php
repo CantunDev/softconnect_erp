@@ -32,9 +32,9 @@
                         <!-- Div para errores (oculto inicialmente) -->
                         <div id="error-content-{{ $index }}" class="alert alert-danger" style="display: none;">
                             <ul class="mb-0">
-                                 @if (isset($errors[$index]))
+                                 {{-- @if (isset($errors[$index]))
                                     <li>{{ $errors[$index] }}</li>
-                                @endif 
+                                @endif  --}}
                             </ul>
                         </div>
 
@@ -61,7 +61,7 @@
                                             role="tabpanel">
                                             <div class="float-end ms-2">
                                                 <h5 class="font-size-12 price">
-                                                    {{-- @php
+                                                     {{-- @php
                                                         dump('Current Restaurant ID:', $restaurant->id);
                                                         dump(
                                                             'ProjectionDaily Structure:',
@@ -72,7 +72,7 @@
                                                             $projectionDaily['daily' . $restaurant->id] ??
                                                                 'No existe esta clave',
                                                         );
-                                                    @endphp  --}}
+                                                    @endphp   --}}
                                                     {{ $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0 }}
 
                                                 </h5>

@@ -76,7 +76,7 @@ class SaleInTurnComponent extends Component
 
                 // Obtener datos temporales
                 $tempChequeData = $this->getTempChequeData($connection, $tabla, $currentMonth, $currentYear, $dateCheque);
-                 $this->projectionDaily['daily'.$restaurant->id] = $this->getRestaurantProjectionDaily($restaurant, $dateCheque);
+                $this->projectionDaily['daily' . $restaurant->id] = $this->getRestaurantProjectionDaily($restaurant, $dateCheque);
 
                 // Almacenar los resultados con la clave dinámica
                 $this->results['venta' . $restaurant->id] = [
@@ -122,32 +122,32 @@ class SaleInTurnComponent extends Component
      * Obtencion de las metas diarias
      */
     private function getRestaurantProjectionDaily($restaurant, $dateCheque)
-{
-    $projection = ProjectionDay::where('restaurant_id', $restaurant->id)
-        ->where('date', $dateCheque)
-        ->first();
-        // dd($restaurant->id, $currentDay, $projection); // 👈 pon esto
+    {
+        $projection = ProjectionDay::where('restaurant_id', $restaurant->id)
+            ->where('date', $dateCheque)
+            ->first();
+        dd($restaurant->id, $dateCheque, $projection); // 👈 pon esto
 
-    if (!$projection) {
+        if (!$projection) {
+            return [
+                'dailySales' => [
+                    'projected_day_sales' => 0,
+                    'actual_day_sales' => 0,
+                    'difference' => 0,
+                ]
+            ];
+        }
+
         return [
             'dailySales' => [
-                'projected_day_sales' => 0,
-                'actual_day_sales' => 0,
-                'difference' => 0,
+                'projected_day_sales' => (float) $projection->projected_day_sales, // Convertimos a número
+                'actual_day_sales' => (float) ($projection->actual_day_sales ?? 0),
+                'difference' => (float) ($projection->actual_day_sales ?? 0) - (float) ($projection->projected_day_sales ?? 0),
             ]
         ];
     }
 
-    return [
-        'dailySales' => [
-            'projected_day_sales' => (float) $projection->projected_day_sales, // Convertimos a número
-            'actual_day_sales' => (float) ($projection->actual_day_sales ?? 0),
-            'difference' => (float) ($projection->actual_day_sales ?? 0) - (float) ($projection->projected_day_sales ?? 0),
-        ]
-    ];
-}
 
-    
 
     /**
      * Obtiene los datos de los cheques.
