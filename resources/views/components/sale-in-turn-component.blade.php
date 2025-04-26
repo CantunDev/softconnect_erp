@@ -10,6 +10,7 @@
 
 <div class="row">
     @foreach ($restaurants as $index => $restaurant)
+
         <div class="col-md-6 col-xl-{{ $colSize }}">
             <div class="card"
                 style="border: 2px solid {{ !empty($restaurant->color_primary) ? $restaurant->color_primary : '#ccc' }};
@@ -60,12 +61,13 @@
                                         <div class="tab-pane active" id="cheques-tab-{{ $index }}"
                                             role="tabpanel">
                                             <div class="float-end ms-2">
-                                                {{-- @if (isset($results['venta' . $restaurant->id]))
-                                                    <span class="me-1 badge rounded-circle p-1 {{ $results['venta' . $restaurant->id]['turno'] == 'Abierto' ? 'bg-success' : 'bg-warning' }}">
-                                                        <span class="visually-hidden">status</span>
-                                                    </span>
-                                                    {{ $results['venta' . $restaurant->id]['turno'] }}
-                                                    @endif --}}
+                                                <h5 class="font-size-12 price">
+                                                    @if (isset($projectionDaily['daily'.$restaurant->id]))
+                                                    {{ $projectionDaily['daily'.$restaurant->id]['projected_day_sales'] }}
+                                                    @else
+                                                        {{ 0 }}
+                                                    @endif
+                                                </h5>
                                             </div>
                                             <h5 class="font-size-12 mb-2">Proyeccion Diaria </h5>
                                             <div class="float-end ms-2">

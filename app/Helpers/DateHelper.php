@@ -7,7 +7,7 @@ class DateHelper
 {
     public static function getCurrentDate()
     {
-        return Carbon::now();
+        return Carbon::now()->toDateString();
     }
 
     public static function getStartOfMonth()
