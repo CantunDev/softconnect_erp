@@ -128,7 +128,7 @@ class SaleInTurnComponent extends Component
         $projection = ProjectionDay::where('restaurant_id', $restaurant->id)
             ->where('date', $dateCheque)
             ->first();
-        dd($restaurant->id, $dateCheque, $projection); // 👈 pon esto
+        // dd($restaurant->id, $dateCheque, $projection); // 👈 pon esto
 
         if (!$projection) {
             return [
