@@ -83,7 +83,7 @@
                                                 <div class="progress" style="height: 15px; border-radius: 10px;">
                                                     @php
                                                         $sales_in_turn = isset($results['venta' . $restaurant->id]) ? $results['venta' . $restaurant->id]['tempChequeData']['totalTemp'] : 0;
-                                                        $projectionDaily = $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0
+                                                        $projectionDaily = $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0;
                                                         $percentage = $sales_in_turn ? min(100, ($sales_in_turn / $projectionDaily) * 100) : 0;
                                                     @endphp 
                                                     <div class="progress-bar" role="progressbar" 
