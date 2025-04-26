@@ -45,6 +45,7 @@ class ProjectionsDayliComponent extends Component
                     $this->restaurantDetails[$restaurant->id]['daily_projections'][$dayKey] = [
                         'projected_day_sales' => $projection->projected_day_sales ?? 0,
                         'actual_day_sales' => $projection->actual_day_sales ?? 0,
+                        'actual_day_check' => $projection->actual_day_check ?? 0,
                         'difference' => ($projection->actual_day_sales ?? 0) - ($projection->projected_day_sales ?? 0),
                         'average_check' => $projection->projected_day_check ?? 0
                     ];

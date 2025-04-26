@@ -39,7 +39,6 @@ class DynamicConnectionService
                 'encrypt' => env('DB_ENCRYPT', 'no'),
                 'trust_server_certificate' => env('DB_TRUST_CERTIFICATE', 'no'),
                 'strict' => false,
-                
             ]);
 
             DB::purge($connectionName);

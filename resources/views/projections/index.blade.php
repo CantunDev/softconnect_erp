@@ -54,7 +54,7 @@
                 </div>
                 <!-- end table responsive -->
             </div>
-        </div>
+        </div> 
     </div>
     <x-date-component></x-date-component>
     <x-projections-component :restaurants="$restaurants" />

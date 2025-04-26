@@ -21,9 +21,5 @@ class Cheques extends Model
      *
      * @param string $connectionName
      */
-    public static function setDynamicConnection($connectionName)
-    {
-        (new static())->setConnection($connectionName);
-    }
 
 }

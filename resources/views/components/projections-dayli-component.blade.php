@@ -35,7 +35,7 @@
                                     @php
                                         $projection = $restaurantDetails[$restaurant->id]['daily_projections'][$day['full_date']] ?? null;
                                         $difference = $projection['difference'] ?? 0;
-                                        $avgCheck = $projection['average_check'] ?? 0;
+                                        $avgCheck = $projection['actual_day_check'] ?? 0;
                                     @endphp
                                     
                                     <!-- Columna Proyectado/Real -->
@@ -73,36 +73,45 @@
                     </tbody>
                     <tfoot>
                         <tr>
+
                             <th class="text-end">Total:</th>
                             @foreach($restaurants as $restaurant)
-                                @php
-                                    $totalProjected = 0;
-                                    $totalActual = 0;
-                                    $totalDifference = 0;
-                                    $totalChecks = 0;
-                                    $countChecks = 0;
+                            @php
+                            $totalProjected = 0;
+                            $totalActual = 0;
+                            $totalDifference = 0;
+                            $countChecks = 0;   
+                            $avgTotalCheck = 0;
+                        
+                            // Verificar si hay datos para el restaurante
+                            $hasData = isset($restaurantDetails[$restaurant->id]['daily_projections']);
+                        
+                            foreach($days as $day) {
+                                // Acceso seguro a los datos
+                                $projection = $hasData 
+                                    ? ($restaurantDetails[$restaurant->id]['daily_projections'][$day['full_date']] ?? null)
+                                    : null;
+                        
+                                if ($projection) {
+                                    $totalProjected += $projection['projected_day_sales'] ?? 0;
+                                    $totalActual += $projection['actual_day_sales'] ?? 0;
+                                    $totalDifference += $projection['difference'] ?? 0;
                                     
-                                    foreach($days as $day) {
-                                        $projection = $restaurantDetails[$restaurant->id]['daily_projections'][$day['full_date']] ?? null;
-                                        if($projection) {
-                                            $totalProjected += $projection['projected_day_sales'];
-                                            $totalActual += $projection['actual_day_sales'];
-                                            $totalDifference += $projection['difference'] ?? 0;
-                                            
-                                            if($projection['average_check'] > 0) {
-                                                $totalChecks += $projection['average_check'];
-                                                $countChecks++;
-                                            }
-                                        }
+                                    // Solo sumar si existe el valor
+                                    if (isset($projection['actual_day_check'])) {
+                                        $avgTotalCheck += $projection['actual_day_check'];
+                                        $countChecks++;
                                     }
-                                    
-                                    $avgTotalCheck = $countChecks > 0 ? $totalChecks / $countChecks : 0;
-                                @endphp
-                                
+                                }
+                            }
+                        
+                            // Calcular promedio solo si hay datos
+                            $avgTotalCheck = $countChecks > 0 ? ($avgTotalCheck / $countChecks) : 0;
+                        @endphp
                                 <!-- Total Proyectado/Real -->
                                 <td>
                                     <div class="d-flex justify-content-between">
-                                        <span>{{ number_format($totalProjected, 2) }}</span>
+                                        <span>{{ number_format($totalProjected, 2) }}</span>-
                                         <span>{{ number_format($totalActual, 2) }}</span>
                                     </div>
                                 </td>
@@ -116,7 +125,7 @@
                                 
                                 <!-- Promedio Cheque -->
                                 <td>
-                                    {{ number_format($avgTotalCheck, 2) }}
+                                    {{-- {{ number_format($avgTotalCheck, 2) }} --}}
                                 </td>
                             @endforeach
                         </tr>

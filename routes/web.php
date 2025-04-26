@@ -87,7 +87,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Ruta simplificada para proyecciones mensuales
             Route::prefix('projections/{month}')->name('projections.month.')->group(function () {
                 Route::resource('monthly', ProjectionDayController::class);
-
+                Route::get('sales_get', [ProjectionDayController::class,'sales_get'])->name('sales.get');
+                Route::put('sales_update', [ProjectionDayController::class, 'sales_update'])->name('sales.update');
             });
             
             Route::resource('providers', ProvidersController::class);

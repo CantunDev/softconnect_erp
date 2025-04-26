@@ -8,8 +8,11 @@ use App\Models\BusinessRestaurants;
 use App\Models\Projection;
 use App\Models\ProjectionDay;
 use App\Models\Restaurant;
+use App\Models\Sfrt\Cheques;
+use App\Services\DynamicConnectionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectionDayController extends Controller
 {
@@ -131,5 +134,101 @@ class ProjectionDayController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    public function sales_get(Business $business, Restaurant $restaurants, DynamicConnectionService $connectionService)
+    {
+        $year = DateHelper::getCurrentYear();
+        $month = DateHelper::getCurrentMonth();
+        $monthName = DateHelper::getCurrentMonthName();
+        $currentMonth = DateHelper::getCurrentMonth();
+        $days = DateHelper::getDaysOfCurrentMonth();
+        $projections_monthly = [];
+        $projection = Projection::ForRestaurant($restaurants->id)->ForDate($year, $month)->first();
+
+         foreach ($days as $dayNumber => $short_day) {
+         $projectionDay = ProjectionDay::ForRestaurant($restaurants->id)
+                            ->ForDate($year, $month)->get();
+        $projections_monthly = $projectionDay ? $projectionDay : 0;
+        }
+
+        $connectionResult = $connectionService->configureConnection($restaurants);
+
+        if ($connectionResult['success']) {
+        $connection = $connectionResult['connection'];
+            // Obtener ventas agrupadas por fecha
+            $salesData =$connection->table('cheques')->whereMonth('fecha', $month)
+                ->whereYear('fecha', $year)
+                ->where('cancelado', false)
+                ->selectRaw("CONVERT(VARCHAR, fecha, 23) as date, 
+                    SUM(total) as total_sales,
+                    SUM(nopersonas) as total_personas")
+                ->groupBy(DB::raw("CONVERT(VARCHAR, fecha, 23)"))
+                ->orderBy('date')
+                ->get()
+                ->keyBy('date');
+        
+            // Generar estructura para todos los días del mes
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            $sales = [];
+            
+            foreach ($days as $i => $dayInfo) {
+                $date = $dayInfo['full_date'];
+                $sales[] = [
+                    'date' => $date,
+                    'total_sales' => $salesData[$date]->total_sales ?? 0,
+                    'total_personas' => $salesData[$date]->total_personas ?? 0,
+                    'day_number' => $i + 1
+                ];
+            }
+        } else {
+            $sales = array_map(function($dayInfo) {
+                return [
+                    'date' => $dayInfo['full_date'],
+                    'total_sales' => 0,
+                    'total_personas' => 0,
+                    'day_number' => $dayInfo['day_number']
+                ];
+            }, $days);
+        }
+        return view('projections.monthly.sales', compact(
+            'projections_monthly', 
+            'projection', 
+            'business',
+            'restaurants', 
+            'days', 
+            'month', 
+            'monthName', 
+            'year', 
+            'currentMonth',
+            'sales' 
+        ));
+    }
+
+    public function sales_update(Business $business, Restaurant $restaurants, Request $request)
+    {
+        $year = DateHelper::getCurrentYear();
+        $month = DateHelper::getCurrentMonth();
+        // $restaurant = Restaurant::findOrFail($request->restaurant_id);
+        // $year = $request->year;
+        $projections = ProjectionDay::ForRestaurant($restaurants->id)
+            ->ForDate($year, $month)
+            ->get();
+        // $business = BusinessRestaurants::with(['business', 'restaurants'])->where('restaurant_id', $request->restaurant_id)->first();
+        // if ($business) {
+        //     $business = $business->business->slug;
+        // } else {
+        //     $business = 'rest';
+        // }
+        foreach ($request->actual_day_sales as $key => $value) {
+            $data = array(
+                'actual_day_sales' => $request->actual_day_sales[$key],
+                'actual_day_tax' => $request->actual_day_tax[$key],
+                'actual_day_check' => $request->actual_day_check[$key],
+            );
+            $projections[$key]->update($data);
+        }
+        return redirect()->route('business.projections.index', ['business' => $business->slug])->with('update', 'Requisición Actualizada');
     }
 }

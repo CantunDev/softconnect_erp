@@ -60,6 +60,13 @@ class ProjectionController extends Controller
                     // $month = $date->getCurrentMonth();
                     $monthName = $date->getCurrentMonthName();
                     $opciones = '';
+                    $opciones .= '<a href="' . route('business.restaurants.projections.month.sales.get', [
+                        'business' => $result->business->slug,
+                        'restaurants' => $result->slug,
+                        'month' =>  $monthName,
+                    ]) . '" class="btn btn-sm text-success action-icon icon-dual-warning p-1">
+                    <i class="mdi mdi-creation font-size-18"></i>
+                        </a>';
                     if ($result->projections->isEmpty()) {
                         $opciones .= '<a href="' . route('business.restaurants.projections.create', [
                             'business' => $result->business->slug,
@@ -83,6 +90,7 @@ class ProjectionController extends Controller
                             ]) . '" class="btn btn-sm text-primary action-icon icon-dual-warning p-1">
                             <i class="mdi mdi-calendar-today font-size-18"></i>
                                 </a>';
+                            
                         } else {
                             $opciones .= '<a href="' . route('business.restaurants.projections.month.monthly.edit', [
                                 'business' => $result->business->slug,
@@ -92,6 +100,7 @@ class ProjectionController extends Controller
                             ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1">
                             <i class="mdi mdi-calendar-today font-size-18"></i>
                                 </a>';
+                            
                         }
                     }
 

@@ -32,8 +32,8 @@ class Restaurant extends Model
     ];
 
     protected $hidden = [
-        'ip',
-        'database',
+        // 'ip',
+        // 'database',
     ];
 
     protected static function boot()
