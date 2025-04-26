@@ -82,16 +82,24 @@
                                                 
                                                 <div class="progress" style="height: 15px; border-radius: 10px;">
                                                     @php
-                                                        $sales_in_turn = isset($results['venta' . $restaurant->id]) ? $results['venta' . $restaurant->id]['tempChequeData']['totalTemp'] : 0;
-                                                        $projectionDaily = $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0;
-                                                        $percentage = $sales_in_turn ? min(100, ($sales_in_turn / $projectionDaily) * 100) : 0;
-                                                    @endphp 
-                                                    <div class="progress-bar" role="progressbar" 
-                                                        style="width: 10%; background-color: {{ $percentage  > 80 ? 'green' : ($percentage  > 30 ? 'orange' : 'red') }}" 
-                                                        aria-valuenow="10" 
-                                                        aria-valuemin="0" 
-                                                        aria-valuemax="100">
-                                                    </div>
+                                                    $sales_in_turn = isset($results['venta' . $restaurant->id]) 
+                                                        ? $results['venta' . $restaurant->id]['tempChequeData']['totalTemp'] 
+                                                        : 0;
+                                                
+                                                    $projected_sales = $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0;
+                                                
+                                                    $percentage = ($projected_sales > 0) 
+                                                        ? min(100, ($sales_in_turn / $projected_sales) * 100) 
+                                                        : 0;
+                                                @endphp
+                                                
+                                                <div class="progress-bar" role="progressbar" 
+                                                     style="width: {{ $percentage }}%; background-color: {{ $percentage > 80 ? 'green' : ($percentage > 30 ? 'orange' : 'red') }}" 
+                                                     aria-valuenow="{{ $percentage }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                </div>
+                                                
                                                 </div>
                                                 
                                                 <h5 class="font-size-12 mb-2"></h5>
