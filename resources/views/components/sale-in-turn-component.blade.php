@@ -30,7 +30,8 @@
                         <!-- Contenido real (oculto inicialmente) -->
                         <div class="real-content" id="real-content-{{ $index }}" style="display: none;">
                             <!-- Div para errores (oculto inicialmente) -->
-                            <div id="error-content-{{ $index }}" class="alert alert-danger" style="display: none;">
+                            <div id="error-content-{{ $index }}" class="alert alert-danger"
+                                style="display: none;">
                                 <ul class="mb-0">
                                     {{-- @if (isset($errors[$index]))
                                         <li>{{ $errors[$index] }}</li>
@@ -46,15 +47,16 @@
                                             <button class="accordion-button fw-medium" type="button"
                                                 style="background-color: {{ $restaurant->color_primary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}"
                                                 data-bs-toggle="collapse"
-                                                data-bs-target="#flush-collapse-{{ $index }}" aria-expanded="true"
+                                                data-bs-target="#flush-collapse-{{ $index }}"
+                                                aria-expanded="true"
                                                 aria-controls="flush-collapse-{{ $index }}">
                                                 <i class="bx bx-food-menu font-size-12 align-middle me-1"></i>
                                                 Venta Al Dia {{ $restaurant->name }}
                                             </button>
                                         </h2>
                                     </div>
-                                    <div id="flush-collapse-{{ $index }}" class="accordion-collapse collapse show"
-                                        aria-labelledby="flush-headingThree"
+                                    <div id="flush-collapse-{{ $index }}"
+                                        class="accordion-collapse collapse show" aria-labelledby="flush-headingThree"
                                         data-bs-parent="#accordionFlush-{{ $index }}">
                                         <div class="accordion-body text-muted">
                                             <div class="tab-pane active" id="cheques-tab-{{ $index }}"
@@ -76,32 +78,37 @@
                                                         <strong>{{ $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0 }}</strong>
                                                     </h5>
                                                 </div>
-                                                
-                                                    {{-- <span class="">{{ number_format($projection['projected_day_sales'], 2) }}</span> --}}
-                                                    {{-- <span class="text-success">{{ number_format($projection['actual_day_sales'], 2) }}</span> --}}
-                                                
+
+                                                {{-- <span class="">{{ number_format($projection['projected_day_sales'], 2) }}</span> --}}
+                                                {{-- <span class="text-success">{{ number_format($projection['actual_day_sales'], 2) }}</span> --}}
+
                                                 <div class="progress" style="height: 15px; border-radius: 10px;">
                                                     @php
-                                                    $sales_in_turn = isset($results['venta' . $restaurant->id]) 
-                                                        ? $results['venta' . $restaurant->id]['tempChequeData']['totalTemp'] 
-                                                        : 0;
-                                                
-                                                    $projected_sales = $projectionDaily['daily' . $restaurant->id]['dailySales']['projected_day_sales'] ?? 0;
-                                                
-                                                    $percentage = ($projected_sales > 0) 
-                                                        ? min(100, ($sales_in_turn / $projected_sales) * 100) 
-                                                        : 0;
-                                                @endphp
-                                                
-                                                <div class="progress-bar" role="progressbar" 
-                                                     style="width: {{ $percentage }}%; background-color: {{ $percentage > 80 ? 'green' : ($percentage > 30 ? 'orange' : 'red') }}" 
-                                                     aria-valuenow="{{ $percentage }}" 
-                                                     aria-valuemin="0" 
-                                                     aria-valuemax="100">
+                                                        $sales_in_turn = isset($results['venta' . $restaurant->id])
+                                                            ? $results['venta' . $restaurant->id]['tempChequeData'][
+                                                                'totalTemp'
+                                                            ]
+                                                            : 0;
+
+                                                        $projected_sales =
+                                                            $projectionDaily['daily' . $restaurant->id]['dailySales'][
+                                                                'projected_day_sales'
+                                                            ] ?? 0;
+
+                                                        $percentage =
+                                                            $projected_sales > 0
+                                                                ? ($sales_in_turn / $projected_sales) * 100
+                                                                : 0;
+                                                    @endphp
+
+                                                    <div class="progress-bar" role="progressbar"
+                                                        style="width: {{ $percentage }}%; background-color: {{ $percentage > $projected_sales ? '#28a745' : ($percentage > 80 ? 'orange' : ($percentage > 30 ? 'yellow' : 'red')) }}"
+                                                        aria-valuenow="{{ $percentage }}" aria-valuemin="0"
+                                                        aria-valuemax="100">
+                                                    </div>
+
                                                 </div>
-                                                
-                                                </div>
-                                                
+
                                                 <h5 class="font-size-12 mb-2"></h5>
                                                 <div class="float-end ms-2">
                                                     <h5 class="font-size-12 price">
@@ -181,7 +188,8 @@
                                                                     'alimentosTemp'
                                                                 ]
                                                                 : 0;
-                                                            $percentage_ta = $gral != 0 ? round(($ta * 100) / $gral, 1) : 0;
+                                                            $percentage_ta =
+                                                                $gral != 0 ? round(($ta * 100) / $gral, 1) : 0;
                                                         @endphp
 
                                                         <span class="price">{{ $ta }}</span>
@@ -197,7 +205,8 @@
                                                                     'bebidasTemp'
                                                                 ]
                                                                 : 0;
-                                                            $percentage_tb = $gral != 0 ? round(($tb * 100) / $gral, 1) : 0;
+                                                            $percentage_tb =
+                                                                $gral != 0 ? round(($tb * 100) / $gral, 1) : 0;
                                                         @endphp
 
                                                         <span class="price">{{ $tb }}</span>
