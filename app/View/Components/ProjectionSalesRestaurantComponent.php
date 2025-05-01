@@ -184,7 +184,9 @@ class ProjectionSalesRestaurantComponent extends Component
         $diffProyectionGoal =  /*$chequeData['total']*/ $dailySalesGoal != 0 ?(  $sales_total - $dailySalesGoal ): 0;
         $salesDeficit =  100 - $salesGoalToDate ;
         $goals_daily = $projection['projected_sales'] != 0 ? ($projection['projected_sales'] / $date->getDaysInMonth()): 0;
-        $sales_avg_daily = $sales_total / $date->getDaysPassed();
+        $days_passed = $date->getDaysPassed();
+        $sales_avg_daily = ($days_passed > 0) ? $sales_total / $days_passed : 0;
+        
         $goals_sales_projected = $sales_avg_daily * $date->getDaysInMonth();
         $sales_difference = $goals_sales_projected - $projection['projected_sales'];
          /*CLIENTES*/
