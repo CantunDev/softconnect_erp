@@ -94,71 +94,91 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($months as $monthNumber => $monthName)
-                                        @php
-                                            $projection = $projectionsByMonth[$monthNumber] ?? null;
-                                            $isLocked =
-                                                !Auth::user()->hasRole('Super-Admin') && $currentMonth > $monthNumber;
-                                            $rowClass = $isLocked ? 'table-active' : '';
-                                        @endphp
-                                        <tr class="product">
-                                            <td class="align-middle">
-                                                <div class="" style="width: 80px;">
+                                    {{-- @dd($projectionsByMonth[$monthNumber]->projected_sales) --}}
+                                    @php
+                                        $projection = $projectionsByMonth[$monthNumber] ?? null;
+                                        $isLocked = !Auth::user()->hasRole('Super-Admin') && $currentMonth > $monthNumber;
+                                        $rowClass = $isLocked ? 'table-active' : '';
+                                        $readonlyAttr = $isLocked ? 'readonly' : '';
+                                    @endphp
+                                    
+                                    <tr class="product {{ $rowClass }}">
+                                        <td class="align-middle">
+                                            <div style="width: 80px;">
                                                 <span class="fw-medium month-label text-uppercase">{{ $monthName }}</span>
-                                                <input type="hidden" name="month[]" value="{{ $monthNumber }}">
+                                                <input type="hidden" name="month[{{ $monthNumber }}]" value="{{ $monthNumber }}">
                                                 @if($isLocked)
                                                     <span class="badge bg-secondary ms-2">Bloqueado</span>
                                                 @endif
                                             </div>
-
-                                            </td>
+                                        </td>
                                         
-                                            <td></td>
-                                            <td style="align-items: center;">
-                                                <div class="" style="width: 90px;">
-                                                    <input type="text"
-                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_sales : 0 }}"
-                                                        class="clear" name="projected_sales[]"
-                                                        {{ !Auth::user()->hasRole('Super-Admin') && $currentMonth > $monthNumber ? 'readonly' : '' }}>
-                                                </div>
-                                            </td>
-                                            <td></td>
-                                            <td style="align-items: center;">
-                                                <div class="me-1" style="width: 90px;">
-                                                    <input type="text"
-                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_costs : 0 }}"
-                                                        class="clear" name="projected_costs[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
-                                                </div>
-                                            </td>
-                                            <td></td>
-                                            <td style="align-items: center;">
-                                                <div class="me-1" style="width: 90px;">
-                                                    <input type="text"
-                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_profit : 0 }}"
-                                                        class="clear" name="projected_profit[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
-                                                </div>
-                                            </td>
-                                            <td></td>
-                                            <td style="align-items: center;">
-                                                <div class="me-1" style="width: 60px;">
-                                                    <input type="text"
-                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_tax : 0 }}"
-                                                        class="clear" name="projected_tax[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
-                                                </div>
-                                            </td>
-                                            <td></td>
-                                            <td style="align-items: center;">
-                                                <div class="me-1" style="width: 60px;">
-                                                    <input type="text"
-                                                        value="{{ $projectionsByMonth[$monthNumber] ? $projectionsByMonth[$monthNumber]->projected_check : 0 }}"
-                                                        class="clear" name="projected_check[]"
-                                                        {{ $currentMonth > $monthNumber ? 'readonly' : '' }}>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                        <td></td>
+                                        
+                                        <!-- Ventas proyectadas -->
+                                        <td style="align-items: center;">
+                                            <div class="projected-sales-input" style="width: 90px;">
+                                                <input type="text"
+                                                       value="{{$projectionsByMonth[$monthNumber]->projected_sales ?? 0 }}"
+                                                       class="clear form-control"
+                                                       name="projected_sales[{{ $monthNumber }}]"
+                                                       {{ $readonlyAttr }}>
+                                            </div>
+                                        </td>
+                                        
+                                        <td></td>
+                                        
+                                        <!-- Costos proyectados -->
+                                        <td style="align-items: center;">
+                                            <div class="me-1" style="width: 90px;">
+                                                <input type="text"
+                                                    value="{{ $projection->projected_costs ?? 0 }}"
+                                                    class="clear form-control"
+                                                    name="projected_costs[{{ $monthNumber }}]"
+                                                    {{ $readonlyAttr }}>
+                                            </div>
+                                        </td>
+                                        
+                                        <td></td>
+                                        
+                                        <!-- Beneficio proyectado -->
+                                        <td style="align-items: center;">
+                                            <div class="me-1" style="width: 90px;">
+                                                <input type="text"
+                                                    value="{{ $projection->projected_profit ?? 0 }}"
+                                                    class="clear form-control"
+                                                    name="projected_profit[{{ $monthNumber }}]"
+                                                    {{ $readonlyAttr }}>
+                                            </div>
+                                        </td>
+                                        
+                                        <td></td>
+                                        
+                                        <!-- Impuestos proyectados -->
+                                        <td style="align-items: center;">
+                                            <div class="me-1" style="width: 60px;">
+                                                <input type="text"
+                                                    value="{{ $projection->projected_tax ?? 0 }}"
+                                                    class="clear form-control"
+                                                    name="projected_tax[{{ $monthNumber }}]"
+                                                    {{ $readonlyAttr }}>
+                                            </div>
+                                        </td>
+                                        
+                                        <td></td>
+                                        
+                                        <!-- Verificación proyectada -->
+                                        <td style="align-items: center;">
+                                            <div class="me-1" style="width: 60px;">
+                                                <input type="text"
+                                                    value="{{ $projection->projected_check ?? 0 }}"
+                                                    class="clear form-control"
+                                                    name="projected_check[{{ $monthNumber }}]"
+                                                    {{ $readonlyAttr }}>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
 
                                 </tbody>
                             </table>
@@ -182,7 +202,7 @@
     </form>
 @endsection
 @section('js')
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             // Selector de inputs (mejorado para eficiencia)
             $("input[name^='projected_']").each(function() {
@@ -213,7 +233,7 @@
                 }
             });
         });
-    </script>
+    </script> --}}
     <script>
         function clearProjections() {
             Swal.fire({
