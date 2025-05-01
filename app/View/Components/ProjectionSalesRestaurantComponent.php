@@ -199,7 +199,8 @@ class ProjectionSalesRestaurantComponent extends Component
         // <h5 class="font-size-12" style="color: {{ $clientes_total - $meta_clientes_al_dia < 0 ? 'red' : 'green' }};">
         $tax_difference = $projection['projected_tax'] != 0 ? ($tax_total - $projection['projected_tax'] ): 0;
          /*TICKET PROMEDIO*/
-         $check_avg_daily = $sales_total / $tax_total;
+         $check_avg_daily =( $sales_total > 0) ? $sales_total / $tax_total : 0 ;
+         
         //  {{ $avg_cheq - (float)$meta_cheques }}
          $check_defficit = $check_avg - $projection['projected_check'] ;
         // $salesPercentage = $salesGoalToDate > 0 ? ($tempChequeData['totalTemp'] / $salesGoalToDate) * 100 : 0;
