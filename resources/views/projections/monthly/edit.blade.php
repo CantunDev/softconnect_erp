@@ -183,7 +183,7 @@
                                             <td style="align-items: center;">
                                                 <div class="" style="width: 90px;">
                                                     <input type="text" class="price_cl" name="projected_sales[]"
-                                                     value="{{ $projections_monthly[$i-1] ? $projections_monthly[$i-1]->projected_day_sales: 0 }}">
+                                                    value="{{ $projections_monthly[$i-1]->projected_day_sales ?? 0 }}">
                                                 </div>
                                             </td>
                                         </tr>
@@ -211,97 +211,29 @@
     </form>
 @endsection
 @section('js')
-  <script>
+    {{-- <script>
         $(document).ready(function() {
-            // Inicializar TouchSpin
-            $("input[name='projected_sales[]']").TouchSpin({
-                verticalbuttons: true,
-                min: 0,
-                max: 100000000,
-                step: 1,
-                decimals: 0,
-                boostat: 5,
-                maxboostedstep: 10,
-                verticalupclass: 'bi bi-chevron-up',
-                verticaldownclass: 'bi bi-chevron-down',
-            });
-
-            // Función para calcular el total
-            function calculateTotal() {
-                let total = 0;
-                $("input[name='projected_sales[]']").each(function() {
-                    total += parseFloat($(this).val()) || 0;
-                });
-                return total;
-            }
-
-            // Mostrar el total actual y la validación
-            function updateTotalDisplay() {
-                const currentTotal = calculateTotal();
-                const projectedTotal = parseFloat("{{ $projection->projected_sales }}");
-                const difference = projectedTotal - currentTotal;
-
-                $('#current-total').text(currentTotal.toLocaleString());
-                $('#projected-total').text(projectedTotal.toLocaleString());
-                $('#total-difference').text(Math.abs(difference).toLocaleString());
-
-                if (difference === 0) {
-                    $('#total-validation').removeClass('alert-danger').addClass('alert-success')
-                        .html(
-                        '<i class="mdi mdi-check-circle"></i> La suma coincide exactamente con la proyección');
-                } else {
-                    $('#total-validation').removeClass('alert-success').addClass('alert-danger')
-                        .html(
-                            `<i class="mdi mdi-alert-circle"></i> ${difference > 0 ? 'Faltan' : 'Sobran'} ${Math.abs(difference).toLocaleString()} para alcanzar la proyección`
-                            );
-                }
-            }
-
-            // Actualizar al cambiar valores
-            $(document).on('change', "input[name='projected_sales[]']", updateTotalDisplay);
-
-            // Validar antes de enviar el formulario
-            $('form').on('submit', function(e) {
-                const currentTotal = calculateTotal();
-                const projectedTotal = parseFloat("{{ $projection->projected_sales }}");
-
-                if (currentTotal !== projectedTotal) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Suma incorrecta',
-                        html: `La suma total (${currentTotal.toLocaleString()}) no coincide con la proyección (${projectedTotal.toLocaleString()})<br><br>
-                              <strong>Diferencia:</strong> ${Math.abs(projectedTotal - currentTotal).toLocaleString()}`,
-                        confirmButtonText: 'Entendido',
-                        confirmButtonColor: '{{ !empty($restaurants->color_primary) ? $restaurants->color_primary : '#727cf5' }}'
+            // Inicializar TouchSpin y Cleave.js para cada input
+            $("input[name='projected_sales[]'], input[name='projected_costs[]'], input[name='projected_profit[]'], input[name='projected_tax[]'], input[name='projected_check[]']")
+                .each(function() {
+                    // Inicializar TouchSpin
+                    $(this).TouchSpin({
+                        verticalbuttons: true,
+                        min: 0,
+                        max: 100000000,
+                        step: 1,
+                        decimals: 0,
+                        boostat: 5,
+                        maxboostedstep: 10,
+                        verticalupclass: 'bi bi-chevron-up',
+                        verticaldownclass: 'bi bi-chevron-down',
                     });
-                }
-            });
-
-            // Inicializar la visualización
-            updateTotalDisplay();
+                });
         });
-
-        function clearProyections() {
-            Swal.fire({
-                title: '¿Borrar todas las proyecciones?',
-                text: "Establecerá todos los valores a 0",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '{{ !empty($restaurants->color_primary) ? $restaurants->color_primary : '#727cf5' }}',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, borrar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $("input[name='projected_sales[]']").val(0).trigger('change');
-                    Swal.fire(
-                        '¡Borrado!',
-                        'Todos los valores se han establecido a 0.',
-                        'success'
-                    );
-                }
-            });
-        }
     </script>
+    <script>
+        function clearProyections() {
+            alert('Limpiar Proyecciones?');
+        }
+    </script> --}}
 @endsection
