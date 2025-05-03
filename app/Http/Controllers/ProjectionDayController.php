@@ -119,11 +119,18 @@ class ProjectionDayController extends Controller
         // } else {
         //     $business = 'rest';
         // }
+        // foreach ($request->projected_sales as $key => $value) {
+        //     $data = array(
+        //         'projected_day_sales' => $request->projected_sales[$key],
+        //     );
+        //     $projections[$key]->update($data);
+        // }
         foreach ($request->projected_sales as $key => $value) {
-            $data = array(
-                'projected_day_sales' => $request->projected_sales[$key],
-            );
-            $projections[$key]->update($data);
+            if (isset($projections[$key])) {
+                $projections[$key]->update([
+                    'projected_day_sales' => $value,
+                ]);
+            }
         }
         return redirect()->route('business.projections.index', ['business' => $business->slug])->with('update', 'Requisición Actualizada');
     }
