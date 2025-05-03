@@ -113,18 +113,7 @@ class ProjectionDayController extends Controller
         $projections = ProjectionDay::ForRestaurant($restaurants->id)
             ->ForDate($year, $month)
             ->get();
-        // $business = BusinessRestaurants::with(['business', 'restaurants'])->where('restaurant_id', $request->restaurant_id)->first();
-        // if ($business) {
-        //     $business = $business->business->slug;
-        // } else {
-        //     $business = 'rest';
-        // }
-        // foreach ($request->projected_sales as $key => $value) {
-        //     $data = array(
-        //         'projected_day_sales' => $request->projected_sales[$key],
-        //     );
-        //     $projections[$key]->update($data);
-        // }
+
         foreach ($request->projected_sales as $key => $value) {
             if (isset($projections[$key])) {
                 $projections[$key]->update([
