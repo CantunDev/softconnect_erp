@@ -92,12 +92,12 @@ class ProjectionDayController extends Controller
         $projections_monthly = [];
         $projection = Projection::ForRestaurant($restaurants->id)->ForDate($year, $month)->first();
 
-         foreach ($days as $dayNumber => $short_day) {
-         $projectionDay = ProjectionDay::ForRestaurant($restaurants->id)
-                            ->ForDate($year, $month)->get();
-        $projections_monthly = $projectionDay ? $projectionDay : 0;
+        foreach ($days as $dayNumber => $short_day) {
+            $projectionDay = ProjectionDay::ForRestaurant($restaurants->id)
+                ->ForDate($year, $month)->get();
+            $projections_monthly = $projectionDay ? $projectionDay : 0;
         }
-        return view('projections.monthly.edit', compact('projections_monthly', 'projection', 'business','restaurants', 'days', 'month', 'monthName', 'year', 'currentMonth'));
+        return view('projections.monthly.edit', compact('projections_monthly', 'projection', 'business', 'restaurants', 'days', 'month', 'monthName', 'year', 'currentMonth'));
     }
 
     /**
@@ -108,15 +108,16 @@ class ProjectionDayController extends Controller
         // return $request->all();
         $year = DateHelper::getCurrentYear();
         $month = DateHelper::getCurrentMonth();
-        // $restaurant = Restaurant::findOrFail($request->restaurant_id);
-        // $year = $request->year;
+
+        // Obtener proyecciones y convertirlas en un array indexado por día (si `day` es una columna)
         $projections = ProjectionDay::ForRestaurant($restaurants->id)
             ->ForDate($year, $month)
-            ->get();
+            ->get()
+            ->keyBy('day'); // Suponiendo que hay una columna `day` (1-31)
 
-        foreach ($request->projected_sales as $key => $value) {
-            if (isset($projections[$key])) {
-                $projections[$key]->update([
+        foreach ($request->projected_sales as $day => $value) {
+            if (isset($projections[$day])) {
+                $projections[$day]->update([
                     'projected_day_sales' => $value,
                 ]);
             }
@@ -143,18 +144,18 @@ class ProjectionDayController extends Controller
         $projections_monthly = [];
         $projection = Projection::ForRestaurant($restaurants->id)->ForDate($year, $month)->first();
 
-         foreach ($days as $dayNumber => $short_day) {
-         $projectionDay = ProjectionDay::ForRestaurant($restaurants->id)
-                            ->ForDate($year, $month)->get();
-        $projections_monthly = $projectionDay ? $projectionDay : 0;
+        foreach ($days as $dayNumber => $short_day) {
+            $projectionDay = ProjectionDay::ForRestaurant($restaurants->id)
+                ->ForDate($year, $month)->get();
+            $projections_monthly = $projectionDay ? $projectionDay : 0;
         }
 
         $connectionResult = $connectionService->configureConnection($restaurants);
 
         if ($connectionResult['success']) {
-        $connection = $connectionResult['connection'];
+            $connection = $connectionResult['connection'];
             // Obtener ventas agrupadas por fecha
-            $salesData =$connection->table('cheques')->whereMonth('fecha', $month)
+            $salesData = $connection->table('cheques')->whereMonth('fecha', $month)
                 ->whereYear('fecha', $year)
                 ->where('cancelado', false)
                 ->selectRaw("CONVERT(VARCHAR, fecha, 23) as date, 
@@ -164,11 +165,11 @@ class ProjectionDayController extends Controller
                 ->orderBy('date')
                 ->get()
                 ->keyBy('date');
-        
+
             // Generar estructura para todos los días del mes
             $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
             $sales = [];
-            
+
             foreach ($days as $i => $dayInfo) {
                 $date = $dayInfo['full_date'];
                 $sales[] = [
@@ -179,7 +180,7 @@ class ProjectionDayController extends Controller
                 ];
             }
         } else {
-            $sales = array_map(function($dayInfo) {
+            $sales = array_map(function ($dayInfo) {
                 return [
                     'date' => $dayInfo['full_date'],
                     'total_sales' => 0,
@@ -189,16 +190,16 @@ class ProjectionDayController extends Controller
             }, $days);
         }
         return view('projections.monthly.sales', compact(
-            'projections_monthly', 
-            'projection', 
+            'projections_monthly',
+            'projection',
             'business',
-            'restaurants', 
-            'days', 
-            'month', 
-            'monthName', 
-            'year', 
+            'restaurants',
+            'days',
+            'month',
+            'monthName',
+            'year',
             'currentMonth',
-            'sales' 
+            'sales'
         ));
     }
 
