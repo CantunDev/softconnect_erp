@@ -24,7 +24,7 @@ class ProjectionController extends Controller
     public function index(Request $request, Business $business, Restaurant $restaurants)
     {
         $user = Auth::user();
-    
+
         $restaurants = $this->getFilteredRoute($user);
         if ($request->ajax()) {
             $restaurants = $this->getFilteredRoute($user);
@@ -82,7 +82,7 @@ class ProjectionController extends Controller
                         ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1">
                             <i class="mdi mdi-chart-timeline-variant-shimmer font-size-18"></i>
                         </a>';
-                        if ($result->projections_days->isEmpty()) {
+                        if ($result->projections_days->isEmpty() || $result->projections_days->where('date', $date->getCurrentDay())->isEmpty()) {
                             $opciones .= '<a href="' . route('business.restaurants.projections.month.monthly.create', [
                                 'business' => $result->business->slug,
                                 'restaurants' => $result->slug,
@@ -90,7 +90,6 @@ class ProjectionController extends Controller
                             ]) . '" class="btn btn-sm text-primary action-icon icon-dual-warning p-1">
                             <i class="mdi mdi-calendar-today font-size-18"></i>
                                 </a>';
-                            
                         } else {
                             $opciones .= '<a href="' . route('business.restaurants.projections.month.monthly.edit', [
                                 'business' => $result->business->slug,
@@ -100,7 +99,6 @@ class ProjectionController extends Controller
                             ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1">
                             <i class="mdi mdi-calendar-today font-size-18"></i>
                                 </a>';
-                            
                         }
                     }
 
@@ -194,29 +192,35 @@ class ProjectionController extends Controller
     {
         $restaurant = Restaurant::findOrFail($request->restaurant_id);
         $year = $request->year;
-        $projections = Projection::where('restaurant_id', $restaurant->id)
-            ->where('year', $year)
-            ->get();
-        $business = BusinessRestaurants::with(['business', 'restaurants'])->where('restaurant_id', $request->restaurant_id)->first();
-        if ($business) {
-            $business = $business->business->slug;
-        } else {
-            $business = 'rest';
-        }
+
+        $business = BusinessRestaurants::with(['business', 'restaurants'])
+            ->where('restaurant_id', $request->restaurant_id)
+            ->first();
+
+        $businessSlug = $business ? $business->business->slug : 'rest';
+
         foreach ($request->projected_sales as $key => $value) {
-            $data = array(
-                'restaurant_id' => $request->restaurant_id,
-                'year' => $year,
-                'month' => $request->month[$key],
-                'projected_sales' => $request->projected_sales[$key],
-                'projected_costs' => $request->projected_costs[$key],
-                'projected_profit' => $request->projected_profit[$key],
-                'projected_tax' => $request->projected_tax[$key],
-                'projected_check' => $request->projected_check[$key],
+            // Buscar o crear la proyección para este mes
+            $projection = Projection::updateOrCreate(
+                [
+                    'restaurant_id' => $request->restaurant_id,
+                    'year' => $year,
+                    'month' => $request->month[$key]
+                ],
+                [
+                    'projected_sales' => $request->projected_sales[$key],
+                    'projected_costs' => $request->projected_costs[$key],
+                    'projected_profit' => $request->projected_profit[$key],
+                    'projected_tax' => $request->projected_tax[$key],
+                    'projected_check' => $request->projected_check[$key],
+                ]
             );
-            $projections[$key]->update($data);
         }
-        return redirect()->route('business.restaurants.projections.index', ['business' => $business, 'restaurants' => $restaurant->slug])->with('update', 'Requisición Actualizada');
+
+        return redirect()->route('business.restaurants.projections.index', [
+            'business' => $businessSlug,
+            'restaurants' => $restaurant->slug
+        ])->with('update', 'Requisición Actualizada');
     }
 
     /**
@@ -227,7 +231,7 @@ class ProjectionController extends Controller
         //
     }
 
-    
+
 
     public function getProjectionsMonthly(Request $request)
     {

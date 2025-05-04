@@ -109,20 +109,27 @@ class ProjectionDayController extends Controller
         $year = DateHelper::getCurrentYear();
         $month = DateHelper::getCurrentMonth();
 
-        // Obtener proyecciones y convertirlas en un array indexado por día (si `day` es una columna)
+        // Obtener proyecciones y convertirlas en un array indexado por fecha completa (YYYY-MM-DD)
         $projections = ProjectionDay::ForRestaurant($restaurants->id)
             ->ForDate($year, $month)
             ->get()
-            ->keyBy('day'); // Suponiendo que hay una columna `day` (1-31)
+            ->keyBy(function ($item) {
+                return $item->date; // Asumiendo que hay una columna 'date' con formato YYYY-MM-DD
+            });
+         
+        foreach ($request->date as $index => $date) {
+            $projectedSales = $request->projected_sales[$index] ?? null;
 
-        foreach ($request->projected_sales as $day => $value) {
-            if (isset($projections[$day])) {
-                $projections[$day]->update([
-                    'projected_day_sales' => $value,
+            if ($projectedSales && isset($projections[$date])) {
+                $projections[$date]->update([
+                    'projected_day_sales' => $projectedSales,
                 ]);
             }
         }
-        return redirect()->route('business.projections.index', ['business' => $business->slug])->with('update', 'Requisición Actualizada');
+
+        return redirect()
+            ->route('business.projections.index', ['business' => $business->slug])
+            ->with('update', 'Proyecciones actualizadas correctamente');
     }
 
     /**
