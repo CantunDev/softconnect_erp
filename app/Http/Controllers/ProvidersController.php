@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DateHelper;
+use App\Models\Business;
+use App\Models\Restaurant;
 use App\Models\Sfrt\Provider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Composer;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 
 class ProvidersController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(Business $business, Restaurant $restaurants,  Request $request, DateHelper $date_helper)
     {
+        $monthName = $date_helper->getCurrentMonthName();
         if ($request->ajax()) {
             $providers = Provider::query();
             return DataTables::of($providers)
@@ -37,7 +42,7 @@ class ProvidersController extends Controller
                 ->rawColumns(['name', 'action'])
                 ->make(true);
         }
-        return view('providers.index');
+        return view('providers.index', compact('business','restaurants','monthName'));
     }
 
     /**
