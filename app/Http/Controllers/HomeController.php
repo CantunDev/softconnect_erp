@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\Projection;
 use App\Models\Restaurant;
 use App\Models\Sfrt\Cheques;
@@ -11,9 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index(Request $request)
+    public function index(Business $business, Restaurant $restaurants, Request $request)
     {
-    //    return 'Bienvenido' . $request->route('business');
             $day = Carbon::now(); // Esto conserva la fecha como objeto Carbon
             $startOfMonth = Carbon::now()->startOfMonth()->format('d-m-y');
             $endOfMonth = Carbon::now()->endOfMonth()->format('d-m-y');
@@ -24,10 +24,9 @@ class HomeController extends Controller
             $daysPass = $day->day - 1;
             $rangeMonth = round(($daysPass / $daysInMonth) * 100, 2);
 
-            $restaurant = Restaurant::where('id', $request->route('business'))->first();
             $projections = Projection::where('month', $currentMonth)
                                         ->where('year', $currentYear)
-                                        ->where('restaurant_id', $restaurant->id)
+                                        ->where('restaurant_id', $restaurants->id)
                                         ->first();
             // $currentMonth = Carbon::now()->month;
             // $currentYear = Carbon::now()->year;
