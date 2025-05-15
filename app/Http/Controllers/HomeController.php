@@ -23,7 +23,7 @@ class HomeController extends Controller
             $currentYear = Carbon::now()->year;
             $daysPass = $day->day - 1;
             $rangeMonth = round(($daysPass / $daysInMonth) * 100, 2);
-
+            $restaurant = $restaurants;
             $projections = Projection::where('month', $currentMonth)
                                         ->where('year', $currentYear)
                                         ->where('restaurant_id', $restaurants->id)
