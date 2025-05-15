@@ -13,9 +13,30 @@ class Provider extends Model
      
     protected $connection = 'sqlsrv'; 
     protected $table = 'proveedores';
-    protected $casts = [
-        'fecha' => 'datetime',
+    protected $fillable = [
+        'idproveedor',
+        'nombre',
+        'razonsocial',
+        'direccion',
+        'codigopostal',
+        'telefono',
+        'fax',
+        'email',
+        'rfc',
+        'credito',
+        'usarcostosasignados',
+        'usarenpoliza',
+        'idtipoproveedor',
+        'idcuentacontable',
+        'nombrebanco',
+        'nocuenta',
+        'cuentaclave',
+        'estatus'
     ];
+    
+    // protected $casts = [
+    //     'fecha' => 'datetime',
+    // ];
     // protected $appends = ['NotaProcesado'];
     public $timestamps = false;
 
