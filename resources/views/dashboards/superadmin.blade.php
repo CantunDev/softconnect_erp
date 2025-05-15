@@ -5,6 +5,6 @@
 
 @section('content')
     <x-date-component/>
-    {{-- <x-sale-in-turn-component /> --}}
+    <x-sale-in-turn-component :restaurants="$restaurants"/>
 
 @endsection

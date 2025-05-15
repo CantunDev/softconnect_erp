@@ -155,3 +155,125 @@
         </div>
     </div>
 </div>
+
+{{-- <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-0">Proyecciones diarias del mes</h4>
+                <div class="row">
+                    @foreach ($restaurants as $restKey => $restaurant)
+                        @php
+                            $totalProjected = 0;
+                            $totalActual = 0;
+                            $totalDifference = 0;
+                            $countChecks = 0;
+                            $avgTotalCheck = 0;
+                            $totalTax = 0;
+                            $hasData = isset($restaurantDetails[$restaurant->id]['daily_projections']);
+
+                            foreach ($days as $day) {
+                                $projection = $hasData
+                                    ? $restaurantDetails[$restaurant->id]['daily_projections'][$day['full_date']] ??
+                                        null
+                                    : null;
+
+                                if ($projection) {
+                                    $totalProjected += $projection['projected_day_sales'] ?? 0;
+                                    $totalActual += $projection['actual_day_sales'] ?? 0;
+                                    $totalDifference += $projection['difference'] ?? 0;
+                                    $totalTax += $projection['actual_day_tax'] ?? 0;
+                                    // Solo sumar si existe el valor
+                                    if (isset($projection['actual_day_check'])) {
+                                        $avgTotalCheck += $projection['actual_day_check'];
+                                        $countChecks++;
+                                    }
+                                }
+                            }
+                            $avgTotalCheck = $countChecks > 0 ? $avgTotalCheck / $countChecks : 0;
+                        @endphp
+
+
+                        <div class="col-xl-{{ $colSize }}">
+                            <div class="mt-4">
+
+                                <div class="accordion accordion-flush" id="accordionFlushExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-headingOne">
+                                            <button
+                                                style="border: 1.5px solid {{ $restaurant->color_primary }}; color: {{ $restaurant->color_secondary }}; background-color: var(--bs-table-bg)"
+                                                class="accordion-button fw-medium" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#flush-collapse{{ $restKey }}"
+                                                aria-expanded="true" aria-controls="flush-collapse{{ $restKey }}">
+                                                {{ $restaurant->name }}
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapse{{ $restKey }}"
+                                            class="accordion-collapse collapse show" aria-labelledby="flush-headingOne"
+                                            data-bs-parent="#accordionFlushExample">
+                                            <div class="accordion-body text-muted">
+
+                                                <div class="card-body border-top">
+                                                    <p class="text-muted mb-4">En este mes</p>
+                                                    <div class="text-center">
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <div>
+                                                                    <div class="font-size-24 text-primary mb-2">
+                                                                        <i style="color: {{ $restaurant->color_secondary }}"
+                                                                            class="mdi mdi-finance"></i>
+                                                                    </div>
+
+                                                                    <p class="text-muted mb-2">Proyectado</p>
+                                                                    <h5 class="price">{{ $totalProjected }}</h5>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="mt-4 mt-sm-0">
+                                                                    <div class="font-size-24 text-primary mb-2">
+                                                                        <i style="color: {{ $restaurant->color_secondary }}"
+                                                                            class="bx bx-import"></i>
+                                                                    </div>
+
+                                                                    <p class="text-muted mb-2">Vta.Real</p>
+                                                                    <h5 class="price">{{ $totalActual }}</h5>
+
+                                                                    <div class="mt-3">
+                                                                        <a href="javascript: void(0);"
+                                                                            style="background-color: {{ $restaurant->color_primary }}; color {{ $restaurant->color_accent }} "
+                                                                            class="btn btn-primary btn-sm w-md">Detalles</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="mt-4 mt-sm-0">
+                                                                    <div class="font-size-24 text-primary mb-2">
+                                                                        <i style="color: {{ $restaurant->color_secondary }}"
+                                                                            class="mdi mdi-account-group"></i>
+                                                                    </div>
+
+                                                                    <p class="text-muted mb-2">Clientes</p>
+                                                                    <h5>{{ $totalTax }}</h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}
+</div>
+</div>
