@@ -7,16 +7,17 @@ use App\Models\Business;
 use App\Models\Restaurant;
 use App\Models\Sfrt\Provider;
 use Illuminate\Http\Request;
+use Illuminate\Queue\Console\RestartCommand;
 use Illuminate\Support\Composer;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use LaravelLang\Publisher\Console\Reset;
 
 class ProvidersController extends Controller
 {
 
     public function index(Business $business, Restaurant $restaurants,  Request $request, DateHelper $date_helper)
     {
-        $monthName = $date_helper->getCurrentMonthName();
         if ($request->ajax()) {
             $providers = Provider::query();
             return DataTables::of($providers)
@@ -25,6 +26,15 @@ class ProvidersController extends Controller
                     return $name = '
                     <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->nombre . '</a></h5>
                     <p class="text-muted mb-0">' . $result->razonsocial . '</p>';
+                })
+                ->filter(function ($query) {
+                    if (request()->has('search') && !empty(request('search')['value'])) {
+                        $searchValue = request('search')['value'];
+                        $query->where(function($q) use ($searchValue) {
+                            $q->where('nombre', 'like', '%' . $searchValue . '%')
+                              ->orWhere('razonsocial', 'like', '%' . $searchValue . '%');
+                        });
+                    }
                 })
                 ->addColumn('action', function ($result) {
                     $opciones = '';
@@ -39,18 +49,32 @@ class ProvidersController extends Controller
                 ->addColumn('average', function ($result) {
                     return round($result->purchases->avg('total'), 2) ?? 0.0;
                 })
-                ->rawColumns(['name', 'action'])
+                ->addColumn('status', function($result){
+                    $status = '';
+                    if ($result->estatus <= 1 ) {
+                        $status .= '<span class="badge badge-soft-success me-1">ACTIVO</span>';
+                    }else{
+                        $status .= '<span class="badge badge-soft-danger me-1">BAJA</span>';
+                    }
+                    return $status;
+                })
+                ->addColumn('actions', function($result){
+                    $actions = '';
+                    $actions .= '<a href="' . route('users.edit', $result->estatus) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                    return $actions;
+                })
+                ->rawColumns(['name', 'actions', 'status'])
                 ->make(true);
         }
-        return view('providers.index', compact('business','restaurants','monthName'));
+        return view('providers.index', compact('business','restaurants'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Business $business, Restaurant $restaurants)
     {
-        return view('providers.create');
+        return view('providers.create', compact('restaurants'));
     }
 
     /**

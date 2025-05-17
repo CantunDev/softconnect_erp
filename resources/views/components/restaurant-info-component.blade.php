@@ -16,7 +16,7 @@
                         <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-2">
                             <span class="badge py-2 px-3 rounded-pill fw-medium"
                                   style="background-color: rgba({{ hex2rgb($restaurants->color_primary ?? '#0d6efd') }}, 0.1); color: {{ $restaurants->color_primary ?? '#0d6efd' }};">
-                                <i class="bi bi-building me-1"></i>{{ $restaurants->business->name }}
+                                <i class="bi bi-building me-1"></i>{{ $restaurant->business->name }}
                             </span>
                             <span class="badge bg-secondary bg-opacity-10 text-secondary py-2 px-3 rounded-pill fw-medium text-uppercase">
                                 <i class="bi bi-calendar me-1"></i>{{ $monthName }}

@@ -61,7 +61,7 @@
                                 </h5>
                                 {{-- @can('create_providers') --}}
                                     <div class="flex-shrink-0">
-                                        <a href="{{ route('business.providers.create',['business' => request()->route('business')]) }}" class="btn btn-sm btn-success">
+                                        <a href="{{ route('business.restaurants.providers.create',['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) }}" class="btn btn-sm btn-success">
                                             <i class="mdi mdi-plus me-1"></i>
                                             Nuevo
                                         </a>
@@ -75,12 +75,12 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Proveedore</th>
-                                            <th scope="col" class="px-4 py-3">Categoria</th>
+                                            <th scope="col">Proveedor</th>
                                             <th scope="col" class="px-4 py-3">Compras</th>
                                             <th scope="col" class="px-4 py-3">Promedio</th>
                                             <th scope="col" class="px-4 py-3">Credito</th>
                                             <th scope="col" class="px-4 py-3">Estatus</th>
+                                            <th scope="col" class="px-4 py-3">Opciones</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -136,6 +136,28 @@
 
 @section('js')
     <script>
+     $(document).ready(function() {
+    $('#table_providers').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('business.providers.index', ['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) !!}',
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'name', name: 'name' },
+            { data: 'purchases', name: 'purchases', searchable: false },
+            { data: 'average', name: 'average', searchable: false },
+            { data: 'credito', name: 'credito' },
+            { data: 'status', name: 'status', searchable: false },
+            { data: 'actions', name: 'actions', orderable: false, searchable: false },
+
+        ],
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+        }
+    });
+});
+    </script>
+    {{-- <script>
         $(document).ready(function() {
             $.ajax({
                 url: '{!! route('business.providers.index', ['business' => request()->route('business')]) !!}',
@@ -155,8 +177,8 @@
                                 },
                                 {
                                     data: 'name',
-                                    name: 'name',
-                                    orderable: false,
+                                    name: 'nombre',
+                                    orderable: true,
                                     searchable: false
                                 },
                                 {
@@ -203,5 +225,5 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 @endsection
