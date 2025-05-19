@@ -1,21 +1,5 @@
 @extends('layouts.master')
 @section('content')
-@php
-    // Función helper para convertir hex a rgb (opcional)
-    function hex2rgb($hex) {
-        $hex = str_replace("#", "", $hex);
-        if(strlen($hex) == 3) {
-            $r = hexdec(substr($hex,0,1).substr($hex,0,1));
-            $g = hexdec(substr($hex,1,1).substr($hex,1,1));
-            $b = hexdec(substr($hex,2,1).substr($hex,2,1));
-        } else {
-            $r = hexdec(substr($hex,0,2));
-            $g = hexdec(substr($hex,2,2));
-            $b = hexdec(substr($hex,4,2));
-        }
-        return "$r, $g, $b";
-    }
-@endphp
 
 <x-restaurant-info-component :restaurants="$restaurants"/>
 
@@ -135,7 +119,7 @@
 @endsection
 
 @section('js')
-    <script>
+    {{-- <script>
      $(document).ready(function() {
     $('#table_providers').DataTable({
         processing: true,
@@ -156,11 +140,11 @@
         }
     });
 });
-    </script>
-    {{-- <script>
+    </script> --}}
+    <script>
         $(document).ready(function() {
             $.ajax({
-                url: '{!! route('business.providers.index', ['business' => request()->route('business')]) !!}',
+                url: '{!! route('business.providers.index', ['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) !!}',
                 type: 'GET',
                 success: function(response) {
                     if (response.data) {
@@ -225,5 +209,5 @@
                 }
             });
         });
-    </script> --}}
+    </script> 
 @endsection

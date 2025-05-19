@@ -14,11 +14,23 @@ class RestaurantInfoComponent extends Component
      */
     public $restaurants;
     public $monthName;
+    public $startOfMonth;
+    public $endOfMonth;
+    public $month;
+    public $daysInMonth;
+    public $daysPass;
+    public $rangeMonth;
     
     public function __construct($restaurants, DateHelper $date_helper)
     {
         $this->restaurants = $restaurants;
         $this->monthName = $date_helper->getCurrentMonthName();
+        $this->startOfMonth = DateHelper::getStartOfMonth();
+        $this->endOfMonth = DateHelper::getEndOfMonth();
+        $this->month = DateHelper::getCurrentMonthName();
+        $this->daysInMonth = DateHelper::getDaysInMonth();
+        $this->daysPass = DateHelper::getDaysPassed();
+        $this->rangeMonth = DateHelper::getMonthProgress();
     }
 
     /**
