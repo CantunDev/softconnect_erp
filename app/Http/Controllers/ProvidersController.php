@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\DateHelper;
+use App\Http\Requests\StoreProviderRequest;
 use App\Models\Business;
 use App\Models\Restaurant;
 use App\Models\Sfrt\Provider;
@@ -30,9 +31,9 @@ class ProvidersController extends Controller
                 ->filter(function ($query) {
                     if (request()->has('search') && !empty(request('search')['value'])) {
                         $searchValue = request('search')['value'];
-                        $query->where(function($q) use ($searchValue) {
+                        $query->where(function ($q) use ($searchValue) {
                             $q->where('nombre', 'like', '%' . $searchValue . '%')
-                              ->orWhere('razonsocial', 'like', '%' . $searchValue . '%');
+                                ->orWhere('razonsocial', 'like', '%' . $searchValue . '%');
                         });
                     }
                 })
@@ -49,24 +50,26 @@ class ProvidersController extends Controller
                 ->addColumn('average', function ($result) {
                     return round($result->purchases->avg('total'), 2) ?? 0.0;
                 })
-                ->addColumn('status', function($result){
+                ->addColumn('status', function ($result) {
                     $status = '';
-                    if ($result->estatus <= 1 ) {
-                        $status .= '<span class="badge badge-soft-success me-1">ACTIVO</span>';
-                    }else{
-                        $status .= '<span class="badge badge-soft-danger me-1">BAJA</span>';
+                    if ($result->estatus <= 1) {
+                        $status .= '<span class="badge bg-success me-1">ACTIVO</span>';
+                    } else {
+                        $status .= '<span class="badge bg-danger me-1">BAJA</span>';
                     }
                     return $status;
                 })
-                ->addColumn('actions', function($result){
+                ->addColumn('actions', function ($result) {
                     $actions = '';
-                    $actions .= '<a href="' . route('users.edit', $result->estatus) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                    $actions .= '<a href="" class="btn btn-sm text-info action-icon icon-dual-warning p-1"><i class="mdi mdi-eye font-size-18"></i></a>';
+                    $actions .= '<a href="" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                    $actions .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
                     return $actions;
                 })
                 ->rawColumns(['name', 'actions', 'status'])
                 ->make(true);
         }
-        return view('providers.index', compact('business','restaurants'));
+        return view('providers.index', compact('business', 'restaurants'));
     }
 
     /**
@@ -74,14 +77,21 @@ class ProvidersController extends Controller
      */
     public function create(Business $business, Restaurant $restaurants)
     {
-        return view('providers.create', compact('restaurants'));
+        // Tipo de proveedores 
+        // $tipoproveedores = 
+        // Cuentas contables
+        // $cuentascontables
+        return view('providers.create', compact('business','restaurants'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Business $business, Restaurant $restaurants, StoreProviderRequest $request)
     {
+        // return $request->all();
+        $validated = $request->validated();
+        return $request->all();
         $provider = Provider::create($request->all());
         return redirect()->route('providers.index');
     }

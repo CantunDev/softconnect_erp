@@ -1,6 +1,14 @@
 @extends('layouts.master')
 @section('content')
-
+<style>
+    /* Establece un ancho máximo para la columna y añade puntos suspensivos */
+.table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Ajusta este valor según tus necesidades */
+}
+</style>
 <x-restaurant-info-component :restaurants="$restaurants"/>
 
 <div class="col-xl-12">
@@ -163,25 +171,21 @@
                                     data: 'name',
                                     name: 'nombre',
                                     orderable: true,
-                                    searchable: false
-                                },
-                                {
-                                    data: 'idtipoproveedor',
-                                    name: 'idtipoproveedor ',
-                                    orderable: false,
-                                    searchable: false
+                                    searchable: false,
                                 },
                                 {
                                     data: 'purchases',
                                     name: 'purchases',
                                     orderable: false,
-                                    searchable: false
+                                    searchable: false,
+                                    className:'text-center'
                                 },
                                 {
                                     data: 'average',
                                     name: 'average',
                                     orderable: false,
                                     searchable: false,
+                                    className: 'text-center',
                                     render: function(data) {
                                         return '$' + data
                                     }
@@ -190,11 +194,19 @@
                                     data: 'credito',
                                     name: 'credito',
                                     orderable: false,
-                                    searchable: false
+                                    searchable: false,
+                                    className: 'text-center'
                                 },
                                 {
-                                    data: 'action',
-                                    name: 'action',
+                                    data: 'status',
+                                    name: 'status',
+                                    orderable: false,
+                                    searchable: false,
+                                    className: 'text-center'
+                                },
+                                {
+                                    data: 'actions',
+                                    name: 'actions',
                                     orderable: false,
                                     searchable: false
                                 }
