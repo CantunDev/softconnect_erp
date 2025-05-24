@@ -28,7 +28,13 @@ class StoreProviderRequest extends FormRequest
             'direccion' => ['required', 'min:3'],
             'codigopostal' => ['required', 'min:5', 'max:5'],
             'email' => ['required'],
+            'fax' => ['nullable'],
+            'credito' => ['nullable'],
+            'estatus' => ['required'],
             'telefono' => ['required'],
+            'cuentaclave' => ['required', 'digits:18', 'regex:/^\d{18}$/'],
+            'nocuenta' => ['required', 'digits_between:10,12', 'regex:/^\d{10,12}$/'],
+            'nombrebanco' => ['required', 'string'],
         ];
     }
 
@@ -51,7 +57,16 @@ class StoreProviderRequest extends FormRequest
 
             'email.required' => 'El correo es obligatorio',
 
-            'telefono.required' => 'El telefono es obligatorio'
+            'telefono.required' => 'El telefono es obligatorio',
+            
+            'nombrebanco.required' => 'Selecciona un banco',
+            'nombrebanco.string' => 'Solo se permite una opcion de las listadas',
+
+            'cuentaclave.required' => 'La cuenta CLABE es obligatoria.',
+            'cuentaclave.digits' => 'La CLABE debe tener exactamente 18 dígitos.',
+            'cuentaclave.required' => 'El número de cuenta es obligatorio.',
+           
+            'nocuenta.digits_between' => 'El número de cuenta debe tener entre 10 y 12 dígitos.',
 
         ];
     }

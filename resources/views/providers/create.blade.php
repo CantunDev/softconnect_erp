@@ -51,7 +51,7 @@
                                         <label for="rfc" class="col-md-2 col-form-label"> RFC</label>
                                         <div class="col-md-10">
                                             <input type="text" class="form-control" id="rfc" name="rfc"
-                                                placeholder="PRV12345445">
+                                                placeholder="PRV12345445" value="{{ old('rfc') }}">
                                             @error('rfc')
                                                 <p class="text-danger text-sm mt-1">{{ $message }}</p>
                                             @enderror
@@ -60,7 +60,7 @@
                                     <div class="form-group row mb-4">
                                         <label for="direccion" class="col-md-2 col-form-label">Direccion</label>
                                         <div class="col-md-10">
-                                            <textarea class="form-control" id="direccion" name="direccion" rows="3" placeholder="Calle 20 Entre 30 "></textarea>
+                                            <textarea class="form-control" id="direccion" name="direccion" rows="3" placeholder="Calle 20 Entre 30 ">{{ old('direccion') }}</textarea>
                                             @error('direccion')
                                                 <p class="text-danger text-sm mt-1">{{ $message }}</p>
                                             @enderror
@@ -91,10 +91,11 @@
                                         <div class="col-md-10 position-relative">
                                             <span class="phone-flag-mx"></span>
                                             <input type="text" class="form-control phone pl-5" id="telefono"
-                                                name="telefono" placeholder="938 123 3234">
+                                                name="telefono" placeholder="938 123 3234" value="{{ old('telefono') }} ">
                                             @error('telefono')
                                                 <p class="text-danger text-sm mt-1">{{ $message }}</p>
                                             @enderror
+                                            <input type="hidden" name="estatus" value="1">   
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +117,10 @@
                                         <div class="form-group mb-0">
                                             <label for="credito">Dias credito</label>
                                             <input type="text" class="form-control text-center" id="credito"
-                                                name="credito" placeholder="0" value="{{ old('credito')}} ">
+                                                name="credito" placeholder="0" value="{{ old('credito') }} ">
+                                                 @error('credito')
+                                                <p class="text-danger text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-lg-4 mr-2 ml-4">
@@ -124,25 +128,27 @@
                                             <label for="idtipoproveedor">Tipo de proveedor</label>
                                             <select class="form-control select2" title="idtipoproveedor"
                                                 id="idtipoproveedor" name="idtipoproveedor">
-                                                <option value="0">Selecciona una opcion</option>
-                                                <option value="AL">Alabama</option>
-                                                <option value="AK">Alaska</option>
-                                                <option value="AZ">Arizona</option>
+                                                    <option disabled>Selecciona una opcion</option>
+                                                @foreach ($tipoproveedores as $tipo)
+                                                    <option value="{{ $tipo->idtipoproveedor }}">{{ $tipo->descripcion }}
+                                                    </option>
+                                                @endforeach
+
                                             </select>
+                                             @error('idtipoproveedor')
+                                                <p class="text-danger text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    {{-- <div class="col-lg-6">
                                         <div class="form-group mb-0">
                                             <label for="idcuentacontable">Cuenta contable</label>
                                             <select class="form-control select2" title="idcuentacontable"
                                                 id="idcuentacontable" name="idcuentacontable">
-                                                <option value="0">Selecciona una opcion</option>
-                                                <option value="AL">Alabama</option>
-                                                <option value="AK">Alaska</option>
-                                                <option value="AZ">Arizona</option>
+                                                <option disabled selected>Selecciona una opcion</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -163,25 +169,63 @@
                                         <div class="form-group mb-0">
                                             <label for="nombrebanco">Banco</label>
                                             <select class="form-control select2" title="nombrebanco" name="nombrebanco">
-                                                <option value="0">Selecciona una opcion</option>
-                                                <option value="AL">Alabama</option>
-                                                <option value="AK">Alaska</option>
-                                                <option value="AZ">Arizona</option>
+                                                <option disabled>Selecciona una opcion</option>
+                                                    <option value="Banamex">Banamex</option>
+                                                    <option value="BBVA">BBVA</option>
+                                                    <option value="Santander">Santander</option>
+                                                    <option value="Banorte">Banorte</option>
+                                                    <option value="HSBC">HSBC</option>
+                                                    <option value="Scotiabank">Scotiabank</option>
+                                                    <option value="Inbursa">Inbursa</option>
+                                                    <option value="Afirme">Afirme</option>
+                                                    <option value="Bancoppel">BanCoppel</option>
+                                                    <option value="Banco Azteca">Banco Azteca</option>
+                                                    <option value="Banjercito">Banjercito</option>
+                                                    <option value="Bankaool">Bankaool</option>
+                                                    <option value="Bansefi">Bansefi</option>
+                                                    <option value="Banregio">Banregio</option>
+                                                    <option value="Bajío">Banco del Bajío</option>
+                                                    <option value="Multiva">Banco Multiva</option>
+                                                    <option value="Intercam">Intercam Banco</option>
+                                                    <option value="Mifel">Banco Mifel</option>
+                                                    <option value="Ve por más">Banco Ve por Más</option>
+                                                    <option value="Forjadores">Banco Forjadores</option>
+                                                    <option value="Pagatodo">Pagatodo</option>
+                                                    <option value="Consubanco">Consubanco</option>
+                                                    <option value="Klar">Klar</option>
+                                                    <option value="Hey Banco">Hey Banco</option>
+                                                    <option value="Nu México">Nu México</option>
+                                                    <option value="Ualá México">Ualá México</option>
+                                                    <option value="Stori">Stori</option>
+                                                    <option value="Albo">Albo</option>
+                                                    <option value="Famsa">Banco Famsa</option>
+                                                    <option value="Compartamos">Compartamos Banco</option>
+                                                    <option value="Accendo Banco">Accendo Banco</option>
+                                                    <option value="Creditea">Creditea</option>
                                             </select>
+                                             @error('nombrebanco')
+                                                <p class="text-danger text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group mb-0">
                                             <label for="cuentaclave">Cuenta Clave</label>
                                             <input type="text" class="form-control" id="cuentaclave"
-                                                name="cuentaclave" placeholder="0000 0000 000000000000 0">
+                                                name="cuentaclave" placeholder="0000 0000 000000000000 0" value="{{ old('cuentaclave') }}">
+                                            @error('cuentaclave')
+                                                <p class="text-danger text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group mb-0">
                                             <label for="nocuenta">Numero de cuenta</label>
                                             <input type="text" class="form-control" id="nocuenta" name="nocuenta"
-                                                placeholder="998348438">
+                                                placeholder="998348438" value=" {{ old('cuentaclave')}} ">
+                                                 @error('nocuenta')
+                                                <p class="text-danger text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -198,10 +242,10 @@
             </div>
         </div>
     </form>
-    @section('js')
-        <script>
+@section('js')
+    <script>
         $(document).ready(function() {
-                $("input[name='credito']").TouchSpin({
+            $("input[name='credito']").TouchSpin({
                 // verticalbuttons: true,
                 min: 0,
                 max: 30,
@@ -214,5 +258,5 @@
             });
         });
     </script>
-    @endsection
+@endsection
 @endsection

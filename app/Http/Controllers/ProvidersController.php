@@ -6,7 +6,9 @@ use App\Helpers\DateHelper;
 use App\Http\Requests\StoreProviderRequest;
 use App\Models\Business;
 use App\Models\Restaurant;
+use App\Models\Sfrt\AccountingAccount;
 use App\Models\Sfrt\Provider;
+use App\Models\Sfrt\TypeProviders;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Console\RestartCommand;
 use Illuminate\Support\Composer;
@@ -78,10 +80,11 @@ class ProvidersController extends Controller
     public function create(Business $business, Restaurant $restaurants)
     {
         // Tipo de proveedores 
-        // $tipoproveedores = 
+        $tipoproveedores = TypeProviders::all();
         // Cuentas contables
-        // $cuentascontables
-        return view('providers.create', compact('business','restaurants'));
+        // $cuentascontables = AccountingAccount::all();
+
+        return view('providers.create', compact('business', 'restaurants', 'tipoproveedores'));
     }
 
     /**
@@ -89,11 +92,18 @@ class ProvidersController extends Controller
      */
     public function store(Business $business, Restaurant $restaurants, StoreProviderRequest $request)
     {
-        // return $request->all();
+        // $request->all();
         $validated = $request->validated();
-        return $request->all();
-        $provider = Provider::create($request->all());
-        return redirect()->route('providers.index');
+        // $provider = new Provider();
+        return $provider = Provider::create($validated);
+        return redirect()->route(
+            'business.restaurants.providers.index',
+            [
+                'business' => $business->slug,
+                'restaurants' => $restaurants->slug
+            ]
+        )
+            ->with('success', 'Proveedor creado correctamente.');
     }
 
     /**
