@@ -14,6 +14,8 @@ use Illuminate\Queue\Console\RestartCommand;
 use Illuminate\Support\Composer;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use LaravelLang\Publisher\Console\Reset;
 
 class ProvidersController extends Controller
@@ -94,8 +96,15 @@ class ProvidersController extends Controller
     {
         // $request->all();
         $validated = $request->validated();
+        $connectionName = Provider::query()->getConnection()->getName();
+        // Log::info("Creando Provider con conexión: ".$connectionName);
+        $lastId = DB::connection('sqlsrv')
+            ->table('proveedores')
+            ->max('idproveedor');
+
+        $validated['idproveedor'] = $lastId + 1;
         // $provider = new Provider();
-        return $provider = Provider::create($validated);
+        $provider = Provider::on('sqlsrv')->create($validated); // o 'sqlsrv'
         return redirect()->route(
             'business.restaurants.providers.index',
             [

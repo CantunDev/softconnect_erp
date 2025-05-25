@@ -13,6 +13,8 @@ class Provider extends Model
      
     protected $connection = 'sqlsrv'; 
     protected $table = 'proveedores';
+    protected $primaryKey = 'idproveedor';
+    public $incrementing = true;
     protected $fillable = [
         'idproveedor',
         'nombre',
@@ -33,6 +35,7 @@ class Provider extends Model
         'cuentaclave',
         'estatus'
     ];
+  
     
     // protected $casts = [
     //     'fecha' => 'datetime',
