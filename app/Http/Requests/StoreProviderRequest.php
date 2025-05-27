@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Sfrt\Provider;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class StoreProviderRequest extends FormRequest
 {
@@ -21,21 +23,26 @@ class StoreProviderRequest extends FormRequest
      */
     public function rules(): array
     {
+        // $connectionName = Provider::query()->getConnection()->getName();
+        // dd($connectionName);
         return [
-            'nombre' => ['required','min:3','max:100'],
+            'nombre' => ['required', 'min:3', 'max:100', 'unique:sqlsrv.proveedores,nombre'],
             'razonsocial' => ['required', 'min:3', 'max:100'],
-            'rfc' => ['required','min:12','max:13'],
+            'rfc' => ['required', 'min:12', 'max:13', 'unique:sqlsrv.proveedores,rfc'],
             'direccion' => ['required', 'min:3'],
             'codigopostal' => ['required', 'min:5', 'max:5'],
-            'email' => ['required'],
+            'email' => ['required', 'unique:sqlsrv.proveedores,email'],
             'fax' => ['nullable'],
             'credito' => ['nullable'],
             'estatus' => ['required'],
-            'telefono' => ['required'],
-            'cuentaclave' => ['required', 'digits:18', 'regex:/^\d{18}$/'],
-            'nocuenta' => ['required', 'digits_between:10,12', 'regex:/^\d{10,12}$/'],
+            'telefono' => ['required', 'unique:sqlsrv.proveedores,telefono'],
+            'idtipoproveedor' => ['required'],
+            'cuentaclave' => ['required', 'digits:18', 'regex:/^\d{18}$/','unique:sqlsrv.proveedores,cuentaclave'],
+            'nocuenta' => ['required', 'digits_between:10,12', 'regex:/^\d{10,12}$/', 'unique:sqlsrv.proveedores,nocuenta'],
             'nombrebanco' => ['required', 'string'],
         ];
+
+        Log::info('Reglas de validación:', $rules);
     }
 
     public function messages(): array
@@ -51,21 +58,23 @@ class StoreProviderRequest extends FormRequest
             'rfc.min' => 'Debe tener al menos 12 caracteres',
 
             'direccion.required' => 'La direccion no puede estar vacia',
-            
+
             'codigopostal.required' => 'El codigo postal es obligatorio',
             'codigopostal.min' => 'Debe tener 5 digitos',
+
+            'idtipoproveedor.required' => 'Selecciona el tipo de proveedor',
 
             'email.required' => 'El correo es obligatorio',
 
             'telefono.required' => 'El telefono es obligatorio',
-            
+
             'nombrebanco.required' => 'Selecciona un banco',
             'nombrebanco.string' => 'Solo se permite una opcion de las listadas',
 
             'cuentaclave.required' => 'La cuenta CLABE es obligatoria.',
             'cuentaclave.digits' => 'La CLABE debe tener exactamente 18 dígitos.',
             'cuentaclave.required' => 'El número de cuenta es obligatorio.',
-           
+
             'nocuenta.digits_between' => 'El número de cuenta debe tener entre 10 y 12 dígitos.',
 
         ];

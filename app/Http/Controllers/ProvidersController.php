@@ -84,9 +84,9 @@ class ProvidersController extends Controller
         // Tipo de proveedores 
         $tipoproveedores = TypeProviders::all();
         // Cuentas contables
-        // $cuentascontables = AccountingAccount::all();
+        $cuentascontables = AccountingAccount::where('tipo',2)->get();
 
-        return view('providers.create', compact('business', 'restaurants', 'tipoproveedores'));
+        return view('providers.create', compact('business', 'restaurants', 'tipoproveedores','cuentascontables'));
     }
 
     /**

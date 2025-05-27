@@ -128,7 +128,7 @@
                                             <label for="idtipoproveedor">Tipo de proveedor</label>
                                             <select class="form-control select2" title="idtipoproveedor"
                                                 id="idtipoproveedor" name="idtipoproveedor">
-                                                    <option disabled>Selecciona una opcion</option>
+                                                    <option selected>Selecciona una opcion</option>
                                                 @foreach ($tipoproveedores as $tipo)
                                                     <option value="{{ $tipo->idtipoproveedor }}">{{ $tipo->descripcion }}
                                                     </option>
@@ -140,15 +140,19 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    {{-- <div class="col-lg-6">
+                                    <div class="col-lg-6">
                                         <div class="form-group mb-0">
                                             <label for="idcuentacontable">Cuenta contable</label>
                                             <select class="form-control select2" title="idcuentacontable"
                                                 id="idcuentacontable" name="idcuentacontable">
-                                                <option disabled selected>Selecciona una opcion</option>
+                                                <option  selected>Selecciona una opcion</option>
+                                                @foreach ($cuentascontables as $cuentas)
+                                                    <option value="{{ $cuentas->idcuentacontable }}">{{ $cuentas->descripcion }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -169,7 +173,7 @@
                                         <div class="form-group mb-0">
                                             <label for="nombrebanco">Banco</label>
                                             <select class="form-control select2" title="nombrebanco" name="nombrebanco">
-                                                <option disabled>Selecciona una opcion</option>
+                                                <option selected>Selecciona una opcion</option>
                                                     <option value="Banamex">Banamex</option>
                                                     <option value="BBVA">BBVA</option>
                                                     <option value="Santander">Santander</option>
