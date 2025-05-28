@@ -71,7 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('projections', ProjectionController::class);
         Route::get('/monthly', [ProjectionController::class, 'getProjectionsMonthly'])->name('projections_monthly.get');
-        Route::resource('providers', ProvidersController::class);
+        // Route::resource('providers', ProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
         Route::resource('payment_method', PaymentMethodController::class);
         Route::resource('expenses_categories', ExpensesCategoriesController::class);
@@ -80,17 +80,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::resource('home', HomeController::class);
-
             // Rutas normales de projections
             Route::resource('projections', ProjectionController::class);
-
             // Ruta simplificada para proyecciones mensuales
             Route::prefix('projections/{month}')->name('projections.month.')->group(function () {
                 Route::resource('monthly', ProjectionDayController::class);
                 Route::get('sales_get', [ProjectionDayController::class,'sales_get'])->name('sales.get');
                 Route::put('sales_update', [ProjectionDayController::class, 'sales_update'])->name('sales.update');
             });
-            
             Route::resource('providers', ProvidersController::class);
             Route::resource('invoices', InvoicesController::class);
             Route::resource('payment_method', PaymentMethodController::class);

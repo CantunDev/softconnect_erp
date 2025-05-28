@@ -10,11 +10,12 @@ use App\Models\Sfrt\Purchase;
 class Provider extends Model
 {
     use HasFactory;
-     
-    protected $connection = 'sqlsrv'; 
+
+    protected $connection = 'sqlsrv';
     protected $table = 'proveedores';
     protected $primaryKey = 'idproveedor';
-    public $incrementing = true;
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = [
         'idproveedor',
         'nombre',
@@ -35,14 +36,14 @@ class Provider extends Model
         'cuentaclave',
         'estatus'
     ];
-  
-    
-    // protected $casts = [
-    //     'fecha' => 'datetime',
-    // ];
+
     // protected $appends = ['NotaProcesado'];
     public $timestamps = false;
 
+    public function getRouteKeyName()
+    {
+        return 'idproveedor';
+    }
     /**
      * Get all of the purchases for the Purchase
      *
@@ -52,5 +53,4 @@ class Provider extends Model
     {
         return $this->hasMany(Purchase::class, 'idproveedor', 'idproveedor');
     }
-
 }

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use LaravelLang\Publisher\Console\Reset;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class ProvidersController extends Controller
 {
@@ -63,11 +64,15 @@ class ProvidersController extends Controller
                     }
                     return $status;
                 })
-                ->addColumn('actions', function ($result) {
+                ->addColumn('actions', function ($result) use ($business, $restaurants) {
                     $actions = '';
                     $actions .= '<a href="" class="btn btn-sm text-info action-icon icon-dual-warning p-1"><i class="mdi mdi-eye font-size-18"></i></a>';
-                    $actions .= '<a href="" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                    $actions .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                    $actions .= '<a href=" ' . route('business.restaurants.providers.edit', [
+                        'business' => $business->slug,
+                        'restaurants' => $restaurants->slug,
+                        'provider' => $result->idproveedor
+                    ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                    $actions .= '<button type="button" onclick="btnDelete(' . $result->idproveedor . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
                     return $actions;
                 })
                 ->rawColumns(['name', 'actions', 'status'])
@@ -81,12 +86,12 @@ class ProvidersController extends Controller
      */
     public function create(Business $business, Restaurant $restaurants)
     {
-        // Tipo de proveedores 
+        // Tipo de proveedores
         $tipoproveedores = TypeProviders::all();
         // Cuentas contables
-        $cuentascontables = AccountingAccount::where('tipo',2)->get();
+        $cuentascontables = AccountingAccount::where('tipo', 2)->get();
 
-        return view('providers.create', compact('business', 'restaurants', 'tipoproveedores','cuentascontables'));
+        return view('providers.create', compact('business', 'restaurants', 'tipoproveedores', 'cuentascontables'));
     }
 
     /**
@@ -126,18 +131,30 @@ class ProvidersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Provider $provider)
+    public function edit(Business $business, Restaurant $restaurants, $providers)
     {
-        return view('providers.edit', compact('provider'));
+        $provider = Provider::where('idproveedor', $providers)->first();
+        // Tipo de proveedores
+        $tipoproveedores = TypeProviders::all();
+        // Cuentas contables
+        $cuentascontables = AccountingAccount::where('tipo', 2)->get();
+        return view('providers.edit', compact('business', 'restaurants', 'provider', 'tipoproveedores', 'cuentascontables'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Provider $provider)
+    public function update(Business $business, Restaurant $restaurants, Request $request, $provider)
     {
+        // return $request->all();
+        $provider = Provider::where('idproveedor', $provider)->firstOrFail();
+
         $provider->update($request->all());
-        return redirect()->route('providers.index');
+
+        \Log::info("Provider actualizado con éxito. ID: " . $provider->idproveedor);
+
+        return redirect()->route('business.restaurants.providers.index', [$business->slug, $restaurants->slug])
+            ->with('success', 'Proveedor actualizado correctamente');
     }
 
     /**

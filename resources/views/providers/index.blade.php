@@ -152,7 +152,7 @@
     <script>
         $(document).ready(function() {
             $.ajax({
-                url: '{!! route('business.providers.index', ['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) !!}',
+                url: '{!! route('business.restaurants.providers.index', ['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) !!}',
                 type: 'GET',
                 success: function(response) {
                     if (response.data) {
