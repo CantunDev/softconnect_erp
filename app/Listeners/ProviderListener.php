@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\ProviderActionNotification;
+use Illuminate\Support\Facades\Log;
 
 class ProviderListener
 {
@@ -23,14 +24,21 @@ class ProviderListener
      */
     public function handle(ProviderEvents $event): void
     {
-       \Log::info('Attempting to send notification (Listener)', [
-        'provider' => $event->provider->id,
-        'user' => $event->user?->id, // Usamos ?-> por si $user es null
+        Log::info('ProviderListener ejecutándose', [
+        'provider_id' => $event->provider->id,
+        'user_id' => $event->user?->id,
         'action' => $event->action
     ]);
 
-        // $user->notify(new ProviderActionNotification($event->provider, $event->action));
+    try {
         $event->user->notify(new ProviderActionNotification($event->provider, $event->action));
+        \Log::info('Notificación enviada exitosamente');
+    } catch (\Throwable $e) {
+        \Log::error('Error al enviar notificación', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
 
     }
 }

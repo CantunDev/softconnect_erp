@@ -7,6 +7,7 @@
     use Illuminate\Contracts\Queue\ShouldQueue;
     use Illuminate\Notifications\Messages\MailMessage;
     use Illuminate\Notifications\Notification;
+    use Illuminate\Support\Facades\Log;
 
     class ProviderActionNotification extends Notification
     {
@@ -50,11 +51,11 @@
 
         public function toDatabase(object $notifiable): array
         {
-           \Log::info('Storing notification to database', [
-        'notifiable_id' => $notifiable->id,
-        'provider_id' => $this->provider->id,
-        'action' => $this->action
-    ]);
+            Log::info('Storing notification to database', [
+                'notifiable_id' => $notifiable->id,
+                'provider_id' => $this->provider->id,
+                'action' => $this->action
+            ]);
             return [
                 'titulo' => $this->getTitle(),
                 'mensaje' => $this->getMessage(),

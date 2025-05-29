@@ -6,6 +6,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use App\Events\ProviderEvents;
 use App\Listeners\ProviderListener;
+use Illuminate\Support\Facades\Log;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,11 @@ class EventServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        parent::boot();
+    
+    Log::info('ProviderListener registrado?', [
+        'registered' => isset($this->listens[ProviderEvents::class]),
+        'listeners' => $this->listens[ProviderEvents::class] ?? []
+    ]);
     }
 }
