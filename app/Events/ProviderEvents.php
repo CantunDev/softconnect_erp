@@ -17,14 +17,17 @@ class ProviderEvents
 
     public $provider;
     public $action;
-
+    public $user;
     /**
      * Create a new event instance.
      */
-    public function __construct(Provider $provider, string $action)
+    public function __construct($provider, string $action, $user)
     {
+        $provider = Provider::where('idproveedor', $providers)->first();
         $this->provider = $provider;
         $this->action = $action;
+        $this->user = $user;
+
     }
 
     /**

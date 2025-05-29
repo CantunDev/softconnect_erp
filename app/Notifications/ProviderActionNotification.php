@@ -48,15 +48,14 @@
                 ->line('Thank you for using our application!');
         }
 
-        public function toDatabase($notifiable)
+        public function toDatabase(object $notifiable): array
         {
             return [
                 'titulo' => $this->getTitle(),
                 'mensaje' => $this->getMessage(),
                 'url' => url('/proveedores/' . $this->provider->idproveedor),
             ];
-             dd($data); // Verifica que esté bien formateado
-            return $data;
+           
         }
 
         /**

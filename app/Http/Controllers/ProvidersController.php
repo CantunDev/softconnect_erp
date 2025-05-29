@@ -111,7 +111,7 @@ class ProvidersController extends Controller
         $validated['idproveedor'] = $lastId + 1;
         // $provider = new Provider();
         $provider = Provider::on('sqlsrv')->create($validated); // o 'sqlsrv'
-        event(new ProviderEvents($provider, 'created'));
+        event(new ProviderEvents($provider->idproveedor, 'created', Auth::user()));
 
         return redirect()->route(
             'business.restaurants.providers.index',

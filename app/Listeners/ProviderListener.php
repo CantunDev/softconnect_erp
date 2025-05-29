@@ -25,6 +25,8 @@ class ProviderListener
     {
         $user = Auth::user();
 
-        $user->notify(new ProviderActionNotification($event->provider, $event->action));
+        // $user->notify(new ProviderActionNotification($event->provider, $event->action));
+        $event->user->notify(new ProviderActionNotification($event->provider, $event->action));
+
     }
 }
