@@ -9,7 +9,7 @@ use App\Models\Sfrt\Purchase;
 
 class Provider extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $connection = 'sqlsrv';
     protected $table = 'proveedores';
