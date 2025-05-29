@@ -48,14 +48,14 @@ class ProviderActionNotification extends Notification
             ->line('Thank you for using our application!');
     }
 
-    // public function toDatabase($notifiable)
-    // {
-    //     return [
-    //         'titulo' => $this->getTitle(),
-    //         'mensaje' => $this->getMessage(),
-    //         'url' => url('/proveedores/' . $this->provider->idproveedor),
-    //     ];
-    // }
+    public function toDatabase($notifiable)
+    {
+         return [
+             'titulo' => $this->getTitle(),
+             'mensaje' => $this->getMessage(),
+             'url' => url('/proveedores/' . $this->provider->idproveedor),
+         ];
+    }
 
     /**
      * Get the array representation of the notification.
