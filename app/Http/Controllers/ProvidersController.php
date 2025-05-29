@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ProviderEvents;
 use App\Helpers\DateHelper;
 use App\Http\Requests\StoreProviderRequest;
 use App\Models\Business;
@@ -101,7 +102,7 @@ class ProvidersController extends Controller
     {
         // $request->all();
         $validated = $request->validated();
-        $connectionName = Provider::query()->getConnection()->getName();
+        // $connectionName = Provider::query()->getConnection()->getName();
         // Log::info("Creando Provider con conexión: ".$connectionName);
         $lastId = DB::connection('sqlsrv')
             ->table('proveedores')
@@ -110,6 +111,8 @@ class ProvidersController extends Controller
         $validated['idproveedor'] = $lastId + 1;
         // $provider = new Provider();
         $provider = Provider::on('sqlsrv')->create($validated); // o 'sqlsrv'
+        event(new ProviderEvents($provider, 'created'));
+
         return redirect()->route(
             'business.restaurants.providers.index',
             [

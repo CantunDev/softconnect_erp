@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Sfrt\Provider;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,12 +15,16 @@ class ProviderEvents
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $provider;
+    public $action;
+
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Provider $provider, string $action)
     {
-        //
+        $this->provider = $provider;
+        $this->action = $action;
     }
 
     /**
