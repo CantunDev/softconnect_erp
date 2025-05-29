@@ -10,6 +10,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProviderEvents
 {
@@ -24,6 +25,7 @@ class ProviderEvents
     public function __construct($provider, string $action, $user)
     {
         $provider = Provider::where('idproveedor', $provider)->first();
+        Log::info('Log en evento ProviderEvents'. $provider);
         $this->provider = $provider;
         $this->action = $action;
         $this->user = $user;

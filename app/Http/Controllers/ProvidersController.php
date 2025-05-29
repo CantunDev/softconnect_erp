@@ -111,8 +111,6 @@ class ProvidersController extends Controller
         $validated['idproveedor'] = $lastId + 1;
         // $provider = new Provider();
         $provider = Provider::on('sqlsrv')->create($validated); // o 'sqlsrv'
-        Log::info('Antes de disparar ProviderEvents', ['provider_id' => $provider->id]);
-
         event(new ProviderEvents($provider->idproveedor, 'created', Auth::user()));
         Log::info('Después de disparar ProviderEvents');
 
