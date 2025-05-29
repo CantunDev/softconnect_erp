@@ -23,7 +23,7 @@ class ProviderEvents
      */
     public function __construct($provider, string $action, $user)
     {
-        $provider = Provider::where('idproveedor', $providers)->first();
+        $provider = Provider::where('idproveedor', $provider)->first();
         $this->provider = $provider;
         $this->action = $action;
         $this->user = $user;

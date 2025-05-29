@@ -50,12 +50,16 @@
 
         public function toDatabase(object $notifiable): array
         {
+           \Log::info('Storing notification to database', [
+        'notifiable_id' => $notifiable->id,
+        'provider_id' => $this->provider->id,
+        'action' => $this->action
+    ]);
             return [
                 'titulo' => $this->getTitle(),
                 'mensaje' => $this->getMessage(),
                 'url' => url('/proveedores/' . $this->provider->idproveedor),
             ];
-           
         }
 
         /**

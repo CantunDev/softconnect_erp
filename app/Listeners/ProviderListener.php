@@ -23,7 +23,11 @@ class ProviderListener
      */
     public function handle(ProviderEvents $event): void
     {
-        $user = Auth::user();
+       \Log::info('Attempting to send notification (Listener)', [
+        'provider' => $event->provider->id,
+        'user' => $event->user?->id, // Usamos ?-> por si $user es null
+        'action' => $event->action
+    ]);
 
         // $user->notify(new ProviderActionNotification($event->provider, $event->action));
         $event->user->notify(new ProviderActionNotification($event->provider, $event->action));
