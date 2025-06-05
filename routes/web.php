@@ -19,6 +19,8 @@ use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\RolesPermissionsController;
 use App\Http\Controllers\UsersController;
+use App\Mail\WelcomeEmail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +31,10 @@ Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 // Ruta para la validación AJAX del email
+Route::get('test', function(){
+    $name = 'Berna';
+    Mail::to('cantunberna@gmail.com')->send(new WelcomeEmail($name));
+});
 Route::post('/check-email', [AuthenticatedSessionController::class, 'checkEmail'])
     ->middleware('guest')
     ->name('check-email');

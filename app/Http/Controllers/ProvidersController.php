@@ -154,9 +154,6 @@ class ProvidersController extends Controller
         $provider = Provider::where('idproveedor', $provider)->firstOrFail();
 
         $provider->update($request->all());
-
-        \Log::info("Provider actualizado con éxito. ID: " . $provider->idproveedor);
-
         return redirect()->route('business.restaurants.providers.index', [$business->slug, $restaurants->slug])
             ->with('success', 'Proveedor actualizado correctamente');
     }

@@ -1,214 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Bienvenido a SoftConnect</title>
-</head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
 
-{{-- <body>
-    <h1>Bienvenido a SoftConnect</h1>
-</body> --}}
-
-</html>
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>Bienvenido a SoftConnect {{$user->name}}</title>
-    <!-- Designed by https://github.com/kaytcat --><!-- Robot header image designed by Freepik.com -->
-    <style type="text/css">
-        @import url(https://fonts.googleapis.com/css?family=Nunito);
-
-        /* Take care of image borders and formatting */
-
-        img {
-            max-width: 600px;
-            outline: none;
-            text-decoration: none;
-            -ms-interpolation-mode: bicubic;
-        }
-
-        html {
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
+            color: #333;
         }
 
-        a {
-            text-decoration: none;
-            border: 0;
-            outline: none;
-            color: #bbbbbb;
-        }
-
-        a img {
-            border: none;
-        }
-
-        /* General styling */
-
-        td,
-        h1,
-        h2,
-        h3 {
-            font-family: Helvetica, Arial, sans-serif;
-            font-weight: 400;
-        }
-
-        td {
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            padding: 40px;
             text-align: center;
         }
 
-        body {
-            -webkit-font-smoothing: antialiased;
-            -webkit-text-size-adjust: none;
-            width: 100%;
-            height: 100%;
-            color: #666;
-            background: #fff;
+        .avatar {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #674299;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
             font-size: 16px;
-            height: 100vh;
-            width: 100%;
-            padding: 0px;
-            margin: 0px;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
 
-        table {
-            border-collapse: collapse !important;
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #674299;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
         }
 
-        .headline {
-            color: #444;
-            font-size: 36px;
-        }
-
-        .force-full-width {
-            width: 100% !important;
-        }
-    </style>
-    <style media="screen" type="text/css">
-        @media screen {
-
-            td,
-            h1,
-            h2,
-            h3 {
-                font-family: 'Nunito', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
-            }
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #777;
         }
     </style>
-    <style media="only screen and (max-width: 480px)" type="text/css">
-        /* Mobile styles */
-        @media only screen and (max-width: 480px) {
-
-            table[class="w320"] {
-                width: 320px !important;
-            }
-        }
-    </style>
-    <style type="text/css"></style>
-
 </head>
-
-<body bgcolor="#fff" class="body"
-    style="padding:20px; margin:0; display:block; background:#ffffff; -webkit-text-size-adjust:none">
-    <table align="center" cellpadding="0" cellspacing="0" height="100%" width="100%">
-        <tbody>
-            <tr>
-                <td align="center" bgcolor="#fff" class="" valign="top" width="100%">
-                    <center class="">
-                        <table cellpadding="0" cellspacing="0" class="w320" style="margin: 0 auto;" width="600">
-                            <tbody>
-                                <tr>
-                                    <td align="center" class="" valign="top">
-                                        <table cellpadding="0" cellspacing="0" style="margin: 0 auto;" width="100%">
-                                        </table>
-                                        <table bgcolor="#fff" cellpadding="0" cellspacing="0" class=""
-                                            style="margin: 0 auto; width: 100%; margin-top: 100px;">
-                                            <tbody style="margin-top: 15px;">
-                                                <tr class="">
-                                                    <td class="">
-                                                      <img src="https://avatar.oxro.io/avatar.svg?name={{$user->name}}" width="155">
-                                                    </td>
-                                                </tr>
-                                                <tr class="">
-                                                    <td class="headline">Bienvenido a SoftConnect {{$user->name}}!</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <center class="">
-                                                            <table cellpadding="0" cellspacing="0" class=""
-                                                                style="margin: 0 auto;" width="75%">
-                                                                <tbody class="">
-                                                                    <tr class="">
-                                                                        <td class=""
-                                                                            style="color:#444; font-weight: 400;">
-                                                                            <br><br>
-                                                                            Una aplicación de gestión de tu restaurant que ayuda
-                                                                            gestionar tu ventas, gastos.. <br><br>
-                                                                            Te has registrado exitosamente para usar <em>SoftConnect</em><br>
-                                                                            <br>
-                                                                            Sus credenciales de inicio de sesión se proporcionan a continuación:
-                                                                            <br>
-                                                                            <span style="font-weight:bold;">Correo:
-                                                                                &nbsp;</span><span
-                                                                                style="font-weight:lighter;"
-                                                                                class="">{{$user->email}}</span>
-                                                                            <br>
-                                                                            <span style="font-weight:bold;">Password:
-                                                                                &nbsp;</span><span
-                                                                                style="font-weight:lighter;"
-                                                                                class="">{{ $user->name . '2024' }}</span>
-                                                                            <br><br>
-                                                                            <br>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </center>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="">
-                                                        <div class="">
-                                                            <a style="background-color:#674299;border-radius:4px;color:#fff;display:inline-block;font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:normal;line-height:50px;text-align:center;text-decoration:none;width:350px;-webkit-text-size-adjust:none;"
-                                                                href="{{ url('/') }}">Ingresa tu cuenta y empieza a administrar</a>
-                                                        </div>
-                                                        <br>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-
-                                        </table>
-
-                                        <table bgcolor="#fff" cellpadding="0" cellspacing="0" class="force-full-width"
-                                            style="margin: 0 auto; margin-bottom: 5px:">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="" style="color:#444;">
-                                                        <p>La contraseña se generó automáticamente, pero no dudes en cambiarla.
-                                                            <a href="" style="text-decoration: underline;">
-                                                                aqui</a>
-
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </center>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<body>
+    <div class="container">
+        <img class="avatar" src="https://avatar.oxro.io/avatar.svg?name=Berna" alt="Avatar de {{ $name }}">
+        <h1>¡Bienvenido a SoftConnect, {{ $name }}!</h1>
+        <p>
+            Gracias por registrarte en <strong>SoftConnect</strong>, la herramienta de gestión diseñada especialmente para restaurantes. 
+            Ahora puedes comenzar a gestionar tus ventas, controlar gastos y mucho más.
+        </p>
+        <p>
+            Haz clic en el siguiente botón para acceder a tu cuenta:
+        </p>
+        <a href="{{ url('/') }}" class="button" style="color: #ffffff">Ir a mi cuenta</a>
+        
+        <div class="footer">
+            Si deseas cambiar tu contraseña, puedes hacerlo desde tu perfil en cualquier momento.
+        </div>
+    </div>
 </body>
-
 </html>

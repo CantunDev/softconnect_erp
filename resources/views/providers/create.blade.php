@@ -226,7 +226,7 @@
                                         <div class="form-group mb-0">
                                             <label for="nocuenta">Numero de cuenta</label>
                                             <input type="text" class="form-control" id="nocuenta" name="nocuenta"
-                                                placeholder="998348438" value=" {{ old('cuentaclave')}} ">
+                                                placeholder="998348438" value=" {{ old('nocuenta')}} ">
                                                  @error('nocuenta')
                                                 <p class="text-danger text-sm mt-1">{{ $message }}</p>
                                             @enderror
