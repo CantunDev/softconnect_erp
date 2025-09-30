@@ -130,6 +130,10 @@
     {{-- @include('layouts.partials.right-sidebar') --}}
 
     <!-- JAVASCRIPT -->
+
+    <!-- Tailwind (requerido para muchos plugins) -->
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+
     <!-- jQuery (requerido para muchos plugins) -->
     <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
 
@@ -162,10 +166,17 @@
     </script>
     <!-- Cleave JS -->
     <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/addons/cleave-phone.mx.js"></script>
     <!-- SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Aplicación principal -->
     <script src="{{ asset('assets/js/app2.min.js') }}"></script>
+    <script>
+        const phoneElements = new Cleave('.phone', {
+            phone: true,
+            phoneRegionCode: 'MX'
+        });
+    </script>
     <script>
         // Selecciona el elemento h5 con la clase "price"
         const priceElements = document.querySelectorAll('.price');

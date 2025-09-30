@@ -257,6 +257,7 @@
                                         <span>Dashboard</span>
                                     </a>
                                 </li>
+
                                 <li>
                                     <a href="{{ route('business.projections.index', ['business' => $bs->slug]) }}">
                                         <i class="bx bx-line-chart"></i>
@@ -305,10 +306,10 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('users.index') }}"
+                                                    <a href="{{ route('business.restaurants.providers.index', ['business' => $bs->slug, 'restaurants' => $rest->slug]) }}"
                                                         key="r-a-{{ $bs->id }}">
                                                         <i class="bx bx-calculator"></i>
-                                                        <span>Caja</span>
+                                                        <span>Proveedores</span>
                                                     </a>
                                                 </li>
                                                 <li>

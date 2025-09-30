@@ -73,7 +73,7 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button
-                                    style="background-color: {{ $restaurant->color_primary ?? '' }}; color: {{ $restaurant->business->first()->color_accent ?? '' }}"
+                                    style="background-color: {{ $restaurant->color_primary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}"
                                     class="accordion-button fw-medium d-flex justify-content-between align-items-center"
                                     type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseV"
                                     aria-expanded="true" aria-controls="flush-collapseV">
@@ -84,7 +84,7 @@
                                 </button>
                             </h2>
                         </div>
-                        <div id="flush-collapseV" class="accordion-collapse collapse show"
+                        <div id="flush-collapseV" class="accordion-collapse collapse show mb-4"
                             aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
                             <div class="row">
                                 <div class="table-rep-plugin mt-2 ">
@@ -92,7 +92,7 @@
                                         <table id="datatable"
                                             class="table table-sm table-bordered dt-responsive nowrap w-100">
                                             <thead
-                                                style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->business->first()->color_accent ?? '' }}">
+                                                style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}">
                                                 <tr>
                                                     <th data-priority="1">Fecha</th>
                                                     <th data-priority="3" class="text-center">Clientes</th>
@@ -127,7 +127,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mt-4">
                                 <div id="chart" class="apex-charts"></div>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                                         <table id="datatable"
                                             class="table table-sm table-bordered dt-responsive nowrap w-100">
                                             <thead
-                                                style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->business->first()->color_accent ?? '' }}">
+                                                style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}">
                                                 <tr>
                                                     <th class="text-center" data-priority="1">Fecha</th>
                                                     <th class="text-center" data-priority="1">Total Ali</th>
@@ -232,7 +232,7 @@
                                         <table id="table_clientes"
                                             class="table table-sm table-bordered dt-responsive nowrap w-100">
                                             <thead
-                                                style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->business->first()->color_accent ?? '' }}">
+                                                style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}">
                                                 <tr>
                                                     <th data-priority="1">Fecha</th>
                                                     <th data-priority="3" class="text-center">Cuentas</th>
@@ -262,7 +262,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div id="client_ticket" class="apex-charts" dir="ltr"></div>
                             </div>
                         </div>

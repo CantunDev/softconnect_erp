@@ -18,7 +18,10 @@ use App\Http\Controllers\ProjectionDayController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\RolesPermissionsController;
+use App\Http\Controllers\TypeProvidersController;
 use App\Http\Controllers\UsersController;
+use App\Mail\WelcomeEmail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +32,10 @@ Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 // Ruta para la validación AJAX del email
+Route::get('test', function(){
+    $name = 'Berna';
+    Mail::to('cantunberna@gmail.com')->send(new WelcomeEmail($name));
+});
 Route::post('/check-email', [AuthenticatedSessionController::class, 'checkEmail'])
     ->middleware('guest')
     ->name('check-email');
@@ -71,7 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('projections', ProjectionController::class);
         Route::get('/monthly', [ProjectionController::class, 'getProjectionsMonthly'])->name('projections_monthly.get');
-        Route::resource('providers', ProvidersController::class);
+        // Route::resource('providers', ProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
         Route::resource('payment_method', PaymentMethodController::class);
         Route::resource('expenses_categories', ExpensesCategoriesController::class);
@@ -80,23 +87,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::resource('home', HomeController::class);
-
             // Rutas normales de projections
             Route::resource('projections', ProjectionController::class);
-
             // Ruta simplificada para proyecciones mensuales
             Route::prefix('projections/{month}')->name('projections.month.')->group(function () {
                 Route::resource('monthly', ProjectionDayController::class);
                 Route::get('sales_get', [ProjectionDayController::class,'sales_get'])->name('sales.get');
                 Route::put('sales_update', [ProjectionDayController::class, 'sales_update'])->name('sales.update');
             });
-            
             Route::resource('providers', ProvidersController::class);
+            Route::resource('typeproviders', TypeProvidersController::class);
             Route::resource('invoices', InvoicesController::class);
             Route::resource('payment_method', PaymentMethodController::class);
             Route::resource('expenses_categories', ExpensesCategoriesController::class);
             Route::resource('expenses', ExpensesController::class);
+
+            Route::prefix('suspend')->group(function () {
+                Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');
+            });
+
         });
+
     });
 });
 

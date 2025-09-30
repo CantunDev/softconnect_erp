@@ -24,30 +24,16 @@ class DatabaseConnection
         config(['database.default' => 'mysql']);
 
         $businessSlug = $request->route('business');
+        $restaurantSlug = $request->route('restaurants');
 
-        // if ($request->user()) {
-        //     $user = $request->user();
-        //     $restaurant = $user->restaurants->first(); 
-        //     if ($restaurant) {
-        //         $ip = $restaurant->ip ?? 'default_sqlsrv_ip';
-        //         $database = $restaurant->database ?? 'default_sqlsrv_database';
-        //         Config::set('database.connections.sqlsrv.host', $ip);
-        //         Config::set('database.connections.sqlsrv.database', $database);
-        //         DB::purge('sqlsrv');
-        //     }
-        // }
         if ($businessSlug) {
-            $restaurant = Restaurant::where('id', $businessSlug)->first();
+            $restaurant = $restaurantSlug;
             if ($restaurant) {
-                Log::info("Restaurante encontrado: {$restaurant->name}");
-            
+                Log::info("Restaurante encontrado: {$restaurant->name}");            
                 $ip = $restaurant->ip ?? env('DEFAULT_SQLSRV_IP', '192.168.193.29\NATIONALSOFT');
                 $database = $restaurant->database ?? env('DEFAULT_SQLSRV_DATABASE', 'softrestaurant10');
-            
-                Log::info("Configurando conexión SQLSRV: IP={$ip}, DB={$database}");
-            
+                Log::info("Configurando conexión SQLSRV: IP={$ip}, DB={$database}");            
                 $sessionKey = "{$ip}_{$database}";
-            
                 // Cerrar la sesión y la conexión actual antes de reconfigurar
                 if (session('sqlsrv_configured')) {
                     Log::info("Cerrando conexión SQLSRV y limpiando sesión.");
@@ -58,7 +44,6 @@ class DatabaseConnection
                     }
                     session()->forget('sqlsrv_configured'); // Limpiar la sesión
                 }
-            
                 // Configurar la nueva conexión
                 config([
                     'database.connections.sqlsrv.host' => $ip,
@@ -67,13 +52,11 @@ class DatabaseConnection
             
                 DB::purge('sqlsrv'); // Limpiar la conexión anterior
                 DB::reconnect('sqlsrv'); // Forzar reconexión con la nueva configuración
-            
                 // Actualizar la sesión con la nueva configuración
                 session(['sqlsrv_configured' => $sessionKey]);
                 Log::info("Conexión SQLSRV configurada y sesión actualizada.");
             } else {
-                Log::warning("Restaurante no encontrado para el id: {$businessSlug}");
-            
+                Log::warning("Restaurante no encontrado para el id: {$restaurantSlug}");
                 // Cerrar la conexión y limpiar la sesión si no se encuentra el restaurante
                 try {
                     DB::disconnect('sqlsrv');

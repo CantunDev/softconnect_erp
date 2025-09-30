@@ -104,7 +104,7 @@
                                                     <div class="progress-bar" role="progressbar"
                                                         style="width: {{ $percentage }}%; background-color: {{ $percentage > 100 ? '#28a745' : ($percentage > 80 ? 'orange' : ($percentage > 30 ? '#ffc107' : 'red')) }}"
                                                         aria-valuenow="{{ $percentage }}" aria-valuemin="0"
-                                                        aria-valuemax="100">
+                                                        aria-valuemax="100">{{ round($percentage,2) }}%
                                                     </div>
 
                                                 </div>

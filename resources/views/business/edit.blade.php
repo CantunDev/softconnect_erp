@@ -24,10 +24,11 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Información Básica</h4>
-                    <form id="business_edit" class="row g-3" action="{{ route('business.update', $business->id) }}" method="POST" enctype="multipart/form-data">
+                    <form id="business_edit" class="row g-3" action="{{ route('business.update', $business->id) }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        
+
                         <div class="col-sm-6 col-lg-6">
                             <label for="inputName" class="form-label">Nombre corto</label>
                             <input name="name" type="text" class="form-control @error('name') is-invalid @enderror"
@@ -48,47 +49,41 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="col-12">
                             <h5 class="font-size-14 mb-3">Esquema de colores</h5>
                             <div class="row g-3">
                                 <div class="col-sm-4 col-lg-4">
                                     <label for="color_primary" class="form-label">Color primario</label>
                                     <div class="input-group colorpicker-component">
-                                        <input name="color_primary" type="text" class="form-control color-input @error('color_primary') is-invalid @enderror" 
-                                            id="color_primary" value="{{ old('color_primary', $business->color_primary ? $business->color_primary : '#3b7ddd') }}">
-                                        <span class="input-group-text color-picker"><i class="mdi mdi-eyedropper"></i></span>
-                                        @error('color_primary')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <div class="col-md-10">
+                                            <input class="form-control form-control-color mw-200" type="color"
+                                                value="{{ $business->color_primary }}" id="color_primary"
+                                                name="color_primary">
+                                        </div>
                                     </div>
-                                    <div class="color-preview mt-2" style="background-color: {{ $business->color_primary ? $business->color_primary : '#3b7ddd' }}; height: 30px; border-radius: 4px;"></div>
                                 </div>
-                                
+
                                 <div class="col-sm-4 col-lg-4">
                                     <label for="color_secondary" class="form-label">Color secundario</label>
                                     <div class="input-group colorpicker-component">
-                                        <input name="color_secondary" type="text" class="form-control color-input @error('color_secondary') is-invalid @enderror" 
-                                            id="color_secondary" value="{{ old('color_secondary', $business->color_secondary ? $business->color_secondary : '#6c757d') }}">
-                                        <span class="input-group-text color-picker"><i class="mdi mdi-eyedropper"></i></span>
-                                        @error('color_secondary')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                         <div class="col-md-10">
+                                            <input class="form-control form-control-color mw-200" type="color"
+                                                value="{{ $business->color_secondary }}" id="color_secondary"
+                                                name="color_secondary">
+                                        </div>
                                     </div>
-                                    <div class="color-preview mt-2" style="background-color: {{ $business->color_secondary ? $business->color_secondary : '#6c757d' }}; height: 30px; border-radius: 4px;"></div>
                                 </div>
-                                
+
                                 <div class="col-sm-4 col-lg-4">
                                     <label for="color_accent" class="form-label">Color de acento</label>
                                     <div class="input-group colorpicker-component">
-                                        <input name="color_accent" type="text" class="form-control color-input @error('color_accent') is-invalid @enderror" 
-                                            id="color_accent" value="{{ old('color_accent', $business->color_accent ? $business->color_accent : '#1cbb8c') }}">
-                                        <span class="input-group-text color-picker"><i class="mdi mdi-eyedropper"></i></span>
-                                        @error('color_accent')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <div class="col-md-10">
+                                            <input class="form-control form-control-color mw-200" type="color"
+                                                value="{{ $business->color_accent }}" id="color_accent"
+                                                name="color_accent">
+                                        </div>
                                     </div>
-                                    <div class="color-preview mt-2" style="background-color: {{ $business->color_accent ? $business->color_accent : '#1cbb8c' }}; height: 30px; border-radius: 4px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -96,8 +91,8 @@
                         <div class="col-sm-4 col-md-3 col-lg-2">
                             <label for="inputRfc" class="form-label">RFC</label>
                             <input name="rfc" type="text"
-                                class="form-control text-uppercase @error('rfc') is-invalid @enderror" id="inputRfc" minlength="12"
-                                maxlength="13" value="{{ old('rfc', $business->rfc) }}">
+                                class="form-control text-uppercase @error('rfc') is-invalid @enderror" id="inputRfc"
+                                minlength="12" maxlength="13" value="{{ old('rfc', $business->rfc) }}">
                             @error('rfc')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -116,8 +111,9 @@
 
                         <div class="col-sm-6 col-md-3 col-lg-3">
                             <label for="inputPhone" class="form-label">Teléfono</label>
-                            <input name="telephone" type="tel" class="form-control @error('telephone') is-invalid @enderror"
-                                id="inputPhone" minlength="10" maxlength="15" placeholder="Ej: 9380000000"
+                            <input name="telephone" type="tel"
+                                class="form-control @error('telephone') is-invalid @enderror" id="inputPhone" minlength="10"
+                                maxlength="15" placeholder="Ej: 9380000000"
                                 value="{{ old('telephone', $business->telephone) }}">
                             @error('telephone')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -138,7 +134,8 @@
                             <label for="inputWeb" class="form-label">Sitio web <span
                                     class="fw-normal text-muted">(opcional)</span></label>
                             <input name="web" type="url" class="form-control @error('web') is-invalid @enderror"
-                                id="inputWeb" placeholder="Ej: www.sitioweb.com" value="{{ old('web', $business->web) }}">
+                                id="inputWeb" placeholder="Ej: www.sitioweb.com"
+                                value="{{ old('web', $business->web) }}">
                             @error('web')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -147,7 +144,8 @@
                         <div class="col-sm-6 col-md-4 col-lg-4">
                             <label for="inputBusinessLine" class="form-label">Línea de negocio</label>
                             <input type="text" name="business_line" id="inputBusinessLine"
-                                class="form-control @error('business_line') is-invalid @enderror" placeholder="Ej: Restaurantes"
+                                class="form-control @error('business_line') is-invalid @enderror"
+                                placeholder="Ej: Restaurantes"
                                 value="{{ old('business_line', $business->business_line) }}">
                             @error('business_line')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -207,7 +205,7 @@
                         </div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Asignar Restaurantes</h4>
@@ -225,24 +223,29 @@
                                     <tr>
                                         <td>
                                             <div class="form-check font-size-16">
-                                                <input type="checkbox" name="restaurant_ids[]" value="{{$restaurant->id}}" 
-                                                    id="restaurantCheck{{$restaurant->id}}" 
+                                                <input type="checkbox" name="restaurant_ids[]"
+                                                    value="{{ $restaurant->id }}"
+                                                    id="restaurantCheck{{ $restaurant->id }}"
                                                     {{ $business->business_restaurants->pluck('id')->contains($restaurant->id) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="restaurantCheck{{$restaurant->id}}"></label>
+                                                <label class="form-check-label"
+                                                    for="restaurantCheck{{ $restaurant->id }}"></label>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-group-item me-2">
                                                     <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="https://avatar.oxro.io/avatar.svg?name={{$restaurant->name}}"&caps=3&bold=true alt="" class="rounded-circle avatar-xs">
+                                                        <img src="https://avatar.oxro.io/avatar.svg?name={{ $restaurant->name }}"&caps=3&bold=true
+                                                            alt="" class="rounded-circle avatar-xs">
                                                     </a>
                                                 </div>
-                                                <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#" class="text-dark">{{$restaurant->name}}</a></h5>
+                                                <h5 class="text-truncate font-size-14 m-0 ms-2"><a href="#"
+                                                        class="text-dark">{{ $restaurant->name }}</a></h5>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-{{ $restaurant->status ? 'success' : 'danger' }}-subtle text-{{ $restaurant->status ? 'success' : 'danger' }} font-size-12">
+                                            <span
+                                                class="badge bg-{{ $restaurant->status ? 'success' : 'danger' }}-subtle text-{{ $restaurant->status ? 'success' : 'danger' }} font-size-12">
                                                 {{ $restaurant->status ? 'Activo' : 'Inactivo' }}
                                             </span>
                                         </td>
@@ -254,23 +257,26 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Logo de la Empresa</h4>
-                    
+
                     <div class="image-upload-container text-center mb-4">
                         <div class="image-preview-wrapper">
-                            @if($business->business_file && file_exists(public_path('assets/images/companies/' . $business->business_file)))
-                                <img id="imagePreview" src="{{ asset('assets/images/companies/' . $business->business_file) }}" 
-                                    alt="Logo actual" class="img-thumbnail mb-3" style="max-width: 100%; max-height: 200px;">
+                            @if ($business->business_file && file_exists(public_path('assets/images/companies/' . $business->business_file)))
+                                <img id="imagePreview"
+                                    src="{{ asset('assets/images/companies/' . $business->business_file) }}"
+                                    alt="Logo actual" class="img-thumbnail mb-3"
+                                    style="max-width: 100%; max-height: 200px;">
                             @else
-                                <img id="imagePreview" src="https://via.placeholder.com/300x150?text=Subir+Logo" 
-                                    alt="Previsualización" class="img-thumbnail mb-3" style="max-width: 100%; max-height: 200px;">
+                                <img id="imagePreview" src="https://via.placeholder.com/300x150?text=Subir+Logo"
+                                    alt="Previsualización" class="img-thumbnail mb-3"
+                                    style="max-width: 100%; max-height: 200px;">
                             @endif
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="inputLogo" class="form-label">Seleccionar imagen</label>
                             <input type="file" name="business_file" accept=".jpg,.jpeg,.png,.webp" id="inputLogo"
@@ -279,8 +285,8 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
-                        <div class="image-options @if(!$business->business_file || !file_exists(public_path('assets/images/companies/' . $business->business_file))) d-none @endif">
+
+                        <div class="image-options @if (!$business->business_file || !file_exists(public_path('assets/images/companies/' . $business->business_file))) d-none @endif">
                             <div class="row g-2">
                                 <div class="col-6">
                                     <button type="button" class="btn btn-outline-danger btn-sm w-100" id="removeImage">
@@ -293,19 +299,23 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <div class="mt-3">
-                                <label for="imageQuality" class="form-label">Calidad de compresión: <span id="qualityValue">80</span>%</label>
-                                <input type="range" class="form-range" id="imageQuality" min="10" max="100" value="80">
+                                <label for="imageQuality" class="form-label">Calidad de compresión: <span
+                                        id="qualityValue">80</span>%</label>
+                                <input type="range" class="form-range" id="imageQuality" min="10"
+                                    max="100" value="80">
                             </div>
-                            
+
                             <div class="mt-2">
-                                <label for="imageSize" class="form-label">Tamaño máximo: <span id="sizeValue">500</span> KB</label>
-                                <input type="range" class="form-range" id="imageSize" min="100" max="1000" value="500">
+                                <label for="imageSize" class="form-label">Tamaño máximo: <span id="sizeValue">500</span>
+                                    KB</label>
+                                <input type="range" class="form-range" id="imageSize" min="100" max="1000"
+                                    value="500">
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-warning">
                             <i class="mdi mdi-content-save-outline me-1"></i> Actualizar Empresa
@@ -321,131 +331,7 @@
     </div>
 @endsection
 
-@section('css')
-<!-- Bootstrap Color Picker CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/css/bootstrap-colorpicker.min.css">
-<style>
-    .colorpicker.dropdown-menu {
-        z-index: 9999 !important;
-    }
-    .colorpicker-component .input-group-text {
-        cursor: pointer;
-    }
-    .colorpicker-component .input-group-text i {
-        pointer-events: none;
-    }
-    .color-preview {
-        border: 1px solid #dee2e6;
-    }
-</style>
-@endsection
 
 @section('js')
-<!-- jQuery (necesario para Bootstrap) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Bootstrap Color Picker JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/js/bootstrap-colorpicker.min.js"></script>
-
-<!-- Image Compressor -->
-<script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.0/dist/browser-image-compression.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        // Inicializar el selector de color
-        $('.colorpicker-component').colorpicker({
-            format: 'hex',
-            colorSelectors: {
-                'primary': '#3b7ddd',
-                'secondary': '#6c757d',
-                'success': '#1cbb8c',
-                'info': '#17a2b8',
-                'warning': '#fcb92c',
-                'danger': '#dc3545',
-                'dark': '#343a40',
-                'light': '#f8f9fa'
-            }
-        }).on('changeColor', function(e) {
-            // Actualizar vista previa de color cuando cambia
-            const color = e.color.toString('hex');
-            $(this).closest('.col-sm-4').find('.color-preview').css('background-color', color);
-        });
-        
-        // Vista previa de imagen
-        $('#inputLogo').change(function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    $('#imagePreview').attr('src', event.target.result);
-                    $('.image-options').removeClass('d-none');
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-        
-        // Eliminar imagen
-        $('#removeImage').click(function() {
-            $('#imagePreview').attr('src', 'https://via.placeholder.com/300x150?text=Subir+Logo');
-            $('#inputLogo').val('');
-            $('.image-options').addClass('d-none');
-        });
-        
-        // Rotar imagen
-        let rotation = 0;
-        $('#rotateImage').click(function() {
-            rotation += 90;
-            if (rotation >= 360) rotation = 0;
-            $('#imagePreview').css('transform', `rotate(${rotation}deg)`);
-        });
-        
-        // Mostrar valores de calidad y tamaño
-        $('#imageQuality').on('input', function() {
-            $('#qualityValue').text($(this).val());
-        });
-        
-        $('#imageSize').on('input', function() {
-            $('#sizeValue').text($(this).val());
-        });
-        
-        // Comprimir imagen antes de enviar el formulario
-        $('#business_edit').submit(function(e) {
-            const fileInput = $('#inputLogo')[0];
-            if (fileInput.files && fileInput.files.length > 0) {
-                e.preventDefault();
-                
-                const quality = parseInt($('#imageQuality').val()) / 100;
-                const maxSizeMB = parseInt($('#imageSize').val()) / 1000;
-                
-                const options = {
-                    maxSizeMB: maxSizeMB,
-                    maxWidthOrHeight: 800,
-                    useWebWorker: true,
-                    fileType: 'image/jpeg',
-                    initialQuality: quality
-                };
-                
-                imageCompression(fileInput.files[0], options)
-                    .then(compressedFile => {
-                        // Crear un nuevo DataTransfer y agregar el archivo comprimido
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(compressedFile);
-                        
-                        // Reemplazar el archivo original con el comprimido
-                        fileInput.files = dataTransfer.files;
-                        
-                        // Enviar el formulario
-                        e.target.submit();
-                    })
-                    .catch(error => {
-                        console.error('Error al comprimir la imagen:', error);
-                        e.target.submit();
-                    });
-            }
-        });
-    });
-</script>
+    <script></script>
 @endsection

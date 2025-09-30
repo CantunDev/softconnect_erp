@@ -41,9 +41,9 @@ class ProjectionDayController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Business $business, Restaurant $restaurants, Request $request)
     {
-        // return $request->all();
+        //  return $request->all();
         $restaurant = Restaurant::findOrFail($request->restaurant_id);
         $business = BusinessRestaurants::with('business')->where('restaurant_id', $request->restaurant_id)->first();
         if ($business) {

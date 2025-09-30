@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Mail\CreateUserMail;
 use App\Models\Business;
 use App\Models\User;
+use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -128,6 +130,7 @@ class UsersController extends Controller
     // }
     $user->password = bcrypt($request->name . '2024');
     $user->save();
+    // Notification::send($user, new UserNotification());
     // Mail::to('cantunberna@gmail.com')->send(new CreateUserMail($user));
     // Mail::to($user->email)->send(new CreateUserMail($user));
     if ($request->has('busines_id')) {

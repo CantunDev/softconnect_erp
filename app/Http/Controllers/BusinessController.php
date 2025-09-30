@@ -6,6 +6,7 @@ use App\Http\Requests\BusinessRequest;
 use App\Models\Business;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,15 +23,17 @@ class BusinessController extends Controller
             return DataTables::of($business)
                 ->addIndexColumn()
                 ->addColumn('business', function ($result) {
+                    $hex = str_replace('#', '', $result->color_secondary);
+
                     $imageUrl = $result->business_file
                         ? asset($result->business_file)
-                        : 'https://avatar.oxro.io/avatar.svg?name=' . urlencode($result->name) . '&caps=3&bold=true';
+                        : 'https://avatar.oxro.io/avatar.svg?name=' . urlencode($result->name) . '&background=' . $hex . '&caps=3&bold=true';
 
                     $data = '<div class="d-flex align-items-center">';
-                    $data .= '<img src="' . $imageUrl . '" alt="" class="rounded-circle avatar-xs">';
+                    $data .= '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($result->name) . '" class="rounded-circle avatar-xs">';
                     $data .= '<div class="ms-3">';
-                    $data .= '<h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->name . '</a></h5>';
-                    $data .= '<p class="text-muted mb-0">' .  ($result->business_name ? $result->business_name : 'Sin Razon Social') . '</p>';
+                    $data .= '<h5 class="font-size-14 mb-1"><a href="javascript:void(0);" class="text-dark">' . htmlspecialchars($result->name) . '</a></h5>';
+                    $data .= '<p class="text-muted mb-0">' . ($result->business_name ? htmlspecialchars($result->business_name) : 'Sin Razon Social') . '</p>';
                     $data .= '</div>';
                     $data .= '</div>';
 
@@ -51,15 +54,19 @@ class BusinessController extends Controller
                     // if (Auth::user()->can('read_operators')){
                     // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
                     // }
-                    // if (Auth::user()->can('update_operators')){
-                    $opciones .= '<a href="' . route('business.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                    $opciones .= '<button type="button" onclick="btnRestore(' . $result->id . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
-                    // }
-                    // if (Auth::user()->can('delete_operators')){
-                    $opciones .= '<button type="button" onclick="btnSuspend(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
-                    $opciones .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                    if (Auth::user()->can('update_business')) {
+                        if (!$result->trashed()) {
+                            $opciones .= '<a href="' . route('business.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1" title="Editar empresa" ><i class="mdi mdi-pencil font-size-18"></i></a>';
+                            $opciones .= '<button type="button" onclick="btnSuspend(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1" title="Suspender empresa"><i class="mdi mdi-power-standby font-size-18"></i></button>';
+                        }
+                        if ($result->trashed()) {
+                            $opciones .= '<button type="button" onclick="btnRestore(' . $result->id . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1" title="Restaurar empresa "><i class="mdi mdi-restore font-size-18"></i></button>';
+                            if (Auth::user()->can('delete_business')) {
+                                $opciones .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1" title="Eliminar empresa"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                            }
+                        }
+                    }
 
-                    // }
                     return $opciones;
                 })
                 ->addColumn('status', function ($result) {
@@ -98,22 +105,22 @@ class BusinessController extends Controller
         if ($request->hasFile('business_file') && $request->file('business_file')->isValid()) {
             // Generar un nombre único para el archivo
             $imageName = Str::random(10) . '.' . $request->file('business_file')->getClientOriginalExtension();
-        
+
             // Ruta al directorio dentro de `public`
             $destinationPath = public_path('assets/images/companies');
-        
+
             // Crear la carpeta si no existe
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
-        
+
             // Mover el archivo a la ubicación deseada
             $request->file('business_file')->move($destinationPath, $imageName);
-        
+
             // Guardar la ruta relativa para almacenarla en la base de datos
             $data['business_file'] = 'assets/images/companies/' . $imageName;
         }
-        
+
 
         $business = Business::create($data);
         return redirect()->route('business.index');
@@ -132,7 +139,6 @@ class BusinessController extends Controller
      */
     public function edit($id)
     {
-
         $business = Business::with('business_restaurants')->findOrFail($id);
         $restaurants = Restaurant::unassigned($id)->get();
         return view('business.edit', compact('business', 'restaurants'));
@@ -142,7 +148,8 @@ class BusinessController extends Controller
      * Update the specified resource in storage.
      */
     public function update(BusinessRequest $request, $id)
-    { // return $request->all();
+    {
+        //  return $request->all();
         $business = Business::findOrFail($id);
         $data = $request->validated();
 
