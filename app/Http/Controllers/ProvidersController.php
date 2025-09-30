@@ -11,14 +11,10 @@ use App\Models\Sfrt\AccountingAccount;
 use App\Models\Sfrt\Provider;
 use App\Models\Sfrt\TypeProviders;
 use Illuminate\Http\Request;
-use Illuminate\Queue\Console\RestartCommand;
-use Illuminate\Support\Composer;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use LaravelLang\Publisher\Console\Reset;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class ProvidersController extends Controller
 {
@@ -27,6 +23,7 @@ class ProvidersController extends Controller
     {
         if ($request->ajax()) {
             $providers = Provider::query();
+            // $providers = Provider::query()->orderByName('asc');
             return DataTables::of($providers)
                 ->addIndexColumn()
                 ->addColumn('name', function ($result) {
@@ -57,23 +54,41 @@ class ProvidersController extends Controller
                     return round($result->purchases->avg('total'), 2) ?? 0.0;
                 })
                 ->addColumn('status', function ($result) {
-                    $status = '';
-                    if ($result->estatus <= 1) {
-                        $status .= '<span class="badge bg-success me-1">ACTIVO</span>';
-                    } else {
-                        $status .= '<span class="badge bg-danger me-1">BAJA</span>';
-                    }
-                    return $status;
+                    return $result->estatus <= 1 
+                    ? '<span class="badge bg-success">ACTIVO</span>'
+                    : '<span class="badge bg-danger">BAJA</span>';
+
                 })
                 ->addColumn('actions', function ($result) use ($business, $restaurants) {
                     $actions = '';
-                    $actions .= '<a href="" class="btn btn-sm text-info action-icon icon-dual-warning p-1"><i class="mdi mdi-eye font-size-18"></i></a>';
-                    $actions .= '<a href=" ' . route('business.restaurants.providers.edit', [
-                        'business' => $business->slug,
-                        'restaurants' => $restaurants->slug,
-                        'provider' => $result->idproveedor
-                    ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                    $actions .= '<button type="button" onclick="btnDelete(' . $result->idproveedor . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                    if ($result->estaActivo()) {
+
+                        // Botón Ver (con ruta si es necesario)
+                        $actions .= '<a href="' . route('business.restaurants.providers.show', [
+                            'business' => $business->slug,
+                            'restaurants' => $restaurants->slug,
+                            'provider' => $result->idproveedor
+                        ]) . '" class="btn btn-sm text-info action-icon icon-dual-warning p-1" title="Ver">
+        <i class="mdi mdi-eye font-size-18"></i>
+    </a>';
+
+                        // Botón Editar
+                        $actions .= '<a href="' . route('business.restaurants.providers.edit', [
+                            'business' => $business->slug,
+                            'restaurants' => $restaurants->slug,
+                            'provider' => $result->idproveedor
+                        ]) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1" title="Editar">
+        <i class="mdi mdi-pencil font-size-18"></i>
+    </a>';
+
+                        // Botón Suspender (solo si está activo)
+                        $formattedId = str_pad($result->idproveedor, 2, '0', STR_PAD_LEFT);
+                        $actions .= '<button type="button" onclick="btnSuspend(' . $formattedId . ')" 
+            class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1" title="Suspender">
+            <i class="mdi mdi-delete-empty font-size-18"></i>
+        </button>';
+                    }
+
                     return $actions;
                 })
                 ->rawColumns(['name', 'actions', 'status'])
@@ -166,5 +181,23 @@ class ProvidersController extends Controller
         $provider = Provider::findOrFail($request->id);
         $provider->delete();
         return redirect()->route('providers.index');
+    }
+
+    public function suspend(Business $business, Restaurant $restaurants,  $provider)
+    {
+        $provider = Provider::where('idproveedor', $provider)->first();
+        $provider->estatus = 2;
+        $suspend = $provider->save();
+        if ($suspend == 1) {
+            $success = true;
+            $message = "Proveedor Suspendido";
+        } else {
+            $success = true;
+            $message = "No fue posible suspender";
+        }
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ], 200);
     }
 }

@@ -18,6 +18,7 @@ use App\Http\Controllers\ProjectionDayController;
 use App\Http\Controllers\ProvidersController;
 use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\RolesPermissionsController;
+use App\Http\Controllers\TypeProvidersController;
 use App\Http\Controllers\UsersController;
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Mail;
@@ -95,11 +96,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::put('sales_update', [ProjectionDayController::class, 'sales_update'])->name('sales.update');
             });
             Route::resource('providers', ProvidersController::class);
+            Route::resource('typeproviders', TypeProvidersController::class);
             Route::resource('invoices', InvoicesController::class);
             Route::resource('payment_method', PaymentMethodController::class);
             Route::resource('expenses_categories', ExpensesCategoriesController::class);
             Route::resource('expenses', ExpensesController::class);
+
+            Route::prefix('suspend')->group(function () {
+                Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');
+            });
+
         });
+
     });
 });
 

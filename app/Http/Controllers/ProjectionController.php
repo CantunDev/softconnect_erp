@@ -188,23 +188,24 @@ class ProjectionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Business $business, Restaurant $restaurant, Request $request)
+    public function update(Business $business, Restaurant $restaurants, Request $request)
     {
-        $restaurant = Restaurant::findOrFail($request->restaurant_id);
-        $year = $request->year;
+        // return $request->all();
+        // return $restaurant = Restaurant::findOrFail($request->restaurant_id);
+        // $year = $request->year;
 
-        $business = BusinessRestaurants::with(['business', 'restaurants'])
-            ->where('restaurant_id', $request->restaurant_id)
-            ->first();
+        // $business = BusinessRestaurants::with(['business', 'restaurants'])
+        //     ->where('restaurant_id', $restaurants->id)
+        //     ->first();
 
-        $businessSlug = $business ? $business->business->slug : 'rest';
+        // $businessSlug = $business ? $business->business->slug : 'rest';
 
         foreach ($request->projected_sales as $key => $value) {
             // Buscar o crear la proyección para este mes
             $projection = Projection::updateOrCreate(
                 [
                     'restaurant_id' => $request->restaurant_id,
-                    'year' => $year,
+                    'year' => $request->year,
                     'month' => $request->month[$key]
                 ],
                 [
@@ -218,8 +219,8 @@ class ProjectionController extends Controller
         }
 
         return redirect()->route('business.restaurants.projections.index', [
-            'business' => $businessSlug,
-            'restaurants' => $restaurant->slug
+            'business' => $business->slug,
+            'restaurants' => $restaurants->slug
         ])->with('update', 'Requisición Actualizada');
     }
 

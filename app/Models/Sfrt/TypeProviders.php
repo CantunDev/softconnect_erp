@@ -9,8 +9,10 @@ class TypeProviders extends Model
 {
     use HasFactory;
 
-     protected $connection = 'sqlsrv'; 
+    protected $connection = 'sqlsrv'; 
     protected $table = 'tipoproveedores';
+    protected $primaryKey = 'idtipoproveedor';
+    protected $keyType = 'string';
     protected $fillable = [
         'idtipoproveedor',
         'descripcion'
