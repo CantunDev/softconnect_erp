@@ -128,6 +128,7 @@ class ProjectionController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         $restaurant = Restaurant::findOrFail($request->restaurant_id);
         $business = BusinessRestaurants::with('business')->where('restaurant_id', $request->restaurant_id)->first();
         if ($business) {
