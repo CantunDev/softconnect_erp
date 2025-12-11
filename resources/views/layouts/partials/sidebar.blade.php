@@ -71,9 +71,8 @@
                         </ul>
                     </li>
                 @endrole
-
                 @if ($user = Auth::user())
-                    <li class="menu-title" key="t-menu">Menu</li>
+                    <li class="menu-title" key="t-menu">MenuPrincipal</li>
 
                     @if ($user->business->count())
                         @foreach ($user->business as $i => $business)
@@ -103,7 +102,7 @@
                                                         <a
                                                             href="{{ route('business.home.index', ['business' => $restaurant->id]) }}">
                                                             <i class="mdi mdi-room-service"></i>
-                                                            <span key="t-chat">Inicio</span>
+                                                            <span key="t-chat">Principal</span>
                                                         </a>
                                                     </li>
                                                     @can('read_providers')
@@ -160,7 +159,7 @@
                                     <ul class="sub-menu" aria-expanded="false">
                                         <li>
                                             <a href="{{ route('business.home.index', ['business' => $restaurant->id]) }}">
-                                                <i class="mdi mdi-room-service"></i>
+                                                   <i class="mdi mdi-room-service"></i>
                                                 <span key="t-chat">Inicio</span>
                                             </a>
                                         </li>

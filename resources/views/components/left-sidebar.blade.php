@@ -294,9 +294,11 @@
                                             <ul>
                                                 <li>
                                                     <a
+                                                        {{-- href="{{ route('business.restaurants.home.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}"> --}}
+
                                                         href="{{ route('business.restaurants.home.index', ['business' => $bs->slug, 'restaurants' => $rest->slug]) }}">
                                                         <i class="mdi mdi-room-service"></i>
-                                                        <span key="t-chat">Inicio</span>
+                                                        <span key="t-chat">Principal</span>
                                                     </a>
                                                 </li>
                                                 <li>

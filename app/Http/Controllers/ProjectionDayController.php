@@ -231,7 +231,7 @@ class ProjectionDayController extends Controller
                 'actual_day_tax' => $request->actual_day_tax[$key],
                 'actual_day_check' => $request->actual_day_check[$key],
             );
-            $projections[$key]->update($data);
+             $projections[$key]->update($data);
         }
         return redirect()->route('business.projections.index', ['business' => $business->slug])->with('update', 'Requisición Actualizada');
     }

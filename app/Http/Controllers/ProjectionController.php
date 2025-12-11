@@ -126,9 +126,8 @@ class ProjectionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Business $business, Restaurant $restaurants)
     {
-        dd($request);
         $restaurant = Restaurant::findOrFail($request->restaurant_id);
         $business = BusinessRestaurants::with('business')->where('restaurant_id', $request->restaurant_id)->first();
         if ($business) {

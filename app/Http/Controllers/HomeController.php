@@ -88,9 +88,9 @@ class HomeController extends Controller
                 $days_total_ticket[] = ($day->total_clientes && $day->total_clientes > 0) ? round($day->total_venta / $day->total_clientes, 2) : 0;
                 
                 //Proyecciones 
-                $projections_total[] =  round($projections->projected_sales / ($daysInMonth + 0),2);
+                $projections_total[] =  round($projections->projected_sales ?? 0 / ($daysInMonth + 0),2);
                 $projections_avg[] =  round($totalGral / $daysPass ,2);
-                $projections_check[] = floatval($projections->projected_check);
+                $projections_check[] = floatval($projections->projected_check ?? 0);
                 $projections_check_avg[] = $totalClientes > 0 ? round(($totalGral / $totalClientes), 2) : 0;
              }
 
