@@ -50,7 +50,13 @@ class AuthenticatedSessionController extends Controller
         try {
             $request->authenticate();
             $request->session()->regenerate();
-            
+
+            $user->tokens()->delete();
+
+            $token = $user->createToken('api')->plainTextToken;
+
+            session(['api_token' => $token]);
+
             return redirect()->intended(route('dashboard', absolute: false));
         } catch (ValidationException $e) {
             return $this->sendFailedLoginResponse($request, 'email', 'Credenciales inválidas');
