@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Schema::defaultStringLength(191);
+        Schema::defaultStringLength(125);
         // DB::listen(function ($query) {
         //     logger($query->sql);
         //     logger($query->bindings);

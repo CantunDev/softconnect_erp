@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projections_days', function (Blueprint $table) {
-            $table->id();
+        Schema::table('projections_days', function (Blueprint $table) {
+            // $table->id();
             // 1. Fechas (año, mes, día)
             $table->date('date')->nullable(); // Columna única para fecha completa
             // 2. Relations
-            $table->foreignId('projection_id')->constrained('projections')->onDelete('cascade');
+            // $table->foreignId('projection_id')->constrained('projections')->onDelete('cascade');
             $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            // $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             // 3. Datos proyectados
             $table->decimal('projected_day_sales', 12, 2)->nullable();
             $table->decimal('actual_day_sales', 12, 2)->nullable();
@@ -31,8 +31,8 @@ return new class extends Migration
             $table->decimal('actual_day_tax', 12, 2)->nullable();
             $table->decimal('projected_day_check', 12, 2)->nullable();
             $table->decimal('actual_day_check', 12, 2)->nullable();
-            // 4. Estado y timestamps
-            $table->enum('status', ['active', 'inactive', 'pending'])->default('active');            
+            // 4. Estado w timestamps
+            // $table->enum('status', ['active', 'inactive', 'pending'])->default('active');            
             // Índice compuesto
         });
     }
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projections_days');
+        // Schema::dropIfExists('projections_days');
     }
 };

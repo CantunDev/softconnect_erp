@@ -27,7 +27,7 @@ return new class extends Migration
             $table->decimal('projected_check', 10, 2)->default(0);
             $table->decimal('actual_check', 10,2)->default(0);
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes(); 
         });
     }
 
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('projections');
     }
 };

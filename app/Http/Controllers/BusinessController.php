@@ -106,8 +106,8 @@ class BusinessController extends Controller
             // Generar un nombre único para el archivo
             $imageName = Str::random(10) . '.' . $request->file('business_file')->getClientOriginalExtension();
 
-            // Ruta al directorio dentro de `public`
-            $destinationPath = public_path('assets/images/companies');
+            // Ruta al directorio dentro de `public` además de poner el directory_separator para evitar problmeas con los slash
+            $destinationPath = public_path('assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'companies');
 
             // Crear la carpeta si no existe
             if (!is_dir($destinationPath)) {
@@ -198,7 +198,7 @@ class BusinessController extends Controller
             $message = "Empresa Suspendida";
         } else {
             $success = true;
-            $message = "No fue posible suspendet";
+            $message = "No fue posible suspender";
         }
         return response()->json([
             'success' => $success,
@@ -212,7 +212,7 @@ class BusinessController extends Controller
         $restore = $business->restore();
         if ($restore == 1) {
             $success = true;
-            $message = "Se restauro correctamene";
+            $message = "Se restauro correctamente";
         } else {
             $success = true;
             $message = "Empresa no restaurada";

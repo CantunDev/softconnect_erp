@@ -4,6 +4,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 
 return [
+    'engine' => 'InnoDB',
 
     /*
     |--------------------------------------------------------------------------

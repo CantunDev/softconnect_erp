@@ -262,20 +262,27 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Logo de la Empresa</h4>
-
                     <div class="image-upload-container text-center mb-4">
                         <div class="image-preview-wrapper">
-                            @if ($business->business_file && file_exists(public_path('assets/images/companies/' . $business->business_file)))
-                                <img id="imagePreview"
-                                    src="{{ asset('assets/images/companies/' . $business->business_file) }}"
-                                    alt="Logo actual" class="img-thumbnail mb-3"
-                                    style="max-width: 100%; max-height: 200px;">
-                            @else
-                                <img id="imagePreview" src="https://via.placeholder.com/300x150?text=Subir+Logo"
-                                    alt="Previsualización" class="img-thumbnail mb-3"
-                                    style="max-width: 100%; max-height: 200px;">
-                            @endif
-                        </div>
+                        @php
+                            $filename = $business->business_file;
+                            $filename = ltrim($filename, '/');
+                            $fullPath = public_path($filename);
+                            $fileExists = file_exists($fullPath);
+                        @endphp
+
+                        @if ($filename && $fileExists)
+                            <img id="imagePreview"
+                                src="{{ asset($filename) }}"
+                                alt="Logo actual" class="img-thumbnail mb-3"
+                                style="max-width: 100%; max-height: 200px;">
+                        @else
+                            <img id="imagePreview" 
+                                src="https://via.placeholder.com/300x150?text=Subir+Logo"
+                                alt="Previsualización" class="img-thumbnail mb-3"
+                                style="max-width: 100%; max-height: 200px;">
+                        @endif
+                    </div>
 
                         <div class="mb-3">
                             <label for="inputLogo" class="form-label">Seleccionar imagen</label>
@@ -333,5 +340,31 @@
 
 
 @section('js')
-    <script></script>
+    <script>
+        const originalImageSrc = document.getElementById('imagePreview').src;
+
+        document.getElementById('inputLogo').onchange = function (evt) {
+            const file = evt.target.files[0];
+
+            if (file) {
+                const preview = document.getElementById('imagePreview');           
+                preview.src = URL.createObjectURL(file);         
+                const options = document.querySelector('.image-options');
+                if (options) {
+                    options.classList.remove('d-none');
+                }
+            }
+        };
+
+        // Lógica para el botón Eliminar
+        document.getElementById('removeImage')?.addEventListener('click', function() {
+            document.getElementById('inputLogo').value = "";
+            document.getElementById('imagePreview').src = originalImageSrc;
+            
+            const options = document.querySelector('.image-options');
+            if (options) {
+                options.classList.add('d-none');
+            }
+        });
+    </script>
 @endsection
