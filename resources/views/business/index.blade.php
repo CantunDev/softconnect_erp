@@ -23,7 +23,7 @@
     <div class="card-body">
       <div class="d-flex justify-content-end mb-3">
         <a href="{{ route('business.create') }}" class="btn btn-success d-flex align-items-center gap-1">
-          <i class="bx bx-plus font-size-15"></i> Nueva empresa de prueba
+          <i class="bx bx-plus font-size-15"></i> Nueva empresa
         </a>
       </div>
       <div class="table-responsive">

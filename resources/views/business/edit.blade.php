@@ -244,9 +244,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span
-                                                class="badge bg-{{ $restaurant->status ? 'success' : 'danger' }}-subtle text-{{ $restaurant->status ? 'success' : 'danger' }} font-size-12">
-                                                {{ $restaurant->status ? 'Activo' : 'Inactivo' }}
+                                            
+                                            <span class="badge bg-{{ !$restaurant->deleted_at ? 'success' : 'danger' }}-subtle text-{{ !$restaurant->deleted_at ? 'success' : 'danger' }} font-size-12">
+                                                {{ !$restaurant->deleted_at ? 'Activo' : 'Inactivo' }}
                                             </span>
                                         </td>
                                     </tr>
@@ -295,19 +295,19 @@
 
                         <div class="image-options @if (!$business->business_file || !file_exists(public_path('assets/images/companies/' . $business->business_file))) d-none @endif">
                             <div class="row g-2">
-                                <div class="col-6">
+                                <div>
                                     <button type="button" class="btn btn-outline-danger btn-sm w-100" id="removeImage">
                                         <i class="mdi mdi-delete-outline me-1"></i> Eliminar
                                     </button>
                                 </div>
-                                <div class="col-6">
+                                <!-- <div class="col-6">
                                     <button type="button" class="btn btn-outline-primary btn-sm w-100" id="rotateImage">
                                         <i class="mdi mdi-rotate-right me-1"></i> Rotar
                                     </button>
-                                </div>
+                                </div> -->
                             </div>
 
-                            <div class="mt-3">
+                            <!-- <div class="mt-3">
                                 <label for="imageQuality" class="form-label">Calidad de compresión: <span
                                         id="qualityValue">80</span>%</label>
                                 <input type="range" class="form-range" id="imageQuality" min="10"
@@ -319,7 +319,7 @@
                                     KB</label>
                                 <input type="range" class="form-range" id="imageSize" min="100" max="1000"
                                     value="500">
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -340,31 +340,77 @@
 
 
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <script>
+        //Inicializar la librería
+        const colorThief = new ColorThief();
+
+        //Función auxiliar para convertir RGB a Hex (los inputs type="color" necesitan Hex)
+        const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+            const hex = x.toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        }).join('');
+
         const originalImageSrc = document.getElementById('imagePreview').src;
+        const imgPreview = document.getElementById('imagePreview');
 
         document.getElementById('inputLogo').onchange = function (evt) {
             const file = evt.target.files[0];
 
             if (file) {
-                const preview = document.getElementById('imagePreview');           
-                preview.src = URL.createObjectURL(file);         
+                // Crear la URL local para la imagen
+                const objectUrl = URL.createObjectURL(file);
+                imgPreview.src = objectUrl; 
+                
                 const options = document.querySelector('.image-options');
                 if (options) {
                     options.classList.remove('d-none');
                 }
+
+                // --- LÓGICA DE EXTRACCIÓN DE COLORES ---
+                
+                imgPreview.onload = function() {
+                    try {
+                        // Pedimos una paleta de 3 colores
+                        const palette = colorThief.getPalette(imgPreview, 5);
+
+                        // Asignamos los colores si existen
+                        if (palette) {
+                            // Color 1 -> Primario
+                            if(palette[0]) {
+                                document.getElementById('color_primary').value = rgbToHex(...palette[0]);
+                            }
+                            // Color 2 -> Secundario
+                            if(palette[1]) {
+                                document.getElementById('color_secondary').value = rgbToHex(...palette[1]);
+                            }
+                            // Color 3 -> Acento (Si la imagen tiene pocos colores, repetimos el 2 o el 0)
+                            if(palette[2]) {
+                                document.getElementById('color_accent').value = rgbToHex(...palette[2]);
+                            } else {
+                                // Fallback si la imagen es casi monocromática
+                                document.getElementById('color_accent').value = rgbToHex(...palette[0]);
+                            }
+                        }
+                    } catch (e) {
+                        console.log("No se pudieron extraer los colores (posible error CORS o formato)", e);
+                    }
+                };
             }
         };
 
         // Lógica para el botón Eliminar
         document.getElementById('removeImage')?.addEventListener('click', function() {
             document.getElementById('inputLogo').value = "";
-            document.getElementById('imagePreview').src = originalImageSrc;
+            imgPreview.src = originalImageSrc;
             
             const options = document.querySelector('.image-options');
             if (options) {
                 options.classList.add('d-none');
             }
+            
         });
     </script>
+
+
 @endsection

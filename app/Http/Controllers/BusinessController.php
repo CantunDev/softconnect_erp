@@ -40,14 +40,24 @@ class BusinessController extends Controller
                     return $data;
                 })
                 ->addColumn('users', function ($result) {
-                    return $result->users && $result->users->count() > 0
-                        ? 'Usuarios asignados: ' . $result->users->count()
-                        : 'Sin usuarios';
+                    // 1. Verificamos si la colección de usuarios está vacía
+                    if ($result->users->isEmpty()) {
+                        return '<span class="text-muted font-size-12">Sin usuarios</span>';
+                    }
+
+                    $badges = $result->users->map(function($user) {
+                        return '<span class="badge badge-soft-primary font-size-11 m-1">' . htmlspecialchars($user->name) . '</span>';
+                    })->implode(''); 
+                    return $badges;
                 })
                 ->addColumn('restaurants', function ($result) {
-                    return $result->restaurants && $result->restaurants->count() > 0
-                        ? 'Restaurantes asignados: ' . $result->restaurants->count()
-                        : 'Sin restaurantes';
+                    if ($result->restaurants->isEmpty()) {
+                        return '<span class="text-muted font-size-12">Sin restaurantes</span>';
+                    }
+
+                    return $result->restaurants->map(function($restaurant) {
+                        return '<span class="badge badge-soft-info font-size-11 m-1">' . htmlspecialchars($restaurant->name) . '</span>';
+                    })->implode('');
                 })
                 ->addColumn('action', function ($result) {
                     $opciones = '';
@@ -78,7 +88,7 @@ class BusinessController extends Controller
                     }
                     return $status;
                 })
-                ->rawColumns(['business', 'action', 'status'])
+                ->rawColumns(['business', 'action', 'status', 'users', 'restaurants'])
                 ->make(true);
         }
 
