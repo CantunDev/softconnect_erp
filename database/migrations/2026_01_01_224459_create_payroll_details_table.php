@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->foreignId('payroll_concept_id')->constrained('payroll_concepts')->onDelete('restrict');
             // Valores
-            $table->decimal('quantity', 10, 2)->default(1);
-            $table->decimal('unit_value', 12, 2)->default(0);
-            $table->decimal('amount', 12, 2)->default(0)->storedAs('quantity * unit_value');
+            $table->decimal('quantity', 10, 2);
+            $table->decimal('unit_value', 12, 2);
+            $table->decimal('amount', 12, 2)->storedAs('quantity * unit_value');
             
             // Información adicional
             $table->text('notes')->nullable();
