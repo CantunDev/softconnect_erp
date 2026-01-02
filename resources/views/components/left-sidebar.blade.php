@@ -103,10 +103,11 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('users.index') }}"
+                                                    <a 
+                                                        href="{{ route('business.restaurants.payroll.index', ['business' => $bs->slug, 'restaurants' => $rest->slug]) }}"
                                                         key="r-a-{{ $bs->id }}">
                                                         <i class="bx bx-calculator"></i>
-                                                        <span>Caja</span>
+                                                        <span>Nominas</span>
                                                     </a>
                                                 </li>
                                                 <li>
