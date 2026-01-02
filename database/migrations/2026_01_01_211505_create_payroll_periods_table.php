@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->unique(['restaurant_id', 'period_number', 'year']);
+            // $table->unique(['restaurant_id', 'period_number', 'year']);
             $table->index(['restaurant_id', 'status']);
         });
     }
