@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChequesController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ExpensesCategoriesController;
 use App\Http\Controllers\ExpensesController;
@@ -103,6 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('expenses_categories', ExpensesCategoriesController::class);
             Route::resource('expenses', ExpensesController::class);
             Route::resource('payroll', PayrollController::class);
+            Route::resource('employees', EmployeesController::class);
 
             Route::prefix('suspend')->group(function () {
                 Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');

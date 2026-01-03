@@ -39,15 +39,8 @@
                         </tr>
                     </thead>
                 </table>
-                <!-- end table -->
             </div>
-            <!-- end table responsive -->
         </div>
-        <!-- end card body -->
-    </div><!--end card-->
-    </div><!--end col-->
-    </div><!--end row-->
-    </div>
     </div>
 @endsection
 @section('js')
