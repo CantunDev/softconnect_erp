@@ -39,26 +39,60 @@ class BusinessController extends Controller
 
                     return $data;
                 })
+                
                 ->addColumn('users', function ($result) {
-                    // 1. Verificamos si la colección de usuarios está vacía
+                    // 1. Si no hay usuarios
                     if ($result->users->isEmpty()) {
                         return '<span class="text-muted font-size-12">Sin usuarios</span>';
                     }
 
-                    $badges = $result->users->map(function($user) {
-                        return '<span class="badge badge-soft-primary font-size-11 m-1">' . htmlspecialchars($user->name) . '</span>';
-                    })->implode(''); 
-                    return $badges;
+                    $html = '<div class="avatar-group">';
+
+                    foreach ($result->users as $user) {
+                        $imgUrl = $user->profile_photo_path 
+                            ? asset($user->profile_photo_path) 
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&color=7F9CF5&background=EBF4FF';
+                        
+                        $name = htmlspecialchars($user->name);
+
+                        $html .= '
+                            <div class="avatar-group-item">
+                                <a href="javascript: void(0);" class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $name . '">
+                                    <img src="' . $imgUrl . '" alt="" class="rounded-circle avatar-xs">
+                                </a>
+                            </div>';
+                    }
+
+                    $html .= '</div>'; // Cerrar grupo
+                    return $html;
                 })
                 ->addColumn('restaurants', function ($result) {
+                  
                     if ($result->restaurants->isEmpty()) {
                         return '<span class="text-muted font-size-12">Sin restaurantes</span>';
                     }
 
-                    return $result->restaurants->map(function($restaurant) {
-                        return '<span class="badge badge-soft-info font-size-11 m-1">' . htmlspecialchars($restaurant->name) . '</span>';
-                    })->implode('');
+                    $html = '<div class="avatar-group">';
+
+                    foreach ($result->restaurants as $restaurant) {
+                        $imgUrl = $restaurant->business_file 
+                            ? asset($restaurant->business_file) 
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($restaurant->name) . '&color=F1B44C&background=FFF8E6';
+
+                        $name = htmlspecialchars($restaurant->name);
+
+                        $html .= '
+                            <div class="avatar-group-item">
+                                <a href="javascript: void(0);" class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $name . '">
+                                    <img src="' . $imgUrl . '" alt="" class="rounded-circle avatar-xs">
+                                </a>
+                            </div>';
+                    }
+
+                    $html .= '</div>'; 
+                    return $html;
                 })
+
                 ->addColumn('action', function ($result) {
                     $opciones = '';
                     // if (Auth::user()->can('read_operators')){
@@ -187,10 +221,7 @@ class BusinessController extends Controller
         }
 
         // Manejo de la relación con restaurantes
-        if ($request->has('restaurant_ids')) {
-            $restaurantIds = $request->restaurant_ids;
-            $business->business_restaurants()->sync($restaurantIds);
-        }
+       $business->business_restaurants()->sync($request->input('restaurant_ids', []));
 
         // Actualizar los datos del negocio
         $business->update($data);
