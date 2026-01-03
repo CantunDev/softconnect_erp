@@ -39,16 +39,60 @@ class BusinessController extends Controller
 
                     return $data;
                 })
+                
                 ->addColumn('users', function ($result) {
-                    return $result->users && $result->users->count() > 0
-                        ? 'Usuarios asignados: ' . $result->users->count()
-                        : 'Sin usuarios';
+                    // 1. Si no hay usuarios
+                    if ($result->users->isEmpty()) {
+                        return '<span class="text-muted font-size-12">Sin usuarios</span>';
+                    }
+
+                    $html = '<div class="avatar-group">';
+
+                    foreach ($result->users as $user) {
+                        $imgUrl = $user->profile_photo_path 
+                            ? asset($user->profile_photo_path) 
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&color=7F9CF5&background=EBF4FF';
+                        
+                        $name = htmlspecialchars($user->name);
+
+                        $html .= '
+                            <div class="avatar-group-item">
+                                <a href="javascript: void(0);" class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $name . '">
+                                    <img src="' . $imgUrl . '" alt="" class="rounded-circle avatar-xs">
+                                </a>
+                            </div>';
+                    }
+
+                    $html .= '</div>'; // Cerrar grupo
+                    return $html;
                 })
                 ->addColumn('restaurants', function ($result) {
-                    return $result->restaurants && $result->restaurants->count() > 0
-                        ? 'Restaurantes asignados: ' . $result->restaurants->count()
-                        : 'Sin restaurantes';
+                  
+                    if ($result->restaurants->isEmpty()) {
+                        return '<span class="text-muted font-size-12">Sin restaurantes</span>';
+                    }
+
+                    $html = '<div class="avatar-group">';
+
+                    foreach ($result->restaurants as $restaurant) {
+                        $imgUrl = $restaurant->business_file 
+                            ? asset($restaurant->business_file) 
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($restaurant->name) . '&color=F1B44C&background=FFF8E6';
+
+                        $name = htmlspecialchars($restaurant->name);
+
+                        $html .= '
+                            <div class="avatar-group-item">
+                                <a href="javascript: void(0);" class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $name . '">
+                                    <img src="' . $imgUrl . '" alt="" class="rounded-circle avatar-xs">
+                                </a>
+                            </div>';
+                    }
+
+                    $html .= '</div>'; 
+                    return $html;
                 })
+
                 ->addColumn('action', function ($result) {
                     $opciones = '';
                     // if (Auth::user()->can('read_operators')){
@@ -78,7 +122,7 @@ class BusinessController extends Controller
                     }
                     return $status;
                 })
-                ->rawColumns(['business', 'action', 'status'])
+                ->rawColumns(['business', 'action', 'status', 'users', 'restaurants'])
                 ->make(true);
         }
 
@@ -106,8 +150,8 @@ class BusinessController extends Controller
             // Generar un nombre único para el archivo
             $imageName = Str::random(10) . '.' . $request->file('business_file')->getClientOriginalExtension();
 
-            // Ruta al directorio dentro de `public`
-            $destinationPath = public_path('assets/images/companies');
+            // Ruta al directorio dentro de `public` además de poner el directory_separator para evitar problmeas con los slash
+            $destinationPath = public_path('assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'companies');
 
             // Crear la carpeta si no existe
             if (!is_dir($destinationPath)) {
@@ -177,10 +221,7 @@ class BusinessController extends Controller
         }
 
         // Manejo de la relación con restaurantes
-        if ($request->has('restaurant_ids')) {
-            $restaurantIds = $request->restaurant_ids;
-            $business->business_restaurants()->sync($restaurantIds);
-        }
+       $business->business_restaurants()->sync($request->input('restaurant_ids', []));
 
         // Actualizar los datos del negocio
         $business->update($data);
@@ -198,7 +239,7 @@ class BusinessController extends Controller
             $message = "Empresa Suspendida";
         } else {
             $success = true;
-            $message = "No fue posible suspendet";
+            $message = "No fue posible suspender";
         }
         return response()->json([
             'success' => $success,
@@ -212,7 +253,7 @@ class BusinessController extends Controller
         $restore = $business->restore();
         if ($restore == 1) {
             $success = true;
-            $message = "Se restauro correctamene";
+            $message = "Se restauro correctamente";
         } else {
             $success = true;
             $message = "Empresa no restaurada";

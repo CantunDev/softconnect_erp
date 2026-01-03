@@ -216,4 +216,19 @@
       })
   }
 </script>
+
+<script>
+    $(function () {
+        function activarTooltips() {
+            $('[data-bs-toggle="tooltip"]').tooltip(); 
+        }
+
+        activarTooltips();
+
+        $('#table_business').on('draw.dt', function () {
+            activarTooltips();
+        });
+    });
+</script>
+
 @endsection

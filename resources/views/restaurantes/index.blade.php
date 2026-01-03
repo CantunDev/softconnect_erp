@@ -22,7 +22,7 @@
             <div class="d-flex align-items-center">
                 <h5 class="mb-0 card-title flex-grow-1">Lista de Restaurantes</h5>
                 <div class="flex-shrink-0">
-                    <a href="{{route('restaurants.create')}}" class="btn btn-primary">Nuevo</a>
+                    <a href="{{route('restaurants.create')}}" class="btn btn-primary">Nuevo Restaurante</a>
                     {{-- <a href="#!" class="btn btn-light"><i class="mdi mdi-refresh"></i></a> --}}
                 </div>
             </div>

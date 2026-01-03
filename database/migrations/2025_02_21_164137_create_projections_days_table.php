@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['draft', 'approved', 'adjusted'])->default('draft');
             $table->date('projection_date')->nullable();
-            $table->timestamps();
+            $table->timestamps(); 
         });
     }
 
