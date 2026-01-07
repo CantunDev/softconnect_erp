@@ -2,27 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Business;
-use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
-class EmployeesController extends Controller
+class PositionsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
+        //
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Business $business, Restaurant $restaurants, Request $request)
+    public function create()
     {
-        $businessRestaurants = $business->restaurants;
-        return view('payroll.employees.create', compact('business', 'restaurants','businessRestaurants'));
+        //
     }
 
     /**

@@ -26,7 +26,7 @@
                         </a>
                     </li>
                     <li class="nav-item waves-effect waves-light">
-                        <a class="nav-link" data-bs-toggle="tab" href="#typeproviders" role="tab">
+                        <a class="nav-link" data-bs-toggle="tab" href="#positions" role="tab">
                             <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                             <span class="d-none d-sm-block">Puestos</span>
                         </a>
@@ -88,6 +88,43 @@
                                             data-bs-target="#addProviderTypeModal">
                                             <i class="mdi mdi-plus"></i> Nuevo Tipo
                                         </button>
+                                    </div>
+                                    {{-- @endcan --}}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="table_typeproviders"
+                                        class="table table-sm align-middle dt-responsive nowrap w-100">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Clave</th>
+                                                <th scope="col">Descripcion</th>
+                                                <th scope="col" class="px-4 py-3">Opciones</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <!-- end table -->
+                                </div>
+                                <!-- end table responsive -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="positions" role="tabpanel">
+                        <div>
+                            <div class="card-body border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0 card-title flex-grow-1">
+                                        {{-- Lista de proveedores  --}}
+                                    </h5>
+                                    {{-- @can('create_providers') --}}
+                                    <div class="flex-shrink-0">
+                                        <a href="{{ route('business.restaurants.employees.create', ['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) }}"
+                                            class="btn btn-sm btn-success">
+                                            <i class="mdi mdi-plus me-1"></i>
+                                            Nuevo
+                                        </a>
                                     </div>
                                     {{-- @endcan --}}
                                 </div>

@@ -14,6 +14,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PositionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\ProjectionDayController;
@@ -105,6 +106,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('expenses', ExpensesController::class);
             Route::resource('payroll', PayrollController::class);
             Route::resource('employees', EmployeesController::class);
+            Route::resource('positions', PositionsController::class);
 
             Route::prefix('suspend')->group(function () {
                 Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');
