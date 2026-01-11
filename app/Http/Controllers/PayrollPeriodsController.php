@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
-use App\Models\Positions;
+use App\Models\PayrollPeriods;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
-class PositionsController extends Controller
+class PayrollPeriodsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +23,7 @@ class PositionsController extends Controller
     public function create(Business $business, Restaurant $restaurants)
     {
         $businessRestaurants = $business->restaurants;
-        return view('payroll.positions.create',compact('business','restaurants','businessRestaurants'));
+        return view('payroll.periods.create',compact('business','restaurants','businessRestaurants'));
     }
 
     /**
@@ -31,10 +31,8 @@ class PositionsController extends Controller
      */
     public function store(Business $business, Restaurant $restaurants, Request $request)
     {
-        // return $request->all();
-        $position = Positions::create($request->all());
+        $payroll = PayrollPeriods::create($request->all());
         return redirect()->route('business.restaurants.payroll.index',['business' => $business, 'restaurants' => $restaurants]);
-        // return view('payroll.index', compact('business', 'restaurants'));
     }
 
     /**

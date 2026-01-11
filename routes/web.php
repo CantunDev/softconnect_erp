@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceRecordsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BusinessController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PayrollPeriodsController;
 use App\Http\Controllers\PositionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectionController;
@@ -107,6 +109,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('payroll', PayrollController::class);
             Route::resource('employees', EmployeesController::class);
             Route::resource('positions', PositionsController::class);
+            Route::resource('payroll_periods', PayrollPeriodsController::class);
+            Route::resource('attendance', AttendanceRecordsController::class);
 
             Route::prefix('suspend')->group(function () {
                 Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');
