@@ -67,7 +67,7 @@ class BusinessController extends Controller
                     return $html;
                 })
                 ->addColumn('restaurants', function ($result) {
-                  
+
                     if ($result->restaurants->isEmpty()) {
                         return '<span class="text-muted font-size-12">Sin restaurantes</span>';
                     }
@@ -75,8 +75,9 @@ class BusinessController extends Controller
                     $html = '<div class="avatar-group">';
 
                     foreach ($result->restaurants as $restaurant) {
-                        $imgUrl = $restaurant->business_file 
-                            ? asset($restaurant->business_file) 
+                        
+                        $imgUrl = $restaurant->restaurant_file 
+                            ? asset(ltrim($restaurant->restaurant_file, '/')) 
                             : 'https://ui-avatars.com/api/?name=' . urlencode($restaurant->name) . '&color=F1B44C&background=FFF8E6';
 
                         $name = htmlspecialchars($restaurant->name);
@@ -84,7 +85,7 @@ class BusinessController extends Controller
                         $html .= '
                             <div class="avatar-group-item">
                                 <a href="javascript: void(0);" class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $name . '">
-                                    <img src="' . $imgUrl . '" alt="" class="rounded-circle avatar-xs">
+                                    <img src="' . $imgUrl . '" alt="' . $name . '" class="rounded-circle avatar-xs">
                                 </a>
                             </div>';
                     }
@@ -275,7 +276,7 @@ class BusinessController extends Controller
             $success = true;
             $message = "Se elimino permanentemente";
         } else {
-            $success = true;
+            $success = false;
             $message = "No se ha podido eliminar";
         }
         return response()->json([

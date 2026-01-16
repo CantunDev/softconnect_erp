@@ -52,7 +52,7 @@
                         <input type="text" class="form-control" placeholder="Select date" data-date-format="dd M, yyyy" data-date-container='#datepicker1' data-date-autoclose="true" data-provide="datepicker">
                     </div><!-- input-group -->
                 </div>
-                <div class="col-xxl-2 col-lg-4">
+                <div class="col-xxl-2 col-lg-4"> 
                     <button type="button" class="btn btn-soft-secondary w-100" onclick="filterData();"><i class="mdi mdi-filter-outline align-middle"></i> Filter</button>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                             <th scope="col" class="">Usuarios</th>
                             <th scope="col" class="">Vpn Ip</th>
                             <th scope="col" class="">Estatus</th>
-                            <th scope="col" class=""></th>
+                            <th scope="col" class="">Opciones</th>
                         </tr>
                     </thead>
                 </table>
