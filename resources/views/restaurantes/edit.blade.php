@@ -28,8 +28,8 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-sm-6 col-lg-4">
+                        <div class="row g-4">
+                            <div class="col-sm-6 col-lg-3">
                                 <label for="inputName" class="form-label">Nombre</label>
                                 <input name="name" type="text" class="form-control @error('name') is-invalid @enderror"
                                     id="inputName" value="{{ old('name', $restaurant->name) }}">
@@ -38,7 +38,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-sm-6 col-lg-2">
+                            <div class="col-sm-4 col-lg-3">
                                 <label for="color_primary" class="form-label">Color primario</label>
                                 <input name="color_primary" type="color"
                                     class="form-control @error('color_primary') is-invalid @enderror" id="color_primary"
@@ -48,7 +48,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-sm-6 col-lg-2">
+                            <div class="col-sm-4 col-lg-3">
                                 <label for="color_secondary" class="form-label">Color secundario</label>
                                 <input name="color_secondary" type="color"
                                     class="form-control @error('color_secondary') is-invalid @enderror" id="color_secondary"
@@ -58,7 +58,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-sm-6 col-lg-2">
+                            <div class="col-sm-6 col-lg-3">
                                 <label for="color_accent" class="form-label">Color de Acento</label>
                                 <input name="color_accent" type="color"
                                     class="form-control @error('color_accent') is-invalid @enderror" id="color_accent"

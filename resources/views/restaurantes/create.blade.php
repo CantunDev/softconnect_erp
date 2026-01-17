@@ -30,7 +30,7 @@ Nueva Restaurante
                 <div class="card-body">
                     
                     <div class="row g-3">
-                        <div class="col-sm-6 col-lg-4">
+                        <div class="col-sm-6 col-lg-3">
                             <label for="inputName" class="form-label">Nombre</label>
                             <input name="name" type="text" class="form-control @error('name') is-invalid @enderror"
                                 id="inputName" placeholder="Ej: Nombre Restaurante" value="{{ old('name') }}">
@@ -38,19 +38,19 @@ Nueva Restaurante
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-sm-6 col-lg-2">
+                        <div class="col-sm-6 col-lg-3">
                             <label for="color_primary" class="form-label">Color primario</label>
                             <input name="color_primary" type="color"
                                 class="form-control @error('color_primary') is-invalid @enderror" id="color_primary"
                                 value="{{ old('color_primary', '#556ee6') }}">
                         </div>
-                        <div class="col-sm-6 col-lg-2">
+                        <div class="col-sm-6 col-lg-3">
                             <label for="color_secondary" class="form-label">Color secundario</label>
                             <input name="color_secondary" type="color"
                                 class="form-control @error('color_secondary') is-invalid @enderror" id="color_secondary"
                                 value="{{ old('color_secondary', '#34c38f') }}">
                         </div>
-                        <div class="col-sm-6 col-lg-2">
+                        <div class="col-sm-6 col-lg-3">
                             <label for="color_accent" class="form-label">Color de Acento</label>
                             <input name="color_accent" type="color" class="form-control @error('color_accent') is-invalid @enderror"
                                 id="color_accent" value="{{ old('color_accent', '#f1b44c') }}">
