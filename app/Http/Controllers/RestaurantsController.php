@@ -7,6 +7,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 use function PHPUnit\Framework\isNull;
 
@@ -36,22 +37,47 @@ class RestaurantsController extends Controller
                     return $data;
                 })
                 ->addColumn('assigned', function ($result) {
-                    return "Usuarios asignados: " . $result->users->count();
+                   if ($result->users->isEmpty()) {
+                        return '<span class="text-muted font-size-12">Sin usuarios</span>';
+                    }
+                    $html = '<div class="avatar-group">';
+                    foreach ($result->users as $user) {
+                        $imgUrl = $user->profile_photo_path 
+                            ? asset($user->profile_photo_path) 
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&color=7F9CF5&background=EBF4FF';
+                        
+                        $name = htmlspecialchars($user->name);
+
+                        $html .= '
+                            <div class="avatar-group-item">
+                                <a href="javascript: void(0);" class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $name . '">
+                                    <img src="' . $imgUrl . '" alt="" class="rounded-circle avatar-xs">
+                                </a>
+                            </div>';
+                    }
+
+                    $html .= '</div>'; // Cerrar grupo
+                    return $html;
                 })
                 ->addColumn('action', function ($result) {
                     $opciones = '';
                     // if (Auth::user()->can('read_operators')){
                     // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
                     // }
-                    // if (Auth::user()->can('update_operators')){
-                    $opciones .= '<a href="' . route('restaurants.edit', $result->slug) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                    $opciones .= '<button type="button" onclick="btnRestore(' . $result->slug . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
-                    // }
-                    // if (Auth::user()->can('delete_operators')){
-                    $opciones .= '<button type="button" onclick="btnSuspend(' . $result->slug . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
-                    $opciones .= '<button type="button" onclick="btnDelete(' . $result->slug . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+                    if (Auth::user()->can('update_operators')){
+                        if (!$result->trashed()) {
+                            $opciones .= '<a href="' . route('restaurants.edit', $result->slug ?? $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+                            $opciones .= '<button type="button" onclick="btnSuspend(' . $result->id . ')" class="btn btn-sm text-dark action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
+                        }
 
-                    // }
+                        if ($result->trashed()) {
+                            $opciones .= '<button type="button" onclick="btnRestore(' . $result->id . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
+                            if (Auth::user()->can('delete_operators')){
+                                $opciones .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-danger action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
+
+                            }
+                        }
+                    }
                     return $opciones;
                 })
                 ->addColumn('status', function ($result) {
@@ -104,7 +130,7 @@ class RestaurantsController extends Controller
 
                 //     return $output;
                 // })
-                ->rawColumns(['restaurant', 'action', 'status'])
+                ->rawColumns(['restaurant', 'action', 'status', 'assigned'])
                 ->make(true);
         }
         return view('restaurantes.index');
@@ -200,36 +226,39 @@ class RestaurantsController extends Controller
 
     public function suspend($id)
     {
-        $restaurant = Restaurant::findOrFail($id);
-        $suspend = $restaurant->delete();
-        if ($suspend == 1) {
-            $success = true;
-            $message = "Restaurante Suspendido";
+        $restaurant = Restaurant::find($id);
+
+        if ($restaurant) {
+            $restaurant->delete(); // Esto aplica el SoftDelete
+            return response()->json([
+                'success' => true,
+                'message' => "Restaurante Suspendido correctamente"
+            ], 200);
         } else {
-            $success = true;
-            $message = "No fue posible suspendet";
+            return response()->json([
+                'success' => false,
+                'message' => "Restaurante no encontrado o ya estaba suspendido"
+            ], 404);
         }
-        return response()->json([
-            'success' => $success,
-            'message' => $message
-        ], 200);
     }
 
     public function restore($id)
     {
-        $restaurant = Restaurant::onlyTrashed($id);
-        $restore = $restaurant->restore();
-        if ($restore == 1) {
-            $success = true;
-            $message = "Se restauro correctamene";
+        $restaurant = Restaurant::onlyTrashed()->find($id);
+
+        if ($restaurant) {
+            $restaurant->restore();
+            return response()->json([
+                'success' => true,
+                'message' => "Se restauró correctamente"
+            ], 200);
         } else {
-            $success = true;
-            $message = "Restaurante no restaurado";
+            
+            return response()->json([
+                'success' => false,
+                'message' => "No se encontró el restaurante en la papelera"
+            ], 404);
         }
-        return response()->json([
-            'success' => $success,
-            'message' => $message
-        ], 200);
     }
 
     /**
@@ -237,14 +266,14 @@ class RestaurantsController extends Controller
      */
     public function destroy($id)
     {
-        $restaurant = Restaurant::onlyTrashed($id);
-        $delete = $restaurant->forceDelete();
+        $business = Restaurant::onlyTrashed($id);
+        $delete = $business->forceDelete();
         if ($delete == 1) {
             $success = true;
             $message = "Se elimino permanentemente";
         } else {
-            $success = true;
-            $message = "No se ha podido eliminar";
+            $success = false;
+            $message = "No se ha podido eliminar. Primero Suspenda la empresa";
         }
         return response()->json([
             'success' => $success,
