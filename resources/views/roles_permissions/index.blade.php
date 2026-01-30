@@ -22,7 +22,7 @@
         <div class="card-body">
             <div class="d-flex justify-content-end mb-3">
                 <a href="{{ route('roles_permissions.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
-                    <i class="bx bx-plus font-size-15"></i> Nuev Rol
+                    <i class="bx bx-plus font-size-15"></i> Nuevo Rol
                 </a>
             </div>
             <div class="table-responsive">

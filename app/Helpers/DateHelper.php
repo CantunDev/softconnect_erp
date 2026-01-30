@@ -103,17 +103,13 @@ class DateHelper
         return $name;
     }
 
-    public static function translateType($type)
-{
-    $translations = [
-        'fixed' => 'Fijo',
-        'temporal' => 'Temporal',
-        'part-time' => 'Tiempo Parcial',
-        'contractor' => 'Contratista',
-        'internship' => 'Practicante',
-        'freelance' => 'Freelance'
-    ];
-    
-    return $translations[$type] ?? ucfirst($type);
-}
+    public static function translateSalaryType($type)
+    {
+        $translations = [
+            'fixed' => 'Fijo',
+            'hourly' => 'Por Hora',
+            'daily' => 'Diario'
+        ];
+        return $translations[$type] ?? ucfirst($type);
+    }
 }
