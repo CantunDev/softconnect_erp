@@ -12,7 +12,7 @@
                             style=" color:{{ !empty($restaurants->color_primary) ? $restaurants->color_primary : '#ccc' }};">
                             <i class="fas fa-user-plus"></i> Registrar Nuevo Empleado
                         </h5>
-                        <a href="" class="btn btn-light btn-sm">
+                        <a href="{{ route('business.restaurants.payroll.index', ['business' => $business->slug, 'restaurants' => $restaurants->slug]) }}" class="btn btn-light btn-sm">
                             <i class="fas fa-arrow-left"></i> Volver
                         </a>
                     </div>
@@ -153,8 +153,10 @@
                                                         Nombre(s) <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="text"
-                                                        class="form-control @error('first_name') is-invalid @enderror"
+                                                        class="form-control  text-capitalize @error('first_name') is-invalid @enderror"
                                                         id="first_name" name="first_name"
+                                                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');"
+                                                        title="Solo se permiten letras y espacios"
                                                         value="{{ old('first_name') }}" required maxlength="100">
                                                     @error('first_name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -162,23 +164,27 @@
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label for="last_name" class="form-label">
-                                                        Apellidos <span class="text-danger">*</span>
+                                                        Apellido Paterno <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="text"
-                                                        class="form-control @error('last_name') is-invalid @enderror"
+                                                        class="form-control  text-capitalize @error('last_name') is-invalid @enderror"
                                                         id="last_name" name="last_name" value="{{ old('last_name') }}"
+                                                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'');"
+                                                        title="Solo se permiten letras y espacios"
                                                         required maxlength="100">
                                                     @error('last_name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                                  <div class="col-md-4 mb-2">
-                                                    <label for="last_name" class="form-label">
-                                                        Apellidos <span class="text-danger">*</span>
+                                                    <label for="sur_name" class="form-label">
+                                                        Apellido Materno <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="text"
-                                                        class="form-control @error('sur_name') is-invalid @enderror"
+                                                        class="form-control  text-capitalize @error('sur_name') is-invalid @enderror"
                                                         id="sur_name" name="sur_name" value="{{ old('sur_name') }}"
+                                                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'');"
+                                                        title="Solo se permiten letras y espacios"
                                                         required maxlength="100">
                                                     @error('sur_name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -192,7 +198,8 @@
                                                     <label for="email" class="form-label">Correo Electrónico</label>
                                                     <input type="email"
                                                         class="form-control @error('email') is-invalid @enderror"
-                                                        id="email" name="email" value="{{ old('email') }}">
+                                                        id="email" name="email" value="{{ old('email') }}"
+                                                        placeholder="xxxxx@hotmail.com">
                                                     @error('email')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -202,6 +209,7 @@
                                                     <input type="tel"
                                                         class="form-control @error('phone') is-invalid @enderror"
                                                         id="phone" name="phone" value="{{ old('phone') }}"
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                                         placeholder="Ej. 5551234567">
                                                     @error('phone')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -239,8 +247,10 @@
                                             <div class="mb-3">
                                                 <label for="birth_place" class="form-label">Lugar de Nacimiento</label>
                                                 <input type="text"
-                                                    class="form-control @error('birth_place') is-invalid @enderror"
+                                                    class="form-control text-capitalize @error('birth_place') is-invalid @enderror"
                                                     id="birth_place" name="birth_place" value="{{ old('birth_place') }}"
+                                                    oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'');"
+                                                    title="Solo se permiten letras y espacios"
                                                     placeholder="Ciudad, Estado, País" maxlength="255">
                                                 @error('birth_place')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -299,7 +309,7 @@
                                             <div class="mb-3">
                                                 <label for="address" class="form-label">Domicilio</label>
                                                 <input type="text"
-                                                    class="form-control @error('address') is-invalid @enderror"
+                                                    class="form-control text-capitalize @error('address') is-invalid @enderror"
                                                     id="address" name="address" value="{{ old('address') }}"
                                                     placeholder="Calle y número" maxlength="255">
                                                 @error('address')
@@ -311,8 +321,10 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label for="city" class="form-label">Ciudad</label>
                                                     <input type="text"
-                                                        class="form-control @error('city') is-invalid @enderror"
+                                                        class="form-control text-capitalize @error('city') is-invalid @enderror"
                                                         id="city" name="city" value="{{ old('city') }}"
+                                                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'');"
+                                                        title="Solo se permiten letras y espacios"
                                                         maxlength="100">
                                                     @error('city')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -321,8 +333,10 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label for="state" class="form-label">Estado</label>
                                                     <input type="text"
-                                                        class="form-control @error('state') is-invalid @enderror"
+                                                        class="form-control text-capitalize @error('state') is-invalid @enderror"
                                                         id="state" name="state" value="{{ old('state') }}"
+                                                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'');"
+                                                        title="Solo se permiten letras y espacios"
                                                         maxlength="100">
                                                     @error('state')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -336,7 +350,9 @@
                                                     <input type="text"
                                                         class="form-control @error('postal_code') is-invalid @enderror"
                                                         id="postal_code" name="postal_code" value="{{ old('postal_code') }}"
-                                                        placeholder="Ej. 28001" maxlength="10">
+                                                        placeholder="Ej. 28001" 
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                        maxlength="5">
                                                     @error('postal_code')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -371,7 +387,10 @@
                                                     <input type="text"
                                                         class="form-control @error('imss_number') is-invalid @enderror"
                                                         id="imss_number" name="imss_number"
-                                                        value="{{ old('imss_number') }}" placeholder="11 dígitos">
+                                                        value="{{ old('imss_number') }}" 
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                        maxlength="11";
+                                                        placeholder="11 dígitos">
                                                     @error('imss_number')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -381,6 +400,7 @@
                                                     <input type="text"
                                                         class="form-control @error('rfc') is-invalid @enderror"
                                                         id="rfc" name="rfc" value="{{ old('rfc') }}"
+                                                        oninput="this.value = this.value.toUpperCase()"
                                                         placeholder="Ej. XAXX010101000" maxlength="13">
                                                     @error('rfc')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -394,6 +414,7 @@
                                                 <input type="text"
                                                     class="form-control @error('curp') is-invalid @enderror"
                                                     id="curp" name="curp" value="{{ old('curp') }}"
+                                                    oninput="this.value = this.value.toUpperCase()"
                                                     placeholder="Ej. XAXX010101HDFXXX00" maxlength="18">
                                                 @error('curp')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -413,8 +434,10 @@
                                             <div class="mb-3">
                                                 <label for="bank_name" class="form-label">Nombre del Banco</label>
                                                 <input type="text"
-                                                    class="form-control @error('bank_name') is-invalid @enderror"
-                                                    id="bank_name" name="bank_name" value="{{ old('bank_name') }}">
+                                                    class="form-control text-capitalize @error('bank_name') is-invalid @enderror"
+                                                    id="bank_name" name="bank_name" value="{{ old('bank_name') }}"
+                                                    oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'');"
+                                                    title="Solo se permiten letras y espacios">
                                                 @error('bank_name')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -424,7 +447,9 @@
                                                 <input type="text"
                                                     class="form-control @error('bank_account') is-invalid @enderror"
                                                     id="bank_account" name="bank_account"
-                                                    value="{{ old('bank_account') }}">
+                                                    value="{{ old('bank_account') }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                    >
                                                 @error('bank_account')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -434,7 +459,9 @@
                                                 <input type="text"
                                                     class="form-control @error('bank_clabe') is-invalid @enderror"
                                                     id="bank_clabe" name="bank_clabe"
-                                                    value="{{ old('bank_clabe') }}" maxlength="18">
+                                                    value="{{ old('bank_clabe') }}" 
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                    maxlength="18">
                                                 @error('bank_clabe')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -477,7 +504,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="" class="btn btn-secondary">
+                                        <a href="{{ route('business.restaurants.payroll.index', ['business' => $business->slug, 'restaurants' => $restaurants->slug]) }}" class="btn btn-secondary">
                                             <i class="fas fa-times"></i> Cancelar
                                         </a>
                                         <button type="submit" class="btn btn-primary">
@@ -540,7 +567,7 @@
                 $('#hire_date').on('change', function() {
                     $('#termination_date').attr('min', $(this).val());
                 });
-
+                
                 // Validación de RFC
                 $('#rfc').on('blur', function() {
                     const rfc = $(this).val().trim().toUpperCase();

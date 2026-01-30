@@ -90,4 +90,30 @@ class DateHelper
         
         return $days;
     }
+
+       public static function capitalizeName($name)
+    {
+        if (empty($name)) {
+            return '';
+        }
+        $name = trim($name);
+        $name = mb_strtolower($name, 'UTF-8');
+        // Capitalizar la primera letra de cada palabra
+        $name = mb_convert_case($name, MB_CASE_TITLE, 'UTF-8');
+        return $name;
+    }
+
+    public static function translateType($type)
+{
+    $translations = [
+        'fixed' => 'Fijo',
+        'temporal' => 'Temporal',
+        'part-time' => 'Tiempo Parcial',
+        'contractor' => 'Contratista',
+        'internship' => 'Practicante',
+        'freelance' => 'Freelance'
+    ];
+    
+    return $translations[$type] ?? ucfirst($type);
+}
 }

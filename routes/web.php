@@ -108,7 +108,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('expenses', ExpensesController::class);
             Route::resource('payroll', PayrollController::class);
             Route::resource('employees', EmployeesController::class);
+                
+                Route::put('employees/{employee}/suspend', [EmployeesController::class, 'suspend'])->name('employees.suspend');
+                Route::put('employees/{employee}/restore', [EmployeesController::class, 'restore'])->name('employees.restore');
+                Route::delete('employees/{employee}/destroy', [EmployeesController::class, 'destroy'])->name('employees.destroy');
             Route::resource('positions', PositionsController::class);
+                Route::put('positions/{position}/suspend', [PositionsController::class, 'suspend'])->name('positions.suspend');
+                Route::put('positions/{position}/restore', [PositionsController::class, 'restore'])->name('positions.restore');
+                Route::delete('positions/{position}/destroy', [PositionsController::class, 'destroy'])->name('positions.destroy');
             Route::resource('payroll_periods', PayrollPeriodsController::class);
             Route::resource('attendance', AttendanceRecordsController::class);
 

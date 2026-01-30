@@ -33,6 +33,7 @@ class Employees extends Model
         'status',
         'imss_number',
         'rfc',
+        'curp',
         'bank_account',
         'bank_name',
         'bank_clabe',
