@@ -4,12 +4,11 @@
       <div class="col-sm-6">
         <script>
           document.write(new Date().getFullYear())
-        </script> © Softconnect_ERP
+        </script> © {{ config('app.name') }}
       </div>
       <div class="col-sm-6">
         <div class="text-sm-end d-none d-sm-block">
-          Desarrollado por <a href="https://jsarturo.netlify.app/" target="_blank">Arturo</a> y <a
-            href="https://cantun.com/" target="_blank">Bernabe</a>.
+          Desarrollado por <a href="https://cantun.com/" target="_blank">CANTUN SOLUTIONS DEVS</a>.
         </div>
       </div>
     </div>

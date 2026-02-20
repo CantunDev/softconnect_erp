@@ -50,23 +50,35 @@ class FetchDataController extends Controller
     //     $restaurants = BusinessRestaurants::with('restaurants')->where('business_id',$id)->get();
     //     return response()->json($restaurants);
     // }
-    public function getRestaurants(Request $request)
+  public function getRestaurants(Request $request)
     {
-        // Obtener los IDs de los negocios seleccionados
         $businessIds = $request->input('business_ids');
-
         // Validar que se hayan enviado IDs
         if (empty($businessIds)) {
             return response()->json([]);
         }
-
-        // Obtener los restaurantes asociados a los IDs de los negocios
-        $restaurants = BusinessRestaurants::with('restaurants')
-            ->whereIn('business_id', $businessIds)
-            ->get()
-            ->pluck('restaurants') // Extraer solo los restaurantes
-            ->filter(); // Eliminar valores nulos
-
+        // Verificar si "sin_empresa" está en los IDs
+        $hasSinEmpresa = in_array('sin_empresa', $businessIds);
+        // Filtrar solo IDs numéricos
+        $numericIds = array_filter($businessIds, function($id) {
+            return is_numeric($id);
+        });
+        $restaurants = collect();
+        // Si se selecciona "sin_empresa", obtener restaurantes que NO existen en business_restaurants
+        if ($hasSinEmpresa) {
+            $restaurantIds = BusinessRestaurants::pluck('restaurant_id')->toArray();
+            $restaurantsSinEmpresa = Restaurant::whereNotIn('id', $restaurantIds)->get();
+            $restaurants = $restaurants->merge($restaurantsSinEmpresa);
+        }
+        // Si hay IDs numéricos, obtener restaurantes de esas empresas
+        if (!empty($numericIds)) {
+            $restaurantosConEmpresa = BusinessRestaurants::with('restaurants')
+                ->whereIn('business_id', $numericIds)
+                ->get()
+                ->pluck('restaurants')
+                ->filter();
+            $restaurants = $restaurants->merge($restaurantosConEmpresa);
+        }
         return response()->json($restaurants);
     }
 
@@ -139,4 +151,5 @@ class FetchDataController extends Controller
                 ->make(true);
         } 
     }
+
 }

@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/subcategories/{id}', [FetchDataController::class, 'getSubcategories'])->name('subcategories.get');
         // Route::get('/restaurants/{id}', [FetchDataController::class, 'getRestaurants'])->name('restaurants.get');
         Route::post('/restaurants', [FetchDataController::class, 'getRestaurants'])->name('restaurants.get');
+        Route::get('/restaurants/bussiness/{businessId}', [FetchDataController::class, 'getByBusiness'])->name('restaurants.byBusiness');
         Route::get('roles/', [FetchDataController::class, 'getRoles'])->name('roles.get');
         Route::get('permissions/', [FetchDataController::class, 'getPermissions'])->name('permissions.get');
     });
