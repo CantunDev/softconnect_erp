@@ -55,6 +55,7 @@ class User extends Authenticatable
         ];
     }
 
+    protected $appends = ['full_name','avatar_url'];
     /**
      * Get the user's full name.
      *
@@ -65,6 +66,30 @@ class User extends Authenticatable
         return "{$this->name} {$this->lastname} {$this->surname}";
     }
 
+    public function getAvatarUrlAttribute()
+    {
+         if ($this->user_file) {
+            return asset('storage/' . $this->user_file);
+        }
+        $name = $this->full_name ?: 'User';
+        $initials = urlencode($name);
+
+        return "https://ui-avatars.com/api/?" . http_build_query([
+            'name'       => $this->full_name,
+            'background' => $this->status_color, //'random'
+            'color'      => 'fff',
+            'size'       => 128,
+            'bold'       => true,
+        ]);
+    }   
+
+    public function getStatusColorAttribute()
+    {
+        if ($this->trashed()) {
+            return '999999'; // gris
+        }
+        return '9F7AEA'; // azul
+    }
     /**
      * The business that belong to the User
      *

@@ -11,40 +11,36 @@ use Illuminate\Notifications\Notification;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-
+use App\Http\Requests\UserRequestStore;
+use App\Services\ImageService;
 class UsersController extends Controller
 {
+  public function __construct(protected ImageService $imageService){}
   /**
    * Display a listing of the resource.
    */
   public function index(Request $request)
   {
     if ($request->ajax()) {
-      $users = User::withTrashed();
+      $users = User::withTrashed()->with(['business', 'restaurants']);
       return DataTables::of($users)
         ->addIndexColumn()
         ->addColumn('user', function ($result) {
-          $imageUrl = $result->user_file ? !is_null($result->user_file) :
-            'https://avatar.oxro.io/avatar.svg?name=' . $result->fullname . '&caps=3&bold=true';
-          $data = '<div class="d-flex align-items-center">';
-          $data .= '<img src="' . $imageUrl . '" alt="" class="rounded-circle avatar-xs">';
-          $data .= '<div class="ms-3">';
-          $data .= '<h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">' . $result->fullname . '</a></h5>';
-          $data .= '<p class="text-muted mb-0">' . $result->email . '</p>';
-          $data .= '</div>';
-          $data .= '</div>';
+          return '
+                    <div class="d-flex align-items-center">
+                        <img src="' .($result->avatar_url) . '"
+                            class="rounded-circle avatar-xs me-2"
+                            alt="' . e($result->full_name) . '">
 
-          return $data;
+                        <div>
+                            <div class="fw-medium">' . e($result->full_name) . '</div>
+                            <small class="text-muted">' . e($result->email) . '</small>
+                        </div>
+                    </div>
+                ';
         })
-        ->addColumn('business', function ($result) {
-          return $result->business && $result->business->count() > 0
-            ? $result->business->count()
-            : 'Sin empresas';
-        })
-        ->addColumn('restaurants', function ($result) {
-          return $result->restaurants && $result->restaurants->count() > 0
-            ? $result->restaurants->count()
-            : 'Sin restaurantes';
+       ->addColumn('business', fn($result) => $result->business->count() ?: 'Sin empresas')
+       ->addColumn('restaurants', fn($result) => $result->restaurants->count() ?: 'Sin restaurantes')
 
           // if ($result->subtype?->isNotEmpty()) {
           //     $items = $result->subtype->map(function ($subtype) {
@@ -53,7 +49,6 @@ class UsersController extends Controller
           //     return '<ol>' . $items . '</ol>';
           // }
           // return 'Sin subtipos';
-        })
         ->addColumn('roles', function ($result) {
           $roleNames = $result->getRoleNames();
           if ($roleNames->isNotEmpty()) {
@@ -110,30 +105,20 @@ class UsersController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
-  {
-    // return $request->all();
-    $user = new User($request->all());
-    //  if ($request->has('photo_user')) {
-    //     $photo = $request->file('photo_user');
-    //      $avatar =  $user->email.'.'.$photo->getClientOriginalExtension();
-    //      $path = public_path('/assets/images/users/');
-    //      $photo_user = $path . $avatar;
-    //      Image::make($photo)->resize(150, 150)->save($photo_user);
-    // }
-    // $data = $request->validated();
+public function store(UserRequestStore $request)
+{
+    $validated = $request->validated();
+    $validated['password'] = bcrypt($validated['name'] . '2024');
 
-    // if ($request->hasFile('restuarnt_file') && $request->file('restuarnt_file')->isValid()) {
-    //     $imageName = Str::random(10) . '.' . $request->file('restuarnt_file')->getClientOriginalExtension();
-    //     $request->file('restuarnt_file')->storeAs('restaurant', $imageName);
-    //     $data['restuarnt_file'] = $imageName;
-    // }
-    $user->password = bcrypt($request->name . '2024');
-    $user->save();
-    // Notification::send($user, new UserNotification());
-    // Mail::to('cantunberna@gmail.com')->send(new CreateUserMail($user));
-    // Mail::to($user->email)->send(new CreateUserMail($user));
-    if ($request->has('busines_id')) {
+    if ($request->hasFile('user_file')) {
+        $validated['user_file'] = $this->imageService->save(
+        file:   $request->file('user_file'),
+        folder: 'users',
+        width:  400  
+      );
+    }
+    $user = User::create($validated);
+    if ($request->has('business_id')) {
       $user->business()->attach($request->business_id);
     }
     if ($request->has('restaurant_ids')) {
@@ -141,7 +126,7 @@ class UsersController extends Controller
       $user->restaurants()->attach($restaurantIds);
     }
     return redirect()->route('users.index');
-  }
+}
 
   /**
    * Display the specified resource.

@@ -21,8 +21,8 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('users.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
-                    <i class="bx bx-plus font-size-15"></i> Nueva usuario
+                <a href="{{ route('users.create') }}" class="btn btn-nexus-primary d-flex align-items-center gap-1">
+                    <i class="bx bx-plus font-size-15"></i> Nuevo usuario
                 </a>
             </div>
             <div class="table-responsive">

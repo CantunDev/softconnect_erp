@@ -2,25 +2,29 @@
   <div class="navbar-header">
     <div class="d-flex">
       <!-- LOGO -->
-      <!-- <div class="navbar-brand-box">
-        <a href="index.html" class="logo logo-dark">
-          <span class="logo-sm">
-            <img src="{{ asset('assets/images/softconnect_min.png') }}" alt="" height="22">
-          </span>
-          <span class="logo-lg">
-            <img src="{{ asset('assets/images/logo-dark.png') }}" alt="" height="17">
-          </span>
+      <div class="navbar-brand-box">
+        <a href="{{ route('dashboard') }}" class="logo logo-dark">
+            <span class="logo-sm">
+                <span style="font-size: 1.2rem; font-weight: 800; color: var(--accent-violet);">N</span>
+            </span>
+            <span class="logo-lg">
+                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">
+                    <span style="color: var(--accent-violet);">Nexus</span><span style="color: var(--text-primary);">Rest</span>
+                </span>
+            </span>
         </a>
 
-        <a href="index.html" class="logo logo-light">
-          <span class="logo-sm">
-          <img src="{{ asset('assets/images/softconnect_min.png') }}" alt="" height="22">
-          </span>
-          <span class="logo-lg">
-            <img src="{{ asset('assets/images/logo-light.png') }}" alt="" height="19">
-          </span>
+        <a href="{{ route('dashboard') }}" class="logo logo-light">
+            <span class="logo-sm">
+                <span style="font-size: 1.2rem; font-weight: 800; color: var(--accent-violet);">N</span>
+            </span>
+            <span class="logo-lg">
+                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">
+                    <span style="color: var(--accent-violet);">Nexus</span><span style="color: var(--accent-light);">Rest</span>
+                </span>
+            </span>
         </a>
-      </div> -->
+    </div>
 
       <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
         <i class="fa fa-fw fa-bars"></i>
@@ -336,9 +340,9 @@
               </div>
             </a>
             <a href="javascript: void(0);" class="text-reset notification-item">
-              <div class="d-flex">
+              <div class="d-flex align-items-right">
                 <img src="{{ asset('/skote/assets/images/users/avatar-3.jpg') }}"
-                  class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                  class="rounded-circle avatar-xs me-2" alt="user-pic">
                 <div class="flex-grow-1">
                   <h6 class="mb-1">James Lemire</h6>
                   <div class="font-size-12 text-muted">
@@ -391,13 +395,19 @@
       </div> --}}
 
       <div class="dropdown d-inline-block">
-        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
-          data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img class="rounded-circle header-profile-user" src="https://avatar.oxro.io/avatar.svg?name={{Auth::user()->fullname}}"
-            alt="Header Avatar">
-          <span class="d-none d-xl-inline-block ms-1" key="t-henry">{{ Auth::user()->name }}</span>
+        <button type="button" class="btn header-item waves-effect d-flex align-items-center" 
+          id="page-header-user-dropdown"
+          data-bs-toggle="dropdown" 
+          aria-haspopup="true" 
+          aria-expanded="false">
+
+          <img class="rounded-circle header-profile-user avatar-xs" 
+              src="{{ Auth::user()->avatar_url }}" 
+              alt="Header Avatar">
+
+          <span class="d-none d-xl-inline-block ms-1">{{ Auth::user()->name }}</span>
           <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
-        </button>
+      </button>
         <div class="dropdown-menu dropdown-menu-end">
           <!-- item-->
           <a class="dropdown-item" href="{{ route('profile.edit') }}"><i

@@ -2,7 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import 'bootstrap-icons/font/bootstrap-icons.css';
-@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";
-@import 'datatables.net-select-bs5/css/select.bootstrap5.css'; */
+:root {
+    --primary-dark: #0A0F1F;
+    --secondary-dark: #1A1F33;
+    --primary-blue: #4A6FA5;
+    --primary-hover: #5D5FEF;
+    --accent-violet: #9F7AEA;
+    --accent-light: #B794F4;
+    --text-primary: #E0E0E0;
+    --text-secondary: #A0A0A0;
+    --error-color: #FF6B6B;
+    --success-color: #51D0A0;
+    --border-color: rgba(159, 122, 234, 0.2);
+}
+
+.btn-nexus-primary {
+    background-color: var(--primary-blue);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.btn-nexus-secondary {
+    background-color: var(--primary-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.btn-nexus:hover {
+    background-color: var(--primary-hover);
+    color: #fff;
+    border-color: var(--accent-violet);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(93, 95, 239, 0.3);
+}

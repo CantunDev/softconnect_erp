@@ -8,6 +8,7 @@
         "php": "^8.2",
         "ext-pdo_sqlsrv": "*",
         "doctrine/dbal": "^4.2",
+        "intervention/image-laravel": "^1.5",
         "laravel-lang/common": "^6.4",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.2",

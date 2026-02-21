@@ -389,7 +389,7 @@
                     <label for="inputEmail" class="form-label">Correo electrónico</label>
                     <input type="email" name="email" id="inputEmail"
                         class="form-control text-lowercase @error('email') is-invalid @enderror"
-                        placeholder="softconnect_erp@mail.com" value="{{ old('email') }}">
+                        placeholder="mail@mail.com" value="{{ old('email') }}">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -473,7 +473,8 @@
         </div>
     </div>
     </form>
-
+@endsection
+@section('js')
     <script>
         // Avatar Preview
         function previewImage(event) {
@@ -494,8 +495,6 @@
             document.getElementById('inputLogo').click();
         });
     </script>
-@endsection
-@section('js')
     <script>
         $(document).ready(function() {
             if ($.fn.selectpicker) {
@@ -596,5 +595,95 @@
                 .appendTo('#create_users');
             this.submit();
         });
+    </script>
+   <script>
+    const rules = {
+        name:     { minLength: 3, onlyLetters: true, label: 'El nombre' },
+        lastname: { minLength: 3, onlyLetters: true, label: 'El apellido paterno' },
+        surname:  { minLength: 3, onlyLetters: true, label: 'El apellido materno' },
+        phone:    { digits: 10,   label: 'El teléfono' },
+        email:    { isEmail: true, label: 'El correo' },
+    };
+
+    const lettersRegex   = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    const digitsRegex    = /^\d+$/;
+    const emailRegex     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validate(fieldName, value) {
+        const rule = rules[fieldName];
+        if (!rule) return null;
+
+        if (!value || value.trim() === '') return `${rule.label} es requerido`;
+
+        if (rule.onlyLetters && !lettersRegex.test(value))
+            return `${rule.label} solo puede contener letras`;
+
+        if (rule.minLength && value.trim().length < rule.minLength)
+            return `${rule.label} debe tener al menos ${rule.minLength} caracteres`;
+
+        if (rule.digits) {
+            if (!digitsRegex.test(value))  return `${rule.label} solo puede contener números`;
+            if (value.length !== rule.digits) return `${rule.label} debe tener exactamente ${rule.digits} dígitos`;
+        }
+
+        if (rule.isEmail && !emailRegex.test(value))
+            return `${rule.label} no tiene un formato válido`;
+
+        return null; // sin error
+    }
+
+    function showError(input, message) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+
+        let feedback = input.nextElementSibling;
+        if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+            feedback = document.createElement('div');
+            feedback.classList.add('invalid-feedback');
+            input.insertAdjacentElement('afterend', feedback);
+        }
+        feedback.textContent = message;
+    }
+
+    function showSuccess(input) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+
+        const feedback = input.nextElementSibling;
+        if (feedback && feedback.classList.contains('invalid-feedback')) {
+            feedback.textContent = '';
+        }
+    }
+
+    // Escuchar eventos en tiempo real
+    Object.keys(rules).forEach(fieldName => {
+        const input = document.querySelector(`[name="${fieldName}"]`);
+        if (!input) return;
+
+        // Bloquear números en campos de texto en tiempo real
+        if (rules[fieldName].onlyLetters) {
+            input.addEventListener('keypress', function(e) {
+                if (/\d/.test(e.key)) e.preventDefault();
+            });
+        }
+
+        // Bloquear letras en teléfono en tiempo real
+        if (rules[fieldName].digits) {
+            input.addEventListener('keypress', function(e) {
+                if (!/\d/.test(e.key)) e.preventDefault();
+            });
+        }
+
+        input.addEventListener('input', function() {
+            const error = validate(fieldName, this.value);
+            error ? showError(this, error) : showSuccess(this);
+        });
+
+        input.addEventListener('blur', function() {
+            const error = validate(fieldName, this.value);
+            error ? showError(this, error) : showSuccess(this);
+        });
+    });
+
     </script>
 @endsection

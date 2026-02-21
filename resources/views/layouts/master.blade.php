@@ -39,7 +39,7 @@
 
     <!-- App CSS -->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-    @vite(['resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body[data-sidebar=dark] .navbar-brand-box {
             background: #01081d;
