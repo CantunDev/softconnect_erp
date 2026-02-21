@@ -14,29 +14,23 @@
 
     <!-- Bootstrap CSS -->
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
-
     <!-- Icons CSS -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-
     <!-- DataTables CSS -->
     <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
         type="text/css" />
     <link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
-
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
     <!-- Bootstrap Select CSS (compatible con Bootstrap 5) -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-
     <!-- Bootstrap TouchSpin CSS -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/4.5.0/jquery.bootstrap-touchspin.css"
         integrity="sha512-zU+NsCDkOTnkeNKLLQq1dM4Ejiel2O23ZuuE2amJA0g8aLZyE3sEds8L5lzjh3va2fP8CMVHKirev2d0S4aT9g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <!-- App CSS -->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])

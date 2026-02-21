@@ -1,12 +1,13 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
+// tailwind.config.js
 export default {
+    corePlugins: {
+        preflight: false, // ← desactiva el reset de Tailwind
+    },
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
-
     theme: {
         extend: {
             colors: {
@@ -25,10 +26,9 @@ export default {
                 'nexus': 'var(--border-color)',
             },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Figtree'],
             },
         },
     },
-
-    plugins: [forms],
+    plugins: [],
 };

@@ -17,7 +17,7 @@
                             </div>
                             <div class="position-relative" style="z-index: 1;">
 
-                                <img src="https://avatar.oxro.io/avatar.svg?name={{ Auth::user()->fullname }}"
+                                <img src="{{ Auth::user()->avatar_url }}"
                                     alt="" class="avatar-md rounded-circle img-thumbnail d-block mx-auto mb-2">
                                 <div class="text-muted">
                                     <h5 id="greeting-text" class="mb-1">{{ Auth::user()->fullname }}</h5>
