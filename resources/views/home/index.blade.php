@@ -2,67 +2,76 @@
 @section('title')
     Dashboard |
 @endsection
-
 @section('content')
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row ">
-                        <div class="col-xl-2 d-flex justify-content-center align-items-center">
-                            <div class="mt-4 text-center">
-                                <img src="{{ $restaurant->restaurant_file ? asset($restaurant->restaurant_file) : 'https://avatar.oxro.io/avatar.svg?name=' . urlencode($restaurant->name) . '&background=' . ltrim($restaurant->color_primary, '#') . '&color=' . ltrim($restaurant->color_accent, '#') }}"
-                                    alt="{{ $restaurant->name }}"
-                                    class="avatar-lg rounded-circle img-thumbnail mx-auto d-block">
-                            </div>
-                        </div>
-                        <div class="col-xl-10">
-                            <div class="row text-center">
-                                <div class="col-xl-3">
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-1">INICIO MES</p>
-                                        <h5>{{ $startOfMonth }}</h5>
-                                    </div>
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-1">TERMINO MES</p>
-                                        <h5>{{ $endOfMonth }}</h5>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3">
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-1">MES</p>
-                                        <h5 class="text-uppercase">{{ $month }} </h5>
-                                    </div>
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-1">TOTAL DIAS</p>
-                                        <h5>{{ $daysInMonth }} </h5>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3">
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-1">DIAS</p>
-                                        <h5>{{ $daysPass }} </h5>
-                                    </div>
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-1">% ALCANCE</p>
-                                        <h5 class="percentage">{{ $rangeMonth }}</h5>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3">
-                                    <div class="mt-4">
-                                        <img src="{{ Auth::user()->business->first()->business_file ?? 'https://avatar.oxro.io/avatar.svg?name=' . urlencode(Auth::user()->business->first()->business_name) }}"
-                                            alt="" class="avatar-lg rounded-circle d-block mx-auto">
-                                        {{-- <span>{{ Auth::user()->business->pluck('business_name')[0] ?? '' }}</span> --}}
+    <x-date-component/>
+   {{-- Selector de mes/año --}}
+{{-- Selector de período --}}
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body py-2">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <label class="mb-0 fw-medium">Período:</label>
+
+                    {{-- Mes --}}
+                    <select id="sel-month" class="form-select form-select-sm w-auto">
+                        @foreach(range(1, 12) as $m)
+                            <option value="{{ $m }}" {{ $m == now()->month ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->isoFormat('MMMM') }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    {{-- Año --}}
+                    <select id="sel-year" class="form-select form-select-sm w-auto">
+                        @foreach(range(now()->year - 2, now()->year) as $y)
+                            <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>{{ $y }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="text-muted fw-medium">ó rango personalizado:</span>
+
+                    {{-- Start Date --}}
+                    <div class="input-group input-group-sm w-auto">
+                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+                        <input type="text" id="start-date" class="form-control form-control-sm"
+                               placeholder="Desde" style="width:130px;" autocomplete="off">
                     </div>
+
+                    <span class="text-muted">—</span>
+
+                    {{-- End Date --}}
+                    <div class="input-group input-group-sm w-auto">
+                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+                        <input type="text" id="end-date" class="form-control form-control-sm"
+                               placeholder="Hasta" style="width:130px;" autocomplete="off">
+                    </div>
+
+                    {{-- Botón Filtrar --}}
+                    <button id="btn-filter" class="btn btn-sm btn-primary">
+                        <i class="bx bx-filter-alt me-1"></i>Filtrar
+                    </button>
+
+                    {{-- Botón Limpiar rango --}}
+                    <button id="btn-clear-range" class="btn btn-sm btn-outline-secondary d-none">
+                        <i class="bx bx-x me-1"></i>Limpiar rango
+                    </button>
+
+                    <span id="loading-indicator" class="spinner-border spinner-border-sm text-primary d-none" role="status"></span>
+                </div>
+
+                {{-- Indicador de modo activo --}}
+                <div class="mt-2">
+                    <small id="filter-mode-label" class="text-muted">
+                        <i class="bx bx-info-circle me-1"></i>
+                        Filtrando por: <strong id="filter-mode-text">{{ now()->isoFormat('MMMM YYYY') }}</strong>
+                    </small>
                 </div>
             </div>
         </div>
     </div>
+</div>
     <!-- end row -->
     <div class="row">
         <div class="col-lg-12">
@@ -89,7 +98,7 @@
                             <div class="row">
                                 <div class="table-rep-plugin mt-2 ">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="datatable"
+                                        <table id="datatable_ventas"
                                             class="table table-sm table-bordered dt-responsive nowrap w-100">
                                             <thead
                                                 style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}">
@@ -106,22 +115,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($cortes as $corte)
-                                                    <tr>
-                                                        <td>
-                                                            {{ ucfirst(\Carbon\Carbon::parse($corte->dia)->isoFormat('ddd')) }}
-                                                            {{ \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM') }}
-                                                        </td>
-                                                        <td class="text-center">{{ $corte->total_clientes }}</td>
-                                                        <td class="price">{{ $corte->total_venta }}</td>
-                                                        <td class="price">{{ $corte->total_iva }}</td>
-                                                        <td class="price">{{ $corte->total_subtotal }}</td>
-                                                        <td class="price">{{ $corte->total_efectivo }}</td>
-                                                        <td class="price">{{ $corte->total_propina }}</td>
-                                                        <td class="price">{{ $corte->total_tarjeta }}</td>
-                                                        <td class="price">{{ $corte->total_descuento }}</td>
-                                                    </tr>
-                                                @endforeach
+                                                @include('home.partials._rows-ventas')
                                             </tbody>
                                         </table>
                                     </div>
@@ -161,7 +155,7 @@
                             <div class="row">
                                 <div class="table-rep-plugin mt-2 ">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="datatable"
+                                        <table id="datatable_food_drink"
                                             class="table table-sm table-bordered dt-responsive nowrap w-100">
                                             <thead
                                                 style="background-color: {{ $restaurant->color_secondary ?? '' }}; color: {{ $restaurant->color_accent ?? '' }}">
@@ -176,20 +170,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($cortes as $corte)
-                                                    <tr>
-                                                        <td>
-                                                            {{ ucfirst(\Carbon\Carbon::parse($corte->dia)->isoFormat('ddd')) }}
-                                                            {{ \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM') }}
-                                                        </td>
-                                                        <td class="price text-center">{{ $alimentos = $corte->total_alimentos }}</td>
-                                                        <td class="price text-center">{{ $corte->total_dalimentos }}</td>
-                                                        <td class="percentage text-center">{{ round((($alimentos * 100) / $corte->total_venta),2) }}</td>
-                                                        <td class="price text-center">{{ $bebidas = $corte->total_bebidas }}</td>
-                                                        <td class="price text-center">{{ $corte->total_dbebidas}}</td>
-                                                        <td class="percentage text-center">{{ round((($bebidas * 100) / $corte->total_venta),2) }}</td>
-                                                    </tr>
-                                                @endforeach
+                                                @include('home.partials._rows-food-drink')
                                             </tbody>
                                         </table>
                                     </div>
@@ -243,20 +224,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($cortes as $corte)
-                                                    <tr>
-                                                        <td>
-                                                            {{ ucfirst(\Carbon\Carbon::parse($corte->dia)->isoFormat('ddd')) }}
-                                                            {{ \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM') }}
-                                                        </td>
-                                                        <td class="text-center">{{ $corte->total_cuentas }}</td>
-                                                        <td class="text-center">{{ $corte->total_clientes }}</td>
-                                                        <td class="text-center price">
-                                                            {{ round($corte->total_venta / $corte->total_clientes, 2) }}
-                                                        </td>
-                                                        {{-- <td class="text-center">{{ round($corte->total_cuentas / $corte->total_clientes,2) }}</td> --}}
-                                                    </tr>
-                                                @endforeach
+                                                    @include('home.partials._rows-clientes')
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -273,393 +242,275 @@
     </div>
 @endsection
 @section('js')
-<script>
- $(document).ready(function () {
-        $('#table_clientes').DataTable();
-    });
-</script>
-<script>
-    var chartData = {
-        days: @json($days), // Días del mes
-        days_total: @json($days_total), // Totales de alimentos por día
-        projection_day: @json($projections_total), // Meta de ventas por día
-        projection_avg: @json($projections_avg) // Promedio de ventas por día
-    };
-
-    // Asegurar que el color primario esté limpio sin #
-    var primaryColor = @json($restaurant->color_primary) ? "#{{ ltrim($restaurant->color_primary, '#') }}" : "#C62300";
-
-    // Definir colores de los marcadores según las condiciones
-    var discreteMarkers = chartData.days_total.map((ventaReal, index) => {
-        let metaDiaria = chartData.projection_day[index] || 0;
-        let promedioDiario = chartData.projection_avg[index] || 0;
-        let color = "#00ff00"; // Verde (si supera la meta)
-
-        if (ventaReal < metaDiaria && ventaReal >= promedioDiario) {
-            color = "#FFA500"; // Naranja (si está debajo de la meta pero sobre el promedio)
-        } else if (ventaReal < promedioDiario) {
-            color = "#FF0000"; // Rojo (si está debajo del promedio)
-        }
-
-        return {
-            seriesIndex: 0, // Índice de la serie "Venta Real"
-            dataPointIndex: index, // Índice del punto de datos
-            fillColor: color, // Color del marcador
-            strokeColor: "#000000", // Borde del marcador (opcional)
-            size: 6 // Tamaño del marcador
-        };
-    });
-
-    var options = {
-        chart: {
-            type: 'line',
-            height: 350,
-            zoom: { enabled: true },
-            toolbar: { show: true }
-        },
-        tooltip: {
-            theme: 'dark'
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 10,
-                dataLabels: { position: 'top' },
-                distributed: true
-            }
-        },
-        colors: [primaryColor, '#56021F', '#003092'],
-        dataLabels: {
-            enabled: true,
-            formatter: function(val) {
-                return new Intl.NumberFormat('es-MX', {
-                    style: 'currency',
-                    currency: 'MXN'
-                }).format(val);
-            },
-            offsetY: -10,
-            style: {
-                fontSize: '12px',
-                colors: [primaryColor]
-            },
-            background: { enabled: false }
-        },
-        stroke: {
-            width: [5, 2, 2],
-            curve: ['straight', 'monotoneCubic',]
-        },
-        series: [
-            {
-                name: 'Venta Real',
-                data: chartData.days_total 
-            },
-            {
-                name: "Meta Vta Diaria",
-                data: chartData.projection_day
-            },
-        ],
-        xaxis: {
-            categories: chartData.days,
-            axisBorder: { show: true },
-            tooltip: { enabled: true }
-        },
-        yaxis: {
-            axisBorder: { show: true }
-        },
-        title: {
-            text: 'Ventas de Restaurante',
-            floating: true,
-            offsetY: 330,
-            align: 'center',
-            style: { color: primaryColor }
-        },
-        markers: {
-            size: [0,5, 1, 1], // Tamaño base de los marcadores
-            discrete: discreteMarkers // Se asignan colores individuales,
-        },
-        legend: { show: false }
-    };
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
-</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
 <script>
-    var chartData = {
-        days: @json($days),
-        days_total_food: @json($days_total_food),
-        days_total_drink: @json($days_total_drink)
-    };
-    var primaryColor = @json($restaurant->color_primary) ? "#{{ ltrim($restaurant->color_primary, '#') }}" : "#F14A00"; // Si está vacío, usa color de respaldo
-    var secondaryColor = @json($restaurant->color_secondary) ? "#{{ ltrim($restaurant->color_secondary, '#') }}" : "#006A67"; // Si está vacío, usa color de respaldo
+    // ── Variables globales de charts ──────────────────────────────
+    var chartVentas    = null;
+    var chartFoodDrink = null;
+    var chartClientes  = null;
 
-    var options = {
-        series: [{
-                name: "Alimentos",
-                data: chartData.days_total_food
-            },
-            {
-                name: "Bebidas",
-                data: chartData.days_total_drink
-            }
-        ],
-        chart: {
+    // ── Colores globales ──────────────────────────────────────────
+    var primaryColor   = @json($restaurant->color_primary)   ? "#{{ ltrim($restaurant->color_primary, '#') }}"   : "#C62300";
+    var secondaryColor = @json($restaurant->color_secondary) ? "#{{ ltrim($restaurant->color_secondary, '#') }}" : "#006A67";
 
-            height: 350,
-            type: 'line',
-            dropShadow: {
+    // ── Función global renderCharts ───────────────────────────────
+    function renderCharts(data, primaryColor, secondaryColor) {
+
+        // Destruir instancias anteriores
+        if (chartVentas)    { chartVentas.destroy();    chartVentas    = null; document.querySelector("#chart").innerHTML = ''; }
+        if (chartFoodDrink) { chartFoodDrink.destroy(); chartFoodDrink = null; document.querySelector("#food_drink_line").innerHTML = ''; }
+        if (chartClientes)  { chartClientes.destroy();  chartClientes  = null; document.querySelector("#client_ticket").innerHTML = ''; }
+
+        // ── Markers Ventas ────────────────────────────────────────
+        var discreteVentas = data.days_total.map((val, index) => {
+            let meta = data.projections_total[index] || 0;
+            let avg  = data.projections_avg[index]   || 0;
+            let color = '#00ff00';
+            if (val < meta && val >= avg) color = '#FFA500';
+            else if (val < avg)           color = '#FF0000';
+            return { seriesIndex: 0, dataPointIndex: index, fillColor: color, strokeColor: '#000000', size: 6 };
+        });
+
+        // ── Chart Ventas ──────────────────────────────────────────
+        chartVentas = new ApexCharts(document.querySelector("#chart"), {
+            chart: { type: 'line', height: 350, zoom: { enabled: true }, toolbar: { show: true } },
+            tooltip: { theme: 'dark' },
+            plotOptions: { bar: { borderRadius: 10, dataLabels: { position: 'top' }, distributed: true } },
+            colors: [primaryColor, '#56021F', '#003092'],
+            dataLabels: {
                 enabled: true,
-                color: '#0000',
-                top: 18,
-                left: 7,
-                blur: 10,
-                opacity: 0.5
+                formatter: val => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(val),
+                offsetY: -10,
+                style: { fontSize: '12px', colors: [primaryColor] },
+                background: { enabled: false }
             },
+            stroke: { width: [5, 2, 2], curve: ['straight', 'monotoneCubic'] },
+            series: [
+                { name: 'Venta Real',      data: data.days_total },
+                { name: 'Meta Vta Diaria', data: data.projections_total }
+            ],
+            xaxis: { categories: data.daysInMonth, axisBorder: { show: true }, tooltip: { enabled: true } },
+            yaxis: { axisBorder: { show: true } },
+            title: { text: 'Ventas de Restaurante', floating: true, offsetY: 330, align: 'center', style: { color: primaryColor } },
+            markers: { size: [0, 5, 1, 1], discrete: discreteVentas },
+            legend: { show: false }
+        });
+        chartVentas.render();
 
-            zoom: {
-                enabled: true
+        // ── Chart Alimentos/Bebidas ───────────────────────────────
+        chartFoodDrink = new ApexCharts(document.querySelector("#food_drink_line"), {
+            series: [
+                { name: 'Alimentos', data: data.days_total_food },
+                { name: 'Bebidas',   data: data.days_total_drink }
+            ],
+            chart: {
+                height: 350, type: 'line',
+                dropShadow: { enabled: true, color: '#0000', top: 18, left: 7, blur: 10, opacity: 0.5 },
+                zoom: { enabled: true }, toolbar: { show: true }
             },
-            toolbar: {
-                show: true
-            }
-        },
-        tooltip: {
-            theme: 'dark' // Cambia el tema del tooltip a oscuro, el texto será blanco automáticamente
-        },
-        colors: [primaryColor, secondaryColor],
-        dataLabels: {
-            enabled: true,
-            formatter: function(val, opt) {
-                var Formatter = new Intl.NumberFormat('es-MX', {
-                    style: 'currency',
-                    currency: 'MXN'
-                });
-                return Formatter.format(val);
+            tooltip: { theme: 'dark' },
+            colors: [primaryColor, secondaryColor],
+            dataLabels: {
+                enabled: true,
+                formatter: val => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(val),
+                background: { enabled: false }
             },
-            background: {
-                enabled: false // Desactiva el fondo de los dataLabels
-            }
-        },
-        stroke: {
-            curve: 'smooth'
-        },
-        markers: {
-            size: 0,
-            colors: undefined,
-            strokeColors: '#fff',
-            strokeWidth: 2,
-            strokeOpacity: 0.9,
-            strokeDashArray: 0,
-            fillOpacity: 1,
-            discrete: [],
-            shape: "circle",
-            offsetX: 0,
-            offsetY: 0,
-            onClick: undefined,
-            onDblClick: undefined,
-            showNullDataPoints: true,
-            hover: {
-                size: undefined,
-                sizeOffset: 3
-            }
+            stroke: { curve: 'smooth' },
+            grid: { borderColor: '#e7e7e7', row: { opacity: 0.5 } },
+            markers: { size: 1 },
+            xaxis: { categories: data.daysInMonth },
+            legend: { position: 'top', horizontalAlign: 'right', floating: true, offsetY: -25, offsetX: -5 }
+        });
+        chartFoodDrink.render();
 
-        },
-        // title: {
-        //   text: 'Average High & Low Temperature',
-        //   align: 'left'
-        // },
-        grid: {
-            borderColor: '#e7e7e7',
-            row: {
-                // colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                opacity: 0.5
+        // ── Markers Clientes ──────────────────────────────────────
+        var discreteClientes = data.days_total_ticket.map((val, index) => {
+            let meta = data.projections_check[index]     || 0;
+            let avg  = data.projections_check_avg[index] || 0;
+            let color = '#00ff00';
+            if (val < meta && val >= avg) color = '#FFA500';
+            else if (val < avg)           color = '#FF0000';
+            return { seriesIndex: 1, dataPointIndex: index, fillColor: color, strokeColor: '#000000', size: 6 };
+        });
+
+        // ── Chart Clientes/Ticket ─────────────────────────────────
+        chartClientes = new ApexCharts(document.querySelector("#client_ticket"), {
+            chart: { height: 350, type: 'line', stacked: false },
+            colors: [primaryColor, secondaryColor, '#56021F', '#003092'],
+            series: [
+                { name: 'Clientes',     type: 'column', data: data.days_total_client },
+                { name: 'Tkt Promedio', type: 'line',   data: data.days_total_ticket },
+                { name: 'Meta Tkt Pro', type: 'line',   data: data.projections_check },
+                { name: 'Tkt Pro',      type: 'line',   data: data.projections_check_avg }
+            ],
+            stroke: { width: [0, 5, 2, 2], curve: ['straight', 'monotoneCubic', 'straight'] },
+            markers: { size: [1, 5, 1, 1], discrete: discreteClientes },
+            plotOptions: { bar: { columnWidth: '40%' } },
+            xaxis: { categories: data.daysInMonth, title: { text: 'Días' } },
+            yaxis: [
+                {
+                    seriesName: 'Clientes',
+                    axisTicks: { show: true },
+                    axisBorder: { show: true },
+                    labels: { formatter: v => Math.round(v) }
+                },
+                {
+                    opposite: true,
+                    seriesName: 'Tkt Promedio',
+                    labels: { formatter: v => '$' + v.toFixed(2) }
+                }
+            ],
+            tooltip: {
+                shared: true, intersect: false,
+                y: {
+                    formatter: (v, { seriesIndex }) => seriesIndex === 0
+                        ? v + ' clientes'
+                        : '$' + v.toFixed(2)
+                }
             },
-        },
-        markers: {
-            size: 1
-        },
-        xaxis: {
-            categories: chartData.days,
-            //  title: {
-            //  text: ''
-            //  }
-        },
-        yaxis: {
-            // title: {
-            //   text: 'Temperature'
-            // },
-            // min: 5,
-            // max: 40
-        },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'right',
-            floating: true,
-            offsetY: -25,
-            offsetX: -5
-        }
+            legend: { show: false }
+        });
+        chartClientes.render();
+    }
+
+    // ── Render inicial con datos de Blade ─────────────────────────
+    var initialData = {
+        daysInMonth:           @json($daysInMonth),
+        days_total:            @json($days_total),
+        days_total_food:       @json($days_total_food),
+        days_total_drink:      @json($days_total_drink),
+        days_total_client:     @json($days_total_client),
+        days_total_ticket:     @json($days_total_ticket),
+        projections_total:     @json($projections_total),
+        projections_avg:       @json($projections_avg),
+        projections_check:     @json($projections_check),
+        projections_check_avg: @json($projections_check_avg),
     };
 
-    var chart = new ApexCharts(document.querySelector("#food_drink_line"), options);
-    chart.render();
+    renderCharts(initialData, primaryColor, secondaryColor);
 </script>
+
 <script>
-    var chartData = {
-        days: @json($days),
-        days_total_client: @json($days_total_client), // Clientes por día
-        days_total_ticket: @json($days_total_ticket), // Ticket promedio por día
-        days_total_check: @json($projections_check),
-        days_total_avg_check: @json($projections_check_avg)
-    };
-    var primaryColor = @json($restaurant->color_primary) ? "#{{ ltrim($restaurant->color_primary, '#') }}" : "#F14A00"; // Si está vacío, usa color de respaldo
-    var secondaryColor = @json($restaurant->color_secondary) ? "#{{ ltrim($restaurant->color_secondary, '#') }}" : "#006A67"; // Si está vacío, usa color de respaldo
-   
-    var discreteMarkers = chartData.days_total_ticket.map((tktPromedio, index) => {
-        let metaDiaria = chartData.days_total_check[index] || 0;
-        let promedioDiario = chartData.days_total_avg_check[index] || 0;
-        let color = "#00ff00"; // Verde (si supera la meta)
-        console.log(`Index ${index}:`, {
-        tktPromedio,
-        metaDiaria,
-        promedioDiario
+$(document).ready(function () {
+
+    // ── Flatpickr ─────────────────────────────────────────────────
+    var fpStart = flatpickr("#start-date", {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        disableMobile: true,
+        onChange: function(selectedDates, dateStr) {
+            fpEnd.set('minDate', dateStr);
+            syncModeIndicator();
+        }
     });
 
-        if (tktPromedio < metaDiaria && tktPromedio >= promedioDiario) {
-            color = "#FFA500"; // Naranja (si está debajo de la meta pero sobre el promedio)
-        } else if (tktPromedio < promedioDiario) {
-            color = "#FF0000"; // Rojo (si está debajo del promedio)
+    var fpEnd = flatpickr("#end-date", {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        disableMobile: true,
+        onChange: function(selectedDates, dateStr) {
+            fpStart.set('maxDate', dateStr);
+            syncModeIndicator();
         }
-        console.log(`Color asignado en index ${index}:`, color);
-
-        return {
-            seriesIndex: 1, // Índice de la serie "Venta Real"
-            dataPointIndex: index, // Índice del punto de datos
-            fillColor: color, // Color del marcador
-            strokeColor: "#000000", // Borde del marcador (opcional)
-            size: 6 // Tamaño del marcador
-        };
     });
 
-    var options = {
-        chart: {
-            height: 350,
-            type: "line",
-            stacked: false
+    // ── Limpiar rango al cambiar mes/año ──────────────────────────
+    $('#sel-month, #sel-year').on('change', function () {
+        fpStart.clear();
+        fpEnd.clear();
+        fpStart.set('maxDate', null);
+        fpEnd.set('minDate', null);
+        syncModeIndicator();
+    });
 
-        },
-        zoom: {
-            enabled: true, // Habilitar zoom
-            type: 'x', // Zoom solo en el eje X
-            autoScaleYaxis: true // Ajustar automáticamente el eje Y al hacer zoom
-        },
-        toolbar: {
-            tools: {
-                zoom: true,
-                zoomin: true,
-                zoomout: true,
-                reset: true // Botón para restablecer
-            },
-            autoSelected: 'zoom' // Configura zoom como la herramienta inicial
-        },
-        colors: [primaryColor, secondaryColor, '#56021F', '#003092'], // Agregar un color extra
-        series: [
-            {
-                 name: 'Clientes',
-             type: 'column',
-                 data: chartData.days_total_client
-            },
-            {
-                name: "Tkt Promedio",
-                type: 'line',
-                data: chartData.days_total_ticket
-            },
-            {
-                name: "Meta Tkt Pro",
-                type: 'line',
-                data: chartData.days_total_check
-            },
-            {
-                name: "Tkt Pro",
-                type: 'line',
-                data: chartData.days_total_avg_check
-            },
-        ],
-        stroke: {
-            width: [0,5,2,2], // Grosor: columna no tiene borde, línea tiene grosor 4
-            curve: ['straight', 'monotoneCubic', 'straight']
-        },
-        markers: {
-            size: [1,5, 1, 1], // Tamaño base de los marcadores
-            discrete: discreteMarkers // Se asignan colores individuales,
-        },
-        plotOptions: {
-            bar: {
-                columnWidth: "40%"
-            }
-        },
-        xaxis: {
-            categories: chartData.days,
-            title: {
-                text: "Días"
-            }
-        },
-        yaxis: [{
-                seriesName: 'Clientes',
-                axisTicks: {
-                    show: true
-                },
-                axisBorder: {
-                    show: true,
-                },
-                // title: {
-                //     text: "Clientes"
-                // },
-                labels: {
-                    formatter: function(value) {
-                        return Math.round(value); // Redondea los valores
-                    }
-                }
-            },
-            {
-                opposite: true,
-                seriesName: 'Ticket promedio',
+    // ── Indicador de modo activo ──────────────────────────────────
+    function syncModeIndicator() {
+        var startVal = $('#start-date').val();
+        var endVal   = $('#end-date').val();
+        var hasRange = startVal && endVal;
 
-                // title: {
-                //     text: "Ticket Promedio"
-                // },
-                labels: {
-                    formatter: function(value) {
-                        return "$" + value.toFixed(2); // Formato de moneda
-                    }
-                }
-            }
-        ],
-        tooltip: {
-            shared: true, // Mostrar ambos valores al pasar el cursor
-            intersect: false, // Evitar intersección
-            y: {
-                formatter: function(value, {
-                    seriesIndex,
-                    dataPointIndex,
-                    w
-                }) {
-                    if (seriesIndex === 0) {
-                        return value + " clientes"; // Tooltip para clientes
-                    } else {
-                        return "$" + value.toFixed(2); // Tooltip para ticket promedio
-                    }
-                }
-            },
-
-        },
-
-        legend: {
-            show: false,
+        if (hasRange) {
+            $('#filter-mode-text').text(startVal + ' al ' + endVal);
+            $('#btn-clear-range').removeClass('d-none');
+            $('#sel-month, #sel-year').addClass('opacity-50').prop('disabled', true);
+        } else {
+            var month = $('#sel-month option:selected').text();
+            var year  = $('#sel-year').val();
+            $('#filter-mode-text').text(month + ' ' + year);
+            $('#btn-clear-range').addClass('d-none');
+            $('#sel-month, #sel-year').removeClass('opacity-50').prop('disabled', false);
         }
-    };
+    }
 
-    var chart = new ApexCharts(document.querySelector("#client_ticket"), options);
+    // ── Limpiar rango ─────────────────────────────────────────────
+    $('#btn-clear-range').on('click', function () {
+        fpStart.clear();
+        fpEnd.clear();
+        fpStart.set('maxDate', null);
+        fpEnd.set('minDate', null);
+        syncModeIndicator();
+    });
 
-    chart.render();
+    // ── Filtrar ───────────────────────────────────────────────────
+    $('#btn-filter').on('click', function () {
+        var startVal = $('#start-date').val();
+        var endVal   = $('#end-date').val();
+        var hasRange = startVal && endVal;
+
+        if ((startVal && !endVal) || (!startVal && endVal)) {
+            alert('Por favor selecciona tanto la fecha inicio como la fecha fin.');
+            return;
+        }
+
+        var payload = hasRange
+            ? { start_date: startVal, end_date: endVal }
+            : { month: $('#sel-month').val(), year: $('#sel-year').val() };
+
+        $('#loading-indicator').removeClass('d-none');
+        $('#btn-filter').prop('disabled', true);
+
+        $.ajax({
+            url: @if($restaurant->business_id)
+                    '{{ route("business.restaurants.home.filter", [
+                        "business"     => $restaurant->business->slug,
+                        "restaurants"  => $restaurant->slug
+                    ]) }}'
+                @else
+                    '{{ route("restaurants.independent.home.filter", [
+                        "restaurant" => $restaurant->slug
+                    ]) }}'
+                @endif,
+            method: 'GET',
+            data: payload,
+            success: function (response) {
+                $('#datatable_ventas tbody').html(response.rowsVentas);
+                $('#datatable_food_drink tbody').html(response.rowsFoodDrink);
+                $('#table_clientes tbody').html(response.rowsClientes);
+
+                try {
+                    renderCharts(response, primaryColor, secondaryColor);
+                } catch (e) {
+                    console.error('Error al renderizar charts:', e);
+                }
+
+                syncModeIndicator();
+            },
+            error: function (xhr) {
+                console.error('Error:', xhr.responseJSON?.message ?? xhr.responseText);
+                alert('Error al cargar los datos: ' + (xhr.responseJSON?.message ?? 'Intenta de nuevo.'));
+            },
+            complete: function () {
+                $('#loading-indicator').addClass('d-none');
+                $('#btn-filter').prop('disabled', false);
+            }
+        });
+    });
+
+    // Estado inicial
+    syncModeIndicator();
+});
 </script>
-
 @endsection

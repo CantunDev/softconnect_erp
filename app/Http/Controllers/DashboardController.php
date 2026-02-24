@@ -30,7 +30,7 @@ class DashboardController extends Controller
             return $this->businessDashboard();
         }
         if ($user->restaurants->isNotEmpty()) {
-             return $this->restaurantDashboard();
+             return $this->restaurantDashboard($request, $restaurants);
         }
         return view('dashboards.default');
     }
@@ -55,7 +55,7 @@ class DashboardController extends Controller
         return view('dashboards.business', ['restaurants' => $restaurants]);
     }
 
-    protected function restaurantDashboard( Request $request, Business $business, Restaurant $restaurants)
+    protected function restaurantDashboard( Request $request, Restaurant $restaurants)
     {
         $restaurants = Auth::user()->restaurants;
 

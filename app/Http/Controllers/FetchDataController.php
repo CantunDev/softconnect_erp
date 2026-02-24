@@ -52,33 +52,24 @@ class FetchDataController extends Controller
     // }
   public function getRestaurants(Request $request)
     {
-        $businessIds = $request->input('business_ids');
-        // Validar que se hayan enviado IDs
-        if (empty($businessIds)) {
-            return response()->json([]);
-        }
-        // Verificar si "sin_empresa" está en los IDs
-        $hasSinEmpresa = in_array('sin_empresa', $businessIds);
-        // Filtrar solo IDs numéricos
-        $numericIds = array_filter($businessIds, function($id) {
-            return is_numeric($id);
-        });
+        $businessIds = $request->input('business_ids', []);
+        $includeSinEmpresa = $request->boolean('include_sin_empresa');
+        $numericIds = array_filter($businessIds, fn($id) => is_numeric($id));
         $restaurants = collect();
-        // Si se selecciona "sin_empresa", obtener restaurantes que NO existen en business_restaurants
-        if ($hasSinEmpresa) {
+        if ($includeSinEmpresa) {
             $restaurantIds = BusinessRestaurants::pluck('restaurant_id')->toArray();
             $restaurantsSinEmpresa = Restaurant::whereNotIn('id', $restaurantIds)->get();
             $restaurants = $restaurants->merge($restaurantsSinEmpresa);
         }
-        // Si hay IDs numéricos, obtener restaurantes de esas empresas
         if (!empty($numericIds)) {
-            $restaurantosConEmpresa = BusinessRestaurants::with('restaurants')
+            $restaurantsConEmpresa = BusinessRestaurants::with('restaurants')
                 ->whereIn('business_id', $numericIds)
                 ->get()
                 ->pluck('restaurants')
                 ->filter();
-            $restaurants = $restaurants->merge($restaurantosConEmpresa);
+            $restaurants = $restaurants->merge($restaurantsConEmpresa);
         }
+        $restaurants = $restaurants->unique('id')->values();
         return response()->json($restaurants);
     }
 

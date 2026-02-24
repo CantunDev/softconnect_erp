@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redis;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-
+use App\Models\User;
+use App\Models\Business;
+use App\Models\Restaurant;
 class RolesPermissionsController extends Controller
 {
     public function index(Request $request)
@@ -19,17 +21,20 @@ class RolesPermissionsController extends Controller
     {
         $permisos_cat = Permission::groupBy('category')->get();
         $permisos = Permission::all();
-        Artisan::call('optimize:clear');
-        return view('roles_permissions.create', compact('permisos_cat', 'permisos'));
+        $users = $this->getUsersWithRelations();
+
+        // Artisan::call('optimize:clear');
+
+        return view('roles_permissions.create', compact('permisos_cat', 'permisos', 'users'));
     }
 
     public function edit($id)
     {
-        $roles = Role::findOrFail($id);
+        $role = Role::findOrFail($id);
         $permisos_cat = Permission::groupBy('category') ->get();
         $permisos = Permission::all();
         Artisan::call('optimize:clear');
-        return view('roles_permissions.edit', compact('roles', 'permisos_cat', 'permisos'));
+        return view('roles_permissions.edit', compact('role', 'permisos_cat', 'permisos'));
     }
 
     public function store(Request $request)
@@ -62,5 +67,17 @@ class RolesPermissionsController extends Controller
             'success' => $success,
             'message' => $message
         ], 200);
+    }
+
+    private function getUsersWithRelations()
+    {
+        return User::select('id', 'name', 'email', 'user_file')
+            ->with([
+                'business:id,name,business_file',
+                'restaurants:id,name,restaurant_file',
+                'restaurants.business:id,name',  // para detectar si el restaurante es standalone
+            ])
+            ->orderBy('name')
+            ->get();
     }
 }

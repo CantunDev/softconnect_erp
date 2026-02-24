@@ -59,27 +59,7 @@ class RestaurantsController extends Controller
                     $html .= '</div>'; // Cerrar grupo
                     return $html;
                 })
-                ->addColumn('action', function ($result) {
-                    $opciones = '';
-                    // if (Auth::user()->can('read_operators')){
-                    // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
-                    // }
-                    if (Auth::user()->can('update_operators')){
-                        if (!$result->trashed()) {
-                            $opciones .= '<a href="' . route('restaurants.edit', $result->slug ?? $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
-                            $opciones .= '<button type="button" onclick="btnSuspend(' . $result->id . ')" class="btn btn-sm text-dark action-icon icon-dual-secondary p-1"><i class="mdi mdi-power-standby font-size-18"></i></button>';
-                        }
-
-                        if ($result->trashed()) {
-                            $opciones .= '<button type="button" onclick="btnRestore(' . $result->id . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
-                            if (Auth::user()->can('delete_operators')){
-                                $opciones .= '<button type="button" onclick="btnDelete(' . $result->id . ')" class="btn btn-sm text-danger action-icon icon-dual-secondary btnDelete p-1"><i class="mdi mdi-delete-empty font-size-18"></i></button>';
-
-                            }
-                        }
-                    }
-                    return $opciones;
-                })
+                
                 ->addColumn('status', function ($result) {
                     $status = '';
                     if ($result->trashed()) {
@@ -89,47 +69,77 @@ class RestaurantsController extends Controller
                     }
                     return $status;
                 })
-                // ->addColumn('action', function($result) {
-                //     $buttons = [
-                //         'view' => [
-                //             'title' => 'View',
-                //             'class' => 'btn-outline-primary',
-                //             'icon' => 'mdi-eye-outline',
-                //             'href' => '#'
-                //         ],
-                //         'edit' => [
-                //             'title' => 'Edit',
-                //             'class' => 'btn-outline-info',
-                //             'icon' => 'mdi mdi-pencil',
-                //             'href' => route('restaurants.edit', $result->id)
-                //         ],
-                //         'delete' => [
-                //             'title' => 'Delete',
-                //             'class' => 'btn-outline-danger',
-                //             'icon' => 'mdi-delete-outline',
-                //             'href' => '#restaurantDelete',
-                //             'data-toggle' => 'modal'
-                //         ]
-                //     ];
-                //     $output = '<ul class="list-unstyled hstack gap-1 mb-0">';
-                //     foreach ($buttons as $key => $button) {
-                //         $output .= sprintf(
-                //             '<li data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="%s">
-                //                 <a href="%s" class="btn btn-sm %s" %s>
-                //                     <i class="mdi %s"></i>
-                //                 </a>
-                //             </li>',
-                //             $button['title'],
-                //             $button['href'],
-                //             $button['class'],
-                //             isset($button['data-toggle']) ? 'data-bs-toggle="' . $button['data-toggle'] . '"' : '',
-                //             $button['icon']
-                //         );
-                //     }
-                //     $output .= '</ul>';
+               ->addColumn('action', function ($result) {
+                    $buttons = [];
 
-                //     return $output;
-                // })
+                    if (Auth::user()->can('read_restaurants')) {
+                        $buttons['view'] = [
+                            'title'   => 'View',
+                            'class'   => 'btn-outline-primary',
+                            'icon'    => 'mdi-eye-outline',
+                            'href'    => '#',
+                            'onclick' => 'btnInfo(' . $result->id . ')',
+                        ];
+                    }
+
+                    if (Auth::user()->can('update_restaurants')) {
+                        if (!$result->trashed()) {
+                            $buttons['edit'] = [
+                                'title' => 'Edit',
+                                'class' => 'btn-outline-info',
+                                'icon'  => 'mdi-pencil',
+                                'href'  => route('restaurants.edit', $result->slug ?? $result->id),
+                            ];
+                            $buttons['suspend'] = [
+                                'title'   => 'Suspend',
+                                'class'   => 'btn-outline-secondary',
+                                'icon'    => 'mdi-power-standby',
+                                'href'    => '#',
+                                'onclick' => 'btnSuspend(' . $result->id . ')',
+                            ];
+                        }
+
+                        if ($result->trashed()) {
+                            $buttons['restore'] = [
+                                'title'   => 'Restore',
+                                'class'   => 'btn-outline-primary',
+                                'icon'    => 'mdi-restore',
+                                'href'    => '#',
+                                'onclick' => 'btnRestore(' . $result->id . ')',
+                            ];
+
+                            if (Auth::user()->can('delete_restaurants')) {
+                                $buttons['delete'] = [
+                                    'title'   => 'Delete',
+                                    'class'   => 'btn-outline-danger',
+                                    'icon'    => 'mdi-delete-empty',
+                                    'href'    => '#',
+                                    'onclick' => 'btnDelete(' . $result->id . ')',
+                                ];
+                            }
+                        }
+                    }
+
+                    $output = '<ul class="list-unstyled hstack gap-1 mb-0">';
+                    foreach ($buttons as $button) {
+                        $output .= sprintf(
+                            '<li data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="%s">
+                                <a href="%s" class="btn btn-sm %s" %s %s>
+                                    <i class="mdi %s"></i>
+                                </a>
+                            </li>',
+                            $button['title'],
+                            $button['href'],
+                            $button['class'],
+                            isset($button['onclick'])      ? 'onclick="' . $button['onclick'] . '"'           : '',
+                            isset($button['data-toggle'])  ? 'data-bs-toggle="' . $button['data-toggle'] . '"' : '',
+                            $button['icon']
+                        );
+                    }
+                    $output .= '</ul>';
+
+                    return $output;
+                })
                 ->rawColumns(['restaurant', 'action', 'status', 'assigned'])
                 ->make(true);
         }
@@ -266,18 +276,26 @@ class RestaurantsController extends Controller
      */
     public function destroy($id)
     {
-        $business = Restaurant::onlyTrashed($id);
-        $delete = $business->forceDelete();
-        if ($delete == 1) {
-            $success = true;
-            $message = "Se elimino permanentemente";
-        } else {
-            $success = false;
-            $message = "No se ha podido eliminar. Primero Suspenda la empresa";
+      $business = Restaurant::onlyTrashed()->find($id);
+        if (!$business) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Restaurante no encontrado o no está en papelera'
+            ], 404);
         }
-        return response()->json([
-            'success' => $success,
-            'message' => $message
-        ], 200);
+        try {
+            $delete = $business->forceDelete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Se eliminó permanentemente'
+            ], 200);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar. Tiene empleados asociados.'
+            ], 200);
+        }
     }
 }

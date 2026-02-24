@@ -12,6 +12,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\UserRequestStore;
+use App\Http\Requests\UserRequestUpdate;
 use App\Services\ImageService;
 class UsersController extends Controller
 {
@@ -118,10 +119,14 @@ public function store(UserRequestStore $request)
       );
     }
     $user = User::create($validated);
-    if ($request->has('business_id')) {
-      $user->business()->attach($request->business_id);
+    
+    $businessIds = array_filter($request->business_id ?? [], 'is_numeric');
+
+    if (!empty($businessIds)) {
+        $user->business()->attach($businessIds);
     }
-    if ($request->has('restaurant_ids')) {
+
+    if ($request->filled('restaurant_ids')) {
       $restaurantIds = explode(',', $request->restaurant_ids);
       $user->restaurants()->attach($restaurantIds);
     }
@@ -144,25 +149,69 @@ public function store(UserRequestStore $request)
   {
     $business = Business::all();
     $user = User::with(['business', 'restaurants'])->findOrFail($id);
-    return view('users.edit', compact('user', 'business'));
+    $selectedBusinessIds = $user->business->pluck('id')->toArray();
+    $selectedRestaurantIds = $user->restaurants->pluck('id')->toArray();
+    if (empty($selectedBusinessIds)) {
+        $selectedBusinessIds[] = "";
+    }
+    if (empty($selectedRestaurantIds)) {
+        $selectedRestaurantIds[] = "";
+    }
+
+    return view('users.edit', compact('user', 'business', 'selectedBusinessIds', 'selectedRestaurantIds'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, $id)
+  public function update(UserRequestUpdate $request, $id)
   {
-    // return $request->all();
-    $user_find = User::findOrFail($id);
-    $user = $user_find->update($request->all());
-    $user_find->business()->sync($request->business_id);
-    $restaurantIds = explode(',', $request->restaurant_ids);
-    $user_find->restaurants()->sync($restaurantIds);
+      $validated = $request->validated();
+      
+      // Buscar el usuario
+      $user = User::findOrFail($id);
+      
+      // Manejar la imagen si se subió una nueva
+      if ($request->hasFile('user_file')) {
+          $validated['user_file'] = $this->imageService->save(
+              file: $request->file('user_file'),
+              folder: 'users',
+              width: 400,
+              oldImage: $user->user_file
+          );
+      }
+      
+      // Actualizar con los datos validados
+      $user->update($validated);
+      
+      // Sincronizar business_id (si viene)
+      $businessIds = array_filter($request->business_id ?? [], 'is_numeric');
 
-    // $restaurant = Restaurant::create($data);
-    return redirect()->route('users.index');
+      if (!empty($businessIds)) {
+          $user->business()->attach($businessIds);
+      }
+      
+      // Sincronizar restaurants - MANEJANDO CORRECTAMENTE EL CASO VACÍO
+      if ($request->has('restaurant_ids') && !empty($request->restaurant_ids)) {
+          $restaurantIds = explode(',', $request->restaurant_ids);
+          // Filtrar valores vacíos
+          $restaurantIds = array_filter($restaurantIds, function($id) {
+              return !empty($id) && is_numeric($id);
+          });
+          
+          if (!empty($restaurantIds)) {
+              $user->restaurants()->sync($restaurantIds);
+          } else {
+              // Si después de filtrar no hay IDs válidos, sincronizar vacío
+              $user->restaurants()->sync([]);
+          }
+      } elseif ($request->has('restaurant_ids')) {
+          // Si restaurant_ids viene vacío, eliminar todas las relaciones
+          $user->restaurants()->sync([]);
+      }
+      
+      return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente');
   }
-
 
   public function suspend($id)
   {
@@ -201,19 +250,38 @@ public function store(UserRequestStore $request)
    * Remove the specified resource from storage.
    */
   public function destroy($id)
-  {
-    $user = User::onlyTrashed($id);
-    $delete = $user->forceDelete();
-    if ($delete == 1) {
-      $success = true;
-      $message = "Se elimino permanentemente";
-    } else {
-      $success = true;
-      $message = "No se ha podido eliminar";
+{
+    $user = User::onlyTrashed()
+            ->where('id', $id)
+            ->firstOrFail();
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Usuario no encontrado o no está en papelera'
+        ], 404);
     }
-    return response()->json([
-      'success' => $success,
-      'message' => $message
-    ], 200);
-  }
+
+    try {
+      if ($user->business()->exists() || $user->restaurants()->exists()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No puedes eliminar: usuario aún relacionado'
+        ], 409);
+    }
+        $user->forceDelete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Se eliminó permanentemente'
+        ], 200);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No se ha podido eliminar',
+            'error' => config('app.debug') ? $e->getMessage() : null
+        ], 500);
+    }
+}
 }

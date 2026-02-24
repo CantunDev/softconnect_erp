@@ -205,51 +205,57 @@
     }
 </script>
 <script>
-    function btnDelete(id) {
-        Swal.fire({
-            title: "Desea eliminar?",
-            text: "Por favor asegúrese y luego confirme esta opcion sera irreversible !",
-            icon: 'warning',
-            showCancelButton: !0,
-            confirmButtonText: "¡Sí, eliminar!",
-            cancelButtonText: "¡No, cancelar!",
-            reverseButtons: !0
-        }).then(function (e) {
-            if (e.value === true) {
-                $.ajax({
-                    type: 'DELETE',
-                    url: "{{ url('restaurants') }}/" + id, 
-                    data: {
-                        id: id,
-                        _token: '{!! csrf_token() !!}'
-                    },
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log(response);
-                        if (response.success === true) {
-                            Swal.fire({
-                                title: "Hecho!",
-                                text: response.message,
-                                icon: "success",
-                                confirmButtonText: "Hecho!",
-                            });
+function btnDelete(id) {
+    Swal.fire({
+        title: "¿Desea eliminar?",
+        text: "Esta acción será irreversible!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: "¡Sí, eliminar!",
+        cancelButtonText: "¡No, cancelar!",
+        reverseButtons: true
+    }).then(function (result) {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',  // ← Cambiar a POST
+                url: "{{ url('restaurants') }}/" + id,
+                data: {
+                    id: id,
+                    _token: '{{ csrf_token() }}',
+                    _method: 'DELETE'  // ← Spoofing del método DELETE
+                },
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.success === true) {
+                        Swal.fire({
+                            title: "¡Hecho!",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "Aceptar",
+                        }).then(function() {
                             $('#table_restaurants').DataTable().ajax.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: response.message,
-                                icon: "error",
-                                confirmButtonText: "Cancelar!",
-                            });
-                        }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "¡Error!",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "Cancelar",
+                        });
                     }
-                });
-            } else {
-                e.dismiss;
-            }
-        }, function (dismiss) {
-            return false;
-        })
-    }
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "Ocurrió un error inesperado.",
+                        icon: "error",
+                        confirmButtonText: "Cerrar",
+                    });
+                }
+            });
+        }
+    });
+}
 </script>
 @endsection

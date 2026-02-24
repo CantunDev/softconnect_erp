@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BusinessRequest;
+use App\Http\Requests\Business\BusinessRequestStore;
 use App\Models\Business;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
@@ -143,7 +143,7 @@ class BusinessController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BusinessRequest $request)
+    public function store(BusinessRequestStore $request)
     {
         $data = $request->validated();
 
@@ -151,7 +151,7 @@ class BusinessController extends Controller
             // Generar un nombre único para el archivo
             $imageName = Str::random(10) . '.' . $request->file('business_file')->getClientOriginalExtension();
 
-            // Ruta al directorio dentro de `public` además de poner el directory_separator para evitar problmeas con los slash
+         // Ruta al directorio dentro de `public` además de poner el directory_separator para evitar problmeas con los slash
             $destinationPath = public_path('assets' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'companies');
 
             // Crear la carpeta si no existe

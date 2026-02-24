@@ -31,6 +31,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/4.5.0/jquery.bootstrap-touchspin.css"
         integrity="sha512-zU+NsCDkOTnkeNKLLQq1dM4Ejiel2O23ZuuE2amJA0g8aLZyE3sEds8L5lzjh3va2fP8CMVHKirev2d0S4aT9g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- App CSS -->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -163,6 +164,9 @@
     <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/addons/cleave-phone.mx.js"></script>
     <!-- SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <!-- Aplicación principal -->
     <script src="{{ asset('assets/js/app2.min.js') }}"></script>
     <script>

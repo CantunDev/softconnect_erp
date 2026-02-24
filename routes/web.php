@@ -41,6 +41,7 @@ Route::post('/check-email', [AuthenticatedSessionController::class, 'checkEmail'
     ->name('check-email');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
     Route::get('/info', [InfoController::class, 'index'])->name('info');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -74,42 +75,50 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('roles/', [FetchDataController::class, 'getRoles'])->name('roles.get');
         Route::get('permissions/', [FetchDataController::class, 'getPermissions'])->name('permissions.get');
     });
+Route::prefix('restaurants/{restaurant:slug}')
+    ->name('restaurants.independent.')
+    ->group(function () {
+        Route::get('/home/filter', [HomeController::class, 'filter'])->name('home.filter'); // ← ANTES del resource
+        Route::resource('home', HomeController::class);
 
-    Route::prefix('{business:slug}')->name('business.')->group(function () {
+        Route::resource('providers', ProvidersController::class);
+        Route::resource('expenses', ExpensesController::class);
+    });
+
+Route::prefix('{business:slug}')->name('business.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('projections', ProjectionController::class);
+    Route::get('/monthly', [ProjectionController::class, 'getProjectionsMonthly'])->name('projections_monthly.get');
+    Route::resource('invoices', InvoicesController::class);
+    Route::resource('payment_method', PaymentMethodController::class);
+    Route::resource('expenses_categories', ExpensesCategoriesController::class);
+    Route::resource('expenses', ExpensesController::class);
+
+    Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/home/filter', [HomeController::class, 'filter'])->name('home.filter'); // ← ANTES del resource
+        Route::resource('home', HomeController::class);
+
         Route::resource('projections', ProjectionController::class);
-        Route::get('/monthly', [ProjectionController::class, 'getProjectionsMonthly'])->name('projections_monthly.get');
-        // Route::resource('providers', ProvidersController::class);
+        Route::prefix('projections/{month}')->name('projections.month.')->group(function () {
+            Route::resource('monthly', ProjectionDayController::class);
+            Route::get('sales_get', [ProjectionDayController::class, 'sales_get'])->name('sales.get');
+            Route::put('sales_update', [ProjectionDayController::class, 'sales_update'])->name('sales.update');
+        });
+        Route::resource('providers', ProvidersController::class);
+        Route::resource('typeproviders', TypeProvidersController::class);
         Route::resource('invoices', InvoicesController::class);
         Route::resource('payment_method', PaymentMethodController::class);
         Route::resource('expenses_categories', ExpensesCategoriesController::class);
         Route::resource('expenses', ExpensesController::class);
 
-        Route::prefix('{restaurants:slug}')->name('restaurants.')->group(function () {
-            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-            Route::resource('home', HomeController::class);
-            // Rutas normales de projections
-            Route::resource('projections', ProjectionController::class);
-            // Ruta simplificada para proyecciones mensuales
-            Route::prefix('projections/{month}')->name('projections.month.')->group(function () {
-                Route::resource('monthly', ProjectionDayController::class);
-                Route::get('sales_get', [ProjectionDayController::class,'sales_get'])->name('sales.get');
-                Route::put('sales_update', [ProjectionDayController::class, 'sales_update'])->name('sales.update');
-            });
-            Route::resource('providers', ProvidersController::class);
-            Route::resource('typeproviders', TypeProvidersController::class);
-            Route::resource('invoices', InvoicesController::class);
-            Route::resource('payment_method', PaymentMethodController::class);
-            Route::resource('expenses_categories', ExpensesCategoriesController::class);
-            Route::resource('expenses', ExpensesController::class);
-
-            Route::prefix('suspend')->group(function () {
-                Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');
-            });
-
+        Route::prefix('suspend')->group(function () {
+            Route::put('/providers/{providers}', [ProvidersController::class, 'suspend'])->name('providers.suspend');
         });
-
     });
+});
+
+    
 });
 
 require __DIR__ . '/auth.php';

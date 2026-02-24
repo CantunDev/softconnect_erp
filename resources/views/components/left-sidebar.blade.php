@@ -10,22 +10,6 @@
                             <span key="t-projects">Configuraciones</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            @can('read_business')
-                                <li>
-                                    <a href="{{ route('business.index') }}" key="t-p-grid">
-                                        <i class="bx bx-building-house"></i>
-                                        <span>Empresas</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('read_restaurants')
-                                <li>
-                                    <a href="{{ route('restaurants.index') }}" key="t-p-list">
-                                        <i class="bx bx-restaurant "></i>
-                                        <span>Restaurantes</span>
-                                    </a>
-                                </li>
-                            @endcan
                             @can('read_users')
                                 <li>
                                     <a href="{{ route('users.index') }}" key="t-p-overview">
@@ -42,6 +26,23 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('read_business')
+                                <li>
+                                    <a href="{{ route('business.index') }}" key="t-p-grid">
+                                        <i class="bx bx-building-house"></i>
+                                        <span>Empresas</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('read_restaurants')
+                                <li>
+                                    <a href="{{ route('restaurants.index') }}" key="t-p-list">
+                                        <i class="bx bx-restaurant "></i>
+                                        <span>Restaurantes</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            
                         </ul>
                     </li>
                 @endrole
@@ -192,11 +193,18 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a
-                                        href="{{ route('business.restaurants.home.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
-                                        <i class="mdi mdi-room-service"></i>
-                                        <span key="t-chat">Inicio</span>
-                                    </a>
+                                    @if($rest->business_id)
+                                        <a href="{{ route('business.restaurants.home.index', [
+                                            'business' => $rest->business->slug,
+                                            'restaurants' => $rest->slug
+                                        ]) }}">
+                                            <span key="t-chat">Inicio</span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('restaurants.independent.home.index', $rest->slug) }}">
+                                            <span key="t-chat">Inicio</span>
+                                        </a>
+                                    @endif
                                 </li>
                                 @can('read_providers')
                                     <li>
@@ -457,10 +465,21 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a href="{{ route('business.restaurants.dashboard', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
-                                        <i class="mdi mdi-room-service"></i>
+                                    @if($rest->business_id)
+                                        <a href="{{ route('business.restaurants.home.index', [
+                                            'business' => $rest->business->slug,
+                                            'restaurants' => $rest->slug
+                                        ]) }}">
+                                        <i class="bx bx-home"></i>
+
+                                            <span key="t-chat">Inicio</span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('restaurants.independent.home.index', $rest->slug) }}">
+                                        <i class="bx bx-home"></i>
                                         <span key="t-chat">Inicio</span>
-                                    </a>
+                                        </a>
+                                    @endif
                                 </li>
                                 <li>
                                         <a href="{{ route('business.restaurants.projections.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">

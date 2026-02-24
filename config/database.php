@@ -121,16 +121,16 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => env('DB_SQL_HOST', '192.168.193.29\NATIONALSOFT'),
-            'port' => env('DB_SQL_PORT', '1433'),
-            'database' => env('DB_SQL_DATABASE', 'softrestaurant10'),
-            'username' => env('DB_SQL_USERNAME', 'sa'),
-            'password' => env('DB_SQL_PASSWORD', 'National09'),
+            'host' => null,
+            'port' => '1433',
+            'database' => null,
+            'username' => null,
+            'password' => null,
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'encrypt' => env('DB_ENCRYPT', 'yes'),
-            'trust_server_certificate' => env('DB_TRUST_CERTIFICATE', 'yes'),
+            'encrypt' => 'yes',
+            'trust_server_certificate' => 'yes',
             'strict' => false,
         ],
 
