@@ -20,6 +20,8 @@ use App\Http\Controllers\RestaurantsController;
 use App\Http\Controllers\RolesPermissionsController;
 use App\Http\Controllers\TypeProvidersController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\Export\PdfController;
+use App\Http\Controllers\Export\ExcelController;
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -75,8 +77,46 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('roles/', [FetchDataController::class, 'getRoles'])->name('roles.get');
         Route::get('permissions/', [FetchDataController::class, 'getPermissions'])->name('permissions.get');
     });
-Route::prefix('restaurants/{restaurant:slug}')
-    ->name('restaurants.independent.')
+
+    /*
+    |----------------------------------------------------------------------
+    | Reports
+    |----------------------------------------------------------------------
+    */
+    $reportsRoutes = function(){
+        Route::prefix('exports')->name('export.')->group(function (){
+            
+            Route::prefix('pdf')->name('pdf.')->group(function () {
+                Route::post('monthly',   [PdfController::class, 'exportPdf'])->name('monthly');
+            });
+            
+            Route::prefix('excel')->name('excel.')->group(function () {
+                Route::post('monthly',   [ExcelController::class, 'exportExcel'])->name('monthly');
+            });
+        }); 
+    };
+    /*
+    |--------------------------------------------------------------------------
+    | Restaurantes con Empresa  → /{empresa}/{restaurante}/...
+    | Ejemplo: /corazon-contento/sagrado-comal/reports/pdf/daily
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('{business}/{restaurant}')
+        ->name('business.restaurante.')
+        ->group($reportsRoutes);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Restaurantes sin Empresa  → /{restaurante}/...
+    | Ejemplo: /sagrado-comal/reports/pdf/daily
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('{restaurant}')
+        ->name('restaurante.')
+        ->group($reportsRoutes);
+
+    Route::prefix('restaurants/{restaurant:slug}')
+        ->name('restaurants.independent.')
     ->group(function () {
         Route::get('/home/filter', [HomeController::class, 'filter'])->name('home.filter'); // ← ANTES del resource
         Route::resource('home', HomeController::class);

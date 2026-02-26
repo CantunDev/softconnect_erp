@@ -10,7 +10,6 @@
             <div class="card" style="border: 2px solid #ccc">
                 <div class="row mb-2">
                 <div class="row">
-
                     <div class="col-lg-12">
                         <div class="card shadow-sm border-0">
                             <div class="card-body py-2">
@@ -62,11 +61,11 @@
                                         </span>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
-                                        <button id="btn-excel" class="btn btn-sm btn-outline-success">
+                                        <button id="btn-export-excel" class="btn btn-sm btn-outline-success">
                                             <i class="bx bx-file me-1"></i>Excel
                                         </button>
-                                        <button id="btn-pdf" class="btn btn-sm btn-outline-danger">
-                                            <i class="bx bx-file-blank me-1"></i>PDF
+                                        <button id="btn-export-pdf" class="btn btn-sm btn-outline-danger">
+                                            <i class="bx bxs-file-pdf me-1"></i>PDF
                                         </button>
                                     </div>
                                 </div>
@@ -115,7 +114,6 @@
                                                     <th data-priority="3">Iva</th>
                                                     <th data-priority="3">Subtotal</th>
                                                     <th data-priority="6">Efectivo</th>
-                                                    <th data-priority="6">Efectivo Total</th>
                                                     <th data-priority="6">Propinas</th>
                                                     <th data-priority="6">Tarjeta</th>
                                                     <th data-priority="6">Descuento</th>
@@ -600,5 +598,88 @@ $('#btn-pdf').on('click', function () {
     URL.revokeObjectURL(url);
 });
 
+
+// ── Helpers de exportación ────────────────────────────────────
+async function getChartsAsBase64() {
+    const charts = [
+        { chart: chartVentas,    key: 'chart_ventas' },
+        { chart: chartFoodDrink, key: 'chart_food_drink' },
+        { chart: chartClientes,  key: 'chart_clientes' },
+    ];
+
+    const images = {};
+    for (const item of charts) {
+        if (item.chart) {
+            const { imgURI } = await item.chart.dataURI();
+            images[item.key] = imgURI; // base64 png
+        }
+    }
+    return images;
+}
+
+function getActivePeriod() {
+    var startVal = $('#start-date').val();
+    var endVal   = $('#end-date').val();
+    return startVal && endVal
+        ? { start_date: startVal, end_date: endVal }
+        : { month: $('#sel-month').val(), year: $('#sel-year').val() };
+}
+
+function submitExportForm(url, extraData) {
+    var form = $('<form method="POST" style="display:none"></form>');
+    form.attr('action', url);
+    form.append('<input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '">');
+    $.each(extraData, function(key, val) {
+        form.append('<input type="hidden" name="' + key + '" value="' + val + '">');
+    });
+    $('body').append(form);
+    form.submit();
+    form.remove();
+}
+
+// ── Exportar PDF ──────────────────────────────────────────────
+$('#btn-export-pdf').on('click', async function () {
+    $(this).prop('disabled', true).html('<i class="bx bx-loader bx-spin me-1"></i>Generando...');
+
+    try {
+        const images = await getChartsAsBase64();
+        const period = getActivePeriod();
+
+        submitExportForm(
+            @if($restaurant->business_id)
+                '{{ route("business.restaurante.export.pdf.monthly", ["business" => $restaurant->business->slug, "restaurants" => $restaurant->slug]) }}'
+            @else
+                '{{ route("restaurante.export.pdf.monthly", ["restaurant" => $restaurant->slug]) }}'
+            @endif,
+            { ...period, ...images }
+        );
+    } catch(e) {
+        console.error('Error capturando charts:', e);
+        alert('Error al generar el PDF.');
+    } finally {
+        setTimeout(() => {
+            $('#btn-export-pdf').prop('disabled', false).html('<i class="bx bxs-file-pdf me-1"></i>PDF');
+        }, 2000);
+    }
+});
+
+// ── Exportar Excel ────────────────────────────────────────────
+$('#btn-export-excel').on('click', function () {
+    $(this).prop('disabled', true).html('<i class="bx bx-loader bx-spin me-1"></i>Generando...');
+    const period = getActivePeriod();
+
+    submitExportForm(
+        @if($restaurant->business_id)
+            '{{ route("business.restaurante.export.excel.monthly", ["business" => $restaurant->business->slug, "restaurants" => $restaurant->slug]) }}'
+        @else
+            '{{ route("restaurante.export.excel.monthly", ["restaurant" => $restaurant->slug]) }}'
+        @endif,
+        period
+    );
+
+    setTimeout(() => {
+        $('#btn-export-excel').prop('disabled', false).html('<i class="bx bxs-file me-1"></i>Excel');
+    }, 3000);
+});
 </script>
 @endsection
