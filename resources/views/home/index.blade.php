@@ -245,6 +245,8 @@
             </div>
         </div>
     </div>
+
+    
 @endsection
 @section('js')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

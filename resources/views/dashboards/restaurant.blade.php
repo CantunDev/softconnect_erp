@@ -6,4 +6,5 @@
 @section('content')
     <x-date-component />
     <x-sale-in-turn-component :restaurants="$restaurants"/>
+    <x-projection-sales-restaurant-component :restaurants="$restaurants" />
 @endsection

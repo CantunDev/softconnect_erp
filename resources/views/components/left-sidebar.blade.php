@@ -193,18 +193,16 @@
                             </a>
                             <ul>
                                 <li>
-                                    @if($rest->business_id)
-                                        <a href="{{ route('business.restaurants.home.index', [
-                                            'business' => $rest->business->slug,
-                                            'restaurants' => $rest->slug
-                                        ]) }}">
-                                            <span key="t-chat">Inicio</span>
-                                        </a>
-                                    @else
-                                        <a href="{{ route('restaurants.independent.home.index', $rest->slug) }}">
-                                            <span key="t-chat">Inicio</span>
-                                        </a>
-                                    @endif
+                                    <a href="{{ route('dashboard') }}">
+                                        <i class="bx bx-calendar"></i>
+                                        <span key="t-chat">Dash </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('restaurants.independent.home.index', $rest->slug) }}">
+                                        <i class="bx bx-calendar"></i>
+                                        <span key="t-chat">Mensual</span>
+                                    </a>
                                 </li>
                                 @can('read_providers')
                                     <li>
@@ -405,15 +403,15 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a href="{{ route('business.restaurants.dashboard', ['business' => 'rest','restaurants' => $rest->slug ]) }}">
-                                        <i class="mdi mdi-room-service"></i>
-                                        <span key="t-chat">Inicio</span>
+                                    <a href="{{ route('dashboard') }}">
+                                        <i class="bx bx-home"></i>
+                                        <span key="t-chat">Dash </span>
                                     </a>
                                 </li>
                                 <li>
-                                        <a href="{{ route('business.restaurants.projections.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
-                                        <i class="bx bx-line-chart"></i>
-                                        <span>Proyecciones</span>
+                                    <a href="{{ route('business.restaurants.dashboard', ['business' => 'rest','restaurants' => $rest->slug ]) }}">
+                                        <i class="bx bx-calendar"></i>
+                                        <span key="t-chat">Mensual</span>
                                     </a>
                                 </li>
                                 @can('read_providers')
@@ -465,35 +463,17 @@
                             </a>
                             <ul>
                                 <li>
-                                    @if($rest->business_id)
-                                        <a href="{{ route('business.restaurants.home.index', [
-                                            'business' => $rest->business->slug,
-                                            'restaurants' => $rest->slug
-                                        ]) }}">
+                                    <a href="{{ route('dashboard') }}">
                                         <i class="bx bx-home"></i>
-                                            <span key="t-chat">Inicio</span>
-                                        </a>
-                                    @else
-                                        <a href="{{ route('restaurants.independent.home.index', $rest->slug) }}">
-                                        <i class="bx bx-home"></i>
-                                        <span key="t-chat">Inicio</span>
-                                        </a>
-                                    @endif
-                                </li>
-                                <li>
-                                        <a href="{{ route('business.restaurants.projections.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
-                                        <i class="bx bx-line-chart"></i>
-                                        <span>Proyecciones</span>
+                                        <span key="t-chat">Dash </span>
                                     </a>
                                 </li>
-                                    <li>
-                                        <a
-                                            href="{{ route('business.restaurants.providers.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
-                                            <i class="bx bx-cart"></i>
-                                            <span key="t-chat">Proveedores</span>
-                                        </a>
-                                    </li>
-                                @can('read_invoices')
+                                <li>
+                                    <a href="{{ route('restaurants.independent.home.index', $rest->slug) }}">
+                                        <i class="bx bx-calendar"></i>
+                                        <span key="t-chat">Mensual</span>
+                                    </a>
+                                </li>
                                     <li>
                                         <a
                                             href="{{ route('business.restaurants.invoices.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
@@ -519,7 +499,6 @@
                                                     key="t-p-overview">Gastos</a></li>
                                         </ul>
                                     </li>
-                                @endcan
                             </ul>
                         </li>
                     @endforeach
