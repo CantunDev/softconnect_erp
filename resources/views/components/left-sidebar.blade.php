@@ -471,7 +471,6 @@
                                             'restaurants' => $rest->slug
                                         ]) }}">
                                         <i class="bx bx-home"></i>
-
                                             <span key="t-chat">Inicio</span>
                                         </a>
                                     @else
