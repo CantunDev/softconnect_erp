@@ -474,6 +474,7 @@
                                         <span key="t-chat">Mensual</span>
                                     </a>
                                 </li>
+                                @can('read_invoices')
                                     <li>
                                         <a
                                             href="{{ route('business.restaurants.invoices.index', ['business' => 'rest', 'restaurants' => $rest->slug]) }}">
@@ -499,6 +500,7 @@
                                                     key="t-p-overview">Gastos</a></li>
                                         </ul>
                                     </li>
+                                @endcan
                             </ul>
                         </li>
                     @endforeach
