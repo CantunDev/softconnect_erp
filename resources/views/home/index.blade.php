@@ -5,73 +5,79 @@
 @section('content')
     <x-date-component/>
    {{-- Selector de mes/año --}}
-{{-- Selector de período --}}
-<div class="row mb-3">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body py-2">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card" style="border: 2px solid #ccc">
+                <div class="row mb-2">
+                <div class="row">
 
-                    <label class="mb-0 fw-medium">Período:</label>
-
-                    {{-- Mes --}}
-                    <select id="sel-month" class="form-select form-select-sm w-auto">
-                        @foreach(range(1, 12) as $m)
-                            <option value="{{ $m }}" {{ $m == now()->month ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($m)->isoFormat('MMMM') }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    {{-- Año --}}
-                    <select id="sel-year" class="form-select form-select-sm w-auto">
-                        @foreach(range(now()->year - 2, now()->year) as $y)
-                            <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>{{ $y }}</option>
-                        @endforeach
-                    </select>
-
-                    <span class="text-muted fw-medium">ó rango personalizado:</span>
-
-                    {{-- Start Date --}}
-                    <div class="input-group input-group-sm w-auto">
-                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-                        <input type="text" id="start-date" class="form-control form-control-sm"
-                               placeholder="Desde" style="width:130px;" autocomplete="off">
+                    <div class="col-lg-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body py-2">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <span class="fw-semibold text-muted small">Período:</span>
+                                        <select id="sel-month" class="form-select form-select-sm w-auto">
+                                            @foreach(range(1, 12) as $m)
+                                                <option value="{{ $m }}" {{ $m == now()->month ? 'selected' : '' }}>
+                                                    {{ \Carbon\Carbon::create()->month($m)->isoFormat('MMMM') }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <select id="sel-year" class="form-select form-select-sm w-auto">
+                                            @foreach(range(now()->year - 2, now()->year) as $y)
+                                                <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>
+                                                    {{ $y }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-muted small">ó</span>
+                                        <div class="input-group input-group-sm w-auto">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bx bx-calendar"></i>
+                                            </span>
+                                            <input type="text" id="start-date"
+                                                class="form-control"
+                                                placeholder="Desde"
+                                                style="width:120px;" autocomplete="off">
+                                        </div>
+                                        <div class="input-group input-group-sm w-auto">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bx bx-calendar"></i>
+                                            </span>
+                                            <input type="text" id="end-date"
+                                                class="form-control"
+                                                placeholder="Hasta"
+                                                style="width:120px;" autocomplete="off">
+                                        </div>
+                                        <button id="btn-filter" class="btn btn-sm btn-primary">
+                                            <i class="bx bx-filter-alt me-1"></i>Filtrar
+                                        </button>
+                                        <button id="btn-clear-range" class="btn btn-sm btn-outline-secondary d-none">
+                                            <i class="bx bx-x me-1"></i>Limpiar
+                                        </button>
+                                        <span id="loading-indicator"
+                                            class="spinner-border spinner-border-sm text-primary d-none"
+                                            role="status">
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <button id="btn-excel" class="btn btn-sm btn-outline-success">
+                                            <i class="bx bx-file me-1"></i>Excel
+                                        </button>
+                                        <button id="btn-pdf" class="btn btn-sm btn-outline-danger">
+                                            <i class="bx bx-file-blank me-1"></i>PDF
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <span class="text-muted">—</span>
-
-                    {{-- End Date --}}
-                    <div class="input-group input-group-sm w-auto">
-                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-                        <input type="text" id="end-date" class="form-control form-control-sm"
-                               placeholder="Hasta" style="width:130px;" autocomplete="off">
-                    </div>
-
-                    {{-- Botón Filtrar --}}
-                    <button id="btn-filter" class="btn btn-sm btn-primary">
-                        <i class="bx bx-filter-alt me-1"></i>Filtrar
-                    </button>
-
-                    {{-- Botón Limpiar rango --}}
-                    <button id="btn-clear-range" class="btn btn-sm btn-outline-secondary d-none">
-                        <i class="bx bx-x me-1"></i>Limpiar rango
-                    </button>
-
-                    <span id="loading-indicator" class="spinner-border spinner-border-sm text-primary d-none" role="status"></span>
                 </div>
-
-                {{-- Indicador de modo activo --}}
-                <div class="mt-2">
-                    <small id="filter-mode-label" class="text-muted">
-                        <i class="bx bx-info-circle me-1"></i>
-                        Filtrando por: <strong id="filter-mode-text">{{ now()->isoFormat('MMMM YYYY') }}</strong>
-                    </small>
                 </div>
             </div>
         </div>
     </div>
-</div>
     <!-- end row -->
     <div class="row">
         <div class="col-lg-12">
@@ -109,6 +115,7 @@
                                                     <th data-priority="3">Iva</th>
                                                     <th data-priority="3">Subtotal</th>
                                                     <th data-priority="6">Efectivo</th>
+                                                    <th data-priority="6">Efectivo Total</th>
                                                     <th data-priority="6">Propinas</th>
                                                     <th data-priority="6">Tarjeta</th>
                                                     <th data-priority="6">Descuento</th>
@@ -512,5 +519,86 @@ $(document).ready(function () {
     // Estado inicial
     syncModeIndicator();
 });
+
+// --- Exportar a Excel ---
+$('#btn-excel').on('click', function () {
+    const table = $('#datatable_ventas').DataTable();
+    const data = table.rows().data().toArray();
+
+    if (data.length === 0) {
+        alert('No hay datos para exportar.');
+        return;
+    }
+
+    // Crear HTML de la tabla
+    let html = '<table border="1"><thead><tr>';
+
+    // Columnas
+    $('#datatable_ventas thead th').each(function () {
+        html += '<th>' + $(this).text() + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    // Filas
+    data.forEach(row => {
+        html += '<tr>';
+        row.forEach(cell => {
+            html += '<td>' + cell + '</td>';
+        });
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+
+    // Crear Blob y descargar
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ventas_' + new Date().toISOString().slice(0, 10) + '.xls';
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// --- Exportar a PDF ---
+$('#btn-pdf').on('click', function () {
+    const table = $('#datatable_ventas').DataTable();
+    const data = table.rows().data().toArray();
+
+    if (data.length === 0) {
+        alert('No hay datos para exportar.');
+        return;
+    }
+
+    // Crear HTML de la tabla
+    let html = '<table border="1"><thead><tr>';
+
+    // Columnas
+    $('#datatable_ventas thead th').each(function () {
+        html += '<th>' + $(this).text() + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    // Filas
+    data.forEach(row => {
+        html += '<tr>';
+        row.forEach(cell => {
+            html += '<td>' + cell + '</td>';
+        });
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+
+    // Crear Blob y descargar
+    const blob = new Blob([html], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ventas_' + new Date().toISOString().slice(0, 10) + '.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
 </script>
 @endsection

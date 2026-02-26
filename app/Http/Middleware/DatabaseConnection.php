@@ -21,10 +21,13 @@ class DatabaseConnection
     public function handle(Request $request, Closure $next)
 {
     config(['database.default' => 'mysql']);
+    $routeRestaurant = $request->route('restaurant') 
+        ?? $request->route('restaurants');
 
-    $restaurant =
-        $request->route('restaurant') ??
-        $request->route('restaurants');
+    $restaurant = $routeRestaurant instanceof \App\Models\Restaurant
+        ? $routeRestaurant
+        : \App\Models\Restaurant::find($routeRestaurant)
+            ?? \App\Models\Restaurant::where('ip', $request->ip())->first();
 
     if ($restaurant) {
 

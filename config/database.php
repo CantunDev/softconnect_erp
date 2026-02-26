@@ -129,7 +129,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'encrypt' => 'yes',
+            'encrypt' => 'no',
             'trust_server_certificate' => 'yes',
             'strict' => false,
         ],

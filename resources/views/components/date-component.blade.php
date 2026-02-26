@@ -1,9 +1,7 @@
 <div class="row">
-
     <div class="col-xl-12">
-
         <div class="card" style="border: 2px solid #ccc">
-            <div class="card-body">
+            <div class="card-body py-2">
                 <div class="row">
                     <div class="col-md-3 col-xl-3">
                         <div class="text-center mt-2 mb-2 position-relative">
@@ -83,7 +81,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
