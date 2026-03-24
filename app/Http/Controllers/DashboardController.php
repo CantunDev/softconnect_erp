@@ -12,33 +12,26 @@ class DashboardController extends Controller
     public function index(Request $request, ?Business $business = null, ?Restaurant $restaurant = null)
 {
     $user = Auth::user();
-
-    // Si viene empresa en la ruta
-    if ($business) {
-        return $this->businessDashboard($business);
-    }
-
-    // Si viene restaurante en la ruta
-    if ($restaurant) {
-        return $this->restaurantDashboard($restaurant);
-    }
-
-    // Super admin
     if ($user->hasRole('Super-Admin')) {
         return $this->superAdminDashboard($request, $business);
     }
-
-    // Si el usuario tiene restaurantes asignados
+    if ($user->business()->exists()) {
+        $business = $user->business()->first();
+        return $this->businessDashboard($business);
+    }
     if ($user->restaurants()->exists()) {
         $restaurant = $user->restaurants()->first();
         return $this->restaurantDashboard($restaurant);
     }
+    // // Si viene empresa en la ruta
+    // if ($business) {
+    //     return $this->businessDashboard($business);
+    // }
 
-    // Si tiene empresas asignadas
-    if ($user->businesses()->exists()) {
-        $business = $user->businesses()->first();
-        return $this->businessDashboard($business);
-    }
+    // // Si viene restaurante en la ruta
+    // if ($restaurant) {
+    //     return $this->restaurantDashboard($restaurant);
+    // }
 
     }
     protected function superAdminDashboard(Request $request, ?Business $business = null)
