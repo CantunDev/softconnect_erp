@@ -13,20 +13,11 @@ use App\Helpers\DateHelper;
 
 class HomeController extends Controller
 {
-
-    public function indeax(?Business $business, Restaurant $restaurant, Request $request)
+      public function index(?Business $business = null, ?Restaurant $restaurants = null, Request $request)
     {
-        if ($business && $restaurant->business_id !== $business->id) {
-        abort(404);
-        }
-        if ($request->ajax()) {
-            return $this->getChartData($restaurant, $request);
-        }
-        return view('home.index', array_merge(
-            $this->getDateDefaults(),
-            compact('restaurant')
-        ));
+        return view('sales.index', compact('business','restaurants'));
     }
+
 
     private function getDateDefaults(): array
     {
@@ -46,7 +37,7 @@ class HomeController extends Controller
         ];
     }
 
-    public function getChartData(Restaurant $restaurant, Request $request): JsonResponse
+    public function getChartData(Restaurant $restaurants, Request $request): JsonResponse
     {
          $request->validate([
             'date_from' => 'nullable|date',
@@ -61,7 +52,7 @@ class HomeController extends Controller
 
         $projection = Projection::where('month', $month)
         ->where('year', $year)
-        ->where('restaurant_id', $restaurant->id)
+        ->where('restaurant_id', $restaurants->id)
         ->first();
 
         $cortes = Cheques::query()
@@ -176,127 +167,18 @@ class HomeController extends Controller
             ],
         ];
     }
-    public function index(?Business $business, Restaurant $restaurant, Request $request)
-    {
-        $day = DateHelper::getCurrentDay();
-        $startOfMonth = DateHelper::getStartOfMonth();
-        $endOfMonth = DateHelper::getEndOfMonth();
-        $month = DateHelper::getCurrentMonth();
-        $currentMonth = DateHelper::getCurrentMonth();
-        $currentYear = DateHelper::getCurrentYear();
-        $daysInMonth = DateHelper::getDaysInMonth();
-        $daysPass = DateHelper::getDaysPassed();
-
-        $rangeMonth = $daysInMonth ? round(($daysPass / $daysInMonth) * 100, 2) : 0;
-        if ($business && $restaurant->business_id !== $business->id) {
-            abort(404);
-        }
-
-        $projections = Projection::where('month', $currentMonth)
-            ->where('year', $currentYear)
-            ->where('restaurant_id', $restaurant->id)
-            ->first();
-        // dd(config('database.connections.sqlsrv'));
-        $cortes = Cheques::query()
-                ->selectRaw('
-                CONVERT(DATE, fecha) as dia,
-                    COUNT(*) as total_cuentas,
-                    SUM(nopersonas) as total_clientes,
-                    SUM(total) as total_venta,
-                    SUM(totalimpuesto1) as total_iva,
-                    SUM(subtotal) as total_subtotal,
-                    SUM(efectivo) as total_efectivo,
-                    SUM(propina) as total_propina,
-                    SUM(tarjeta) as total_tarjeta,
-                    SUM(descuento) as total_descuento,
-                    SUM(totalalimentos) as total_alimentos,
-                    SUM(totalbebidas) as total_bebidas
-                ')
-            ->whereYear('fecha', $currentYear)
-            ->whereMonth('fecha', $currentMonth)
-            ->where('pagado', true)
-            ->where('cancelado', false)
-            ->groupBy(DB::raw('CONVERT(DATE, fecha)'))
-            ->orderBy('dia')
-            ->get();
-
-        $days_total = [];
-        $days_total_food = [];
-        $days_total_drink = [];
-        $days_total_client = [];
-        $days_total_ticket = [];
-        $projections_total = [];
-        $projections_avg = [];
-        $projections_check = [];
-        $projections_check_avg = [];
-
-        $totalGral = 0;
-        $totalClientes = 0;
-        // return $cortes;
-        foreach ($cortes as $corte) {
-
-            $venta = $corte->total_venta ?? 0;
-            $clientes = $corte->total_clientes ?? 0;
-
-            $days_total[] = $venta;
-            $days_total_food[] = $corte->total_alimentos ?? 0;
-            $days_total_drink[] = $corte->total_bebidas ?? 0;
-            $days_total_client[] = $clientes;
-
-            $days_total_ticket[] = $clientes > 0 ? round($venta / $clientes, 2) : 0;
-
-            $totalGral += $venta;
-            $totalClientes += $clientes;
-
-            $projections_total[] = round(($projections->projected_sales ?? 0) / $daysInMonth, 2);
-            $projections_avg[] = $daysPass > 0 ? round($totalGral / $daysPass, 2) : 0;
-            $projections_check[] = floatval($projections->projected_check ?? 0);
-            $projections_check_avg[] = $totalClientes > 0 ? round($totalGral / $totalClientes, 2) : 0;
-        }
-
-        return view('home.index', compact(
-            'day',
-            'days_total',
-            'days_total_food',
-            'days_total_drink',
-            'days_total_client',
-            'days_total_ticket',
-            'projections_total',
-            'projections_avg',
-            'projections_check',
-            'projections_check_avg',
-            'startOfMonth',
-            'endOfMonth',
-            'month',
-            'daysInMonth',
-            'currentMonth',
-            'currentYear',
-            'daysPass',
-            'rangeMonth',
-            'restaurant',
-            'cortes',
-            'projections',
-        ));
-    }
-
-   public function filter(?Business $business, Restaurant $restaurant, Request $request)
+  
+ public function filter(?Business $business = null, ?Restaurant $restaurants = null, Request $request)
 {
-    if ($business && $restaurant->business_id !== $business->id) {
-        abort(404);
-    }
-
     // ── Determinar rango de fechas según modo ─────────────────────
     if ($request->filled('start_date') && $request->filled('end_date')) {
-        // Modo rango personalizado
-        $start      = \Carbon\Carbon::parse($request->start_date)->startOfDay();
-        $end        = \Carbon\Carbon::parse($request->end_date)->endOfDay();
-        $daysInMonth = $start->diffInDays($end) + 1;
-        $daysPass    = $daysInMonth; // En rango personalizado se asume el rango completo
+        $start        = \Carbon\Carbon::parse($request->start_date)->startOfDay();
+        $end          = \Carbon\Carbon::parse($request->end_date)->endOfDay();
+        $daysInMonth  = $start->diffInDays($end) + 1;
+        $daysPass     = $daysInMonth;
         $currentMonth = null;
         $currentYear  = null;
-
     } else {
-        // Modo mes/año
         $currentMonth = $request->input('month', DateHelper::getCurrentMonth());
         $currentYear  = $request->input('year',  DateHelper::getCurrentYear());
         $start        = \Carbon\Carbon::create($currentYear, $currentMonth, 1)->startOfDay();
@@ -305,15 +187,15 @@ class HomeController extends Controller
         $daysPass     = min((int) now()->format('j'), $daysInMonth);
     }
 
-    // ── Proyecciones (solo aplica en modo mes/año) ─────────────────
+    // ── Proyecciones ──────────────────────────────────────────────
     $projections = null;
     if ($currentMonth && $currentYear) {
         $projections = Projection::where('month', $currentMonth)
             ->where('year', $currentYear)
-            ->where('restaurant_id', $restaurant->id)
+            ->where('restaurant_id', $restaurants->id)
             ->first();
     }
-
+    
     // ── Consulta de cortes ────────────────────────────────────────
     $cortes = Cheques::query()
         ->selectRaw('
@@ -328,55 +210,113 @@ class HomeController extends Controller
             SUM(tarjeta) as total_tarjeta,
             SUM(descuento) as total_descuento,
             SUM(totalalimentos) as total_alimentos,
-            SUM(totalbebidas) as total_bebidas
+            SUM(totaldescuentoalimentos) as total_descuento_alimentos,
+            SUM(totalbebidas) as total_bebidas,
+            SUM(totaldescuentobebidas) as total_descuento_bebidas
         ')
-->whereRaw("fecha BETWEEN ? AND ?", [
-    $start->format('Y-m-d\TH:i:s'),  // 2026-01-01T00:00:00
-    $end->format('Y-m-d\TH:i:s')     // 2026-01-31T23:59:59
-])
+        ->whereRaw("fecha BETWEEN ? AND ?", [
+            $start->format('Y-m-d\TH:i:s'),
+            $end->format('Y-m-d\TH:i:s'),
+        ])
         ->where('pagado', true)
         ->where('cancelado', false)
         ->groupBy(DB::raw('CONVERT(DATE, fecha)'))
         ->orderBy('dia')
         ->get();
 
-    // ── Construir arrays para charts (idéntico a index) ───────────
-    $daysInMonthLabels   = [];
-    $days_total          = [];
-    $days_total_food     = [];
-    $days_total_drink    = [];
-    $days_total_client   = [];
-    $days_total_ticket   = [];
-    $projections_total   = [];
-    $projections_avg     = [];
-    $projections_check   = [];
+    // ── Preparar datos para alimentos y bebidas (food_drink_sales) ─
+    $food_drink_sales = collect();
+    foreach ($cortes as $corte) {
+        $porcentaje_alimentos = $corte->total_venta > 0 
+            ? round(($corte->total_alimentos * 100) / $corte->total_venta, 2) 
+            : 0;
+            
+        $porcentaje_bebidas = $corte->total_venta > 0 
+            ? round(($corte->total_bebidas * 100) / $corte->total_venta, 2) 
+            : 0;
+
+        $food_drink_sales->push((object)[
+            'dia' => $corte->dia,
+            'total_alimentos' => $corte->total_alimentos ?? 0,
+            'descuento_alimentos' => $corte->total_descuento_alimentos ?? 0,
+            'porcentaje_alimentos' => $porcentaje_alimentos,
+            'total_bebidas' => $corte->total_bebidas ?? 0,
+            'descuento_bebidas' => $corte->total_descuento_bebidas ?? 0,
+            'porcentaje_bebidas' => $porcentaje_bebidas,
+        ]);
+    }
+
+    // ── Indexar cortes por día para lookup rápido ─────────────────
+    $cortesByDay = $cortes->keyBy(fn($c) => $c->dia);
+
+    // ── Inicializar arrays ────────────────────────────────────────
+    $daysInMonthLabels     = [];
+    $days_total            = [];
+    $days_total_food       = [];
+    $days_total_drink      = [];
+    $days_total_client     = [];
+    $days_total_ticket     = [];
+    $projections_total     = [];
+    $projections_avg       = [];
+    $projections_check     = [];
     $projections_check_avg = [];
 
     $totalGral     = 0;
     $totalClientes = 0;
+    $dayIndex      = 0;
 
-    foreach ($cortes as $corte) {
-        $venta    = $corte->total_venta   ?? 0;
-        $clientes = $corte->total_clientes ?? 0;
+    // ── Iterar todos los días del rango (con o sin ventas) ────────
+    $current = $start->copy()->startOfDay();
+    while ($current->lte($end)) {
+        $dayIndex++;
+        $key   = $current->format('Y-m-d');
+        $corte = $cortesByDay->get($key);
 
-        $daysInMonthLabels[] = \Carbon\Carbon::parse($corte->dia)->isoFormat('D MMM');
-
-        $days_total[]        = $venta;
-        $days_total_food[]   = $corte->total_alimentos ?? 0;
-        $days_total_drink[]  = $corte->total_bebidas   ?? 0;
-        $days_total_client[] = $clientes;
-        $days_total_ticket[] = $clientes > 0 ? round($venta / $clientes, 2) : 0;
+        $venta    = floatval($corte->total_venta    ?? 0);
+        $clientes = intval($corte->total_clientes   ?? 0);
 
         $totalGral     += $venta;
         $totalClientes += $clientes;
 
+        $daysInMonthLabels[]     = $current->format('Y-m-d');
+        $days_total[]            = $venta;
+        $days_total_food[]       = floatval($corte->total_alimentos ?? 0);
+        $days_total_drink[]      = floatval($corte->total_bebidas   ?? 0);
+        $days_total_client[]     = $clientes;
+        $days_total_ticket[]     = $clientes > 0 ? round($venta / $clientes, 2) : 0;
         $projections_total[]     = round(($projections->projected_sales ?? 0) / $daysInMonth, 2);
-        $projections_avg[]       = $daysPass > 0 ? round($totalGral / $daysPass, 2) : 0;
+        $projections_avg[]       = $dayIndex > 0 ? round($totalGral / $dayIndex, 2) : 0;
         $projections_check[]     = floatval($projections->projected_check ?? 0);
         $projections_check_avg[] = $totalClientes > 0 ? round($totalGral / $totalClientes, 2) : 0;
+
+        $current->addDay();
     }
 
-    // ── Renderizar partials de tablas ─────────────────────────────
+    // ── Calcular totales para tfoot ───────────────────────────────
+    $totals = [
+        'clientes'          => $cortes->sum('total_clientes'),
+        'venta'             => $cortes->sum('total_venta'),
+        'iva'               => $cortes->sum('total_iva'),
+        'subtotal'          => $cortes->sum('total_subtotal'),
+        'efectivo'          => $cortes->sum('total_efectivo'),
+        'propina'           => $cortes->sum('total_propina'),
+        'tarjeta'           => $cortes->sum('total_tarjeta'),
+        'descuento'         => $cortes->sum('total_descuento'),
+        'alimentos'         => $cortes->sum('total_alimentos'),
+        'descuento_alimentos' => $cortes->sum('total_descuento_alimentos'),
+        'bebidas'           => $cortes->sum('total_bebidas'),
+        'descuento_bebidas' => $cortes->sum('total_descuento_bebidas'),
+    ];
+
+    // Calcular porcentajes promedio para alimentos y bebidas
+    $totals['porcentaje_alimentos'] = $totals['venta'] > 0 
+        ? round(($totals['alimentos'] * 100) / $totals['venta'], 2) 
+        : 0;
+    $totals['porcentaje_bebidas'] = $totals['venta'] > 0 
+        ? round(($totals['bebidas'] * 100) / $totals['venta'], 2) 
+        : 0;
+
+    // ── Respuesta JSON ────────────────────────────────────────────
     return response()->json([
         'daysInMonth'           => $daysInMonthLabels,
         'days_total'            => $days_total,
@@ -388,9 +328,21 @@ class HomeController extends Controller
         'projections_avg'       => $projections_avg,
         'projections_check'     => $projections_check,
         'projections_check_avg' => $projections_check_avg,
-        'rowsVentas'    => view('home.partials._rows-ventas',     compact('cortes'))->render(),
-        'rowsFoodDrink' => view('home.partials._rows-food-drink', compact('cortes'))->render(),
-        'rowsClientes'  => view('home.partials._rows-clientes',   compact('cortes'))->render(),
+        
+        // Vista de ventas principales
+        'rowsVentas' => view('components.sales.monthly-sales-component', [
+            'cortes' => $cortes,
+            'restaurants' => $restaurants,
+            'errors' => []
+        ])->render(),
+        
+        // Vista de alimentos y bebidas usando food_drink_sales
+        'rowsFoodDrink' => view('components.sales.monthly-sales-food', [
+            'food_drink_sales' => $food_drink_sales,
+            'restaurants' => $restaurants
+        ])->render(),
+        
+        'totals' => $totals,
     ]);
 }
 }

@@ -31,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Schema::defaultStringLength(191);
         Schema::defaultStringLength(125);
+        Carbon::setLocale(config('app.locale'));
         // DB::listen(function ($query) {
         //     logger($query->sql);
         //     logger($query->bindings);

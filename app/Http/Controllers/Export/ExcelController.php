@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class ExcelController extends Controller
 {
     // ── Método compartido para obtener cortes ─────────────────────
-    private function getCortes(Restaurant $restaurant, Request $request): array
+    private function getCortes(Restaurant $restaurants, Request $request): array
     {
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $start       = \Carbon\Carbon::parse($request->start_date)->startOfDay();
@@ -37,7 +37,7 @@ class ExcelController extends Controller
         $projections = ($currentMonth && $currentYear)
             ? Projection::where('month', $currentMonth)
                 ->where('year', $currentYear)
-                ->where('restaurant_id', $restaurant->id)
+                ->where('restaurant_id', $restaurants->id)
                 ->first()
             : null;
 
@@ -68,19 +68,19 @@ class ExcelController extends Controller
 
         return compact('cortes', 'projections', 'daysInMonth', 'daysPass', 'start', 'end');
     }
-    public function exportExcel(?Business $business, Restaurant $restaurant, Request $request)
+    public function exportExcel(?Business $business, Restaurant $restaurants, Request $request)
     {
-        if ($business && $restaurant->business_id !== $business->id) abort(404);
+        if ($business && $restaurants->business_id !== $business->id) abort(404);
 
-        $data = $this->getCortes($restaurant, $request);
+        $data = $this->getCortes($restaurants, $request);
 
         $periodo = $request->filled('start_date')
             ? $request->start_date . '_' . $request->end_date
             : \Carbon\Carbon::create($request->year, $request->month)->isoFormat('MMMM_YYYY');
 
         return Excel::download(
-            new DashboardExport($data['cortes'], $data['projections'], $restaurant),
-            "reporte_{$restaurant->slug}_{$periodo}.xlsx"
+            new DashboardExport($data['cortes'], $data['projections'], $restaurants),
+            "reporte_{$restaurants->slug}_{$periodo}.xlsx"
         );
     }
 }

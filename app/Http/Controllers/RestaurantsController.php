@@ -88,7 +88,7 @@ class RestaurantsController extends Controller
                                 'title' => 'Edit',
                                 'class' => 'btn-outline-info',
                                 'icon'  => 'mdi-pencil',
-                                'href'  => route('restaurants.edit', $result->slug ?? $result->id),
+                                'href'  => route('config.restaurants.edit', $result->slug ?? $result->id),
                             ];
                             $buttons['suspend'] = [
                                 'title'   => 'Suspend',
@@ -179,7 +179,7 @@ class RestaurantsController extends Controller
             $data['restaurant_file'] = 'assets/images/restaurants/' . $imageName;
         }
         $restaurant = Restaurant::create($data);
-        return redirect()->route('restaurants.index');
+        return redirect()->route('config.restaurants.index');
     }
 
     /**
@@ -231,7 +231,7 @@ class RestaurantsController extends Controller
 
         $restaurant->update($data);
 
-        return redirect()->route('restaurants.index');
+        return redirect()->route('config.restaurants.index');
     }
 
     public function suspend($id)

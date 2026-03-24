@@ -61,10 +61,12 @@ class DateHelper
     {
         $months = [];
         for ($month = 1; $month <= 12; $month++) {
-            $months[$month] = Carbon::create()->month($month)->translatedFormat('F');
+            $months[$month] = Carbon::createFromDate(null, $month, 1)->translatedFormat('F');
         }
         return $months;
     }
+
+    
 
     public static function getDaysOfCurrentMonth()
     {

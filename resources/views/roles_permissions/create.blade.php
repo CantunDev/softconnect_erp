@@ -6,15 +6,24 @@
 
 @section('content')
     @component('components.breadcrumb')
-        @slot('title') Roles & Permisos @endslot
-        @slot('bcPrevText') Roles & Permisos @endslot
-        @slot('bcPrevLink') {{ route('roles_permissions.index') }} @endslot
-        @slot('bcActiveText') Nuevo Rol @endslot
+        @slot('title')
+            Roles & Permisos
+        @endslot
+        @slot('bcPrevText')
+            Roles & Permisos
+        @endslot
+        @slot('bcPrevLink')
+            {{ route('config.roles_permissions.index') }}
+        @endslot
+        @slot('bcActiveText')
+            Nuevo Rol
+        @endslot
     @endcomponent
 
     <div class="card">
         <div class="card-header py-3 d-flex align-items-center gap-2">
-            <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width:38px;height:38px">
+            <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                style="width:38px;height:38px">
                 <i class="bx bx-shield-plus text-primary font-size-18"></i>
             </div>
             <div>
@@ -24,11 +33,11 @@
         </div>
         <div class="card-body">
             @include('roles_permissions._form', [
-                'role'     => null,
-                'route'    => route('roles_permissions.store'),
-                'method'   => 'POST',
-                'btnText'  => 'Registrar Rol',
-                'isEdit'   => false,
+                'role' => null,
+                'route' => route('config.roles_permissions.store'),
+                'method' => 'POST',
+                'btnText' => 'Registrar Rol',
+                'isEdit' => false,
             ])
         </div>
     </div>

@@ -12,7 +12,7 @@
             Usuarios
         @endslot
         @slot('bcPrevLink')
-            {{ route('users.index') }}
+            {{ route('config.users.index') }}
         @endslot
         @slot('bcActiveText')
             Listado
@@ -21,12 +21,13 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('users.create') }}" class="btn btn-nexus-primary d-flex align-items-center gap-1">
+                <a href="{{ route('config.users.create') }}" class="btn btn-nexus-primary d-flex align-items-center gap-1">
                     <i class="bx bx-plus font-size-15"></i> Nuevo usuario
                 </a>
             </div>
             <div class="table-responsive">
-                <table id="table_users" class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
+                <table id="table_users"
+                    class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">#</th>
@@ -59,7 +60,7 @@
                 serverSide: true,
                 paging: true,
                 ajax: {
-                    url: '{!! route('users.index') !!}',
+                    url: '{!! route('config.users.index') !!}',
                 },
                 columns: [{
                         data: 'DT_RowIndex',

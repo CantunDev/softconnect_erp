@@ -34,13 +34,16 @@ class RolesPermissionsController extends Controller
         $permisos_cat = Permission::groupBy('category') ->get();
         $permisos = Permission::all();
         Artisan::call('optimize:clear');
-        return view('roles_permissions.edit', compact('role', 'permisos_cat', 'permisos'));
+        $users = $this->getUsersWithRelations();
+        return view('roles_permissions.edit', compact('role', 'permisos_cat', 'permisos', 'users'));
     }
 
     public function store(Request $request)
     {
         $role = Role::create($request->all());
         $role->permissions()->sync($request->get('permission'));
+        $role->users()->sync($request->get('users'));
+        
         return view('roles_permissions.index');
     }
 
@@ -49,6 +52,8 @@ class RolesPermissionsController extends Controller
         // return  $request->all();
         $role = Role::findOrFail($id);
         $role->permissions()->sync($request->get('permission'));
+        $role->users()->sync($request->get('users'));
+
         return view('roles_permissions.index');
     }
 

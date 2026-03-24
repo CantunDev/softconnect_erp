@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class PdfController extends Controller
 {
     // ── Método compartido para obtener cortes ─────────────────────
-    private function getCortes(Restaurant $restaurant, Request $request): array
+    private function getCortes(Restaurant $restaurants, Request $request): array
     {
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $start       = \Carbon\Carbon::parse($request->start_date)->startOfDay();
@@ -36,7 +36,7 @@ class PdfController extends Controller
         $projections = ($currentMonth && $currentYear)
             ? Projection::where('month', $currentMonth)
                 ->where('year', $currentYear)
-                ->where('restaurant_id', $restaurant->id)
+                ->where('restaurant_id', $restaurants->id)
                 ->first()
             : null;
 
@@ -68,11 +68,11 @@ class PdfController extends Controller
         return compact('cortes', 'projections', 'daysInMonth', 'daysPass', 'start', 'end');
     }
     // ── Export PDF ────────────────────────────────────────────────
-    public function exportPdf(?Business $business, Restaurant $restaurant, Request $request)
+    public function exportPdf(?Business $business, Restaurant $restaurants, Request $request)
     {
-        if ($business && $restaurant->business_id !== $business->id) abort(404);
+        if ($business && $restaurants->business_id !== $business->id) abort(404);
 
-        $data = $this->getCortes($restaurant, $request);
+        $data = $this->getCortes($restaurants, $request);
 
         $periodo = $request->filled('start_date')
             ? $request->start_date . ' al ' . $request->end_date
@@ -81,13 +81,13 @@ class PdfController extends Controller
         $pdf = Pdf::loadView('exports.pdf.dashboard-pdf', [
             'cortes'       => $data['cortes'],
             'projections'  => $data['projections'],
-            'restaurant'   => $restaurant,
+            'restaurant'   => $restaurants,
             'periodo'      => $periodo,
             'chart_ventas'     => $request->input('chart_ventas'),
             'chart_food_drink' => $request->input('chart_food_drink'),
             'chart_clientes'   => $request->input('chart_clientes'),
         ])->setPaper('letter', 'landscape');
 
-        return $pdf->download("reporte_{$restaurant->slug}_{$periodo}.pdf");
+        return $pdf->download("reporte_{$restaurants->slug}_{$periodo}.pdf");
     }
 }

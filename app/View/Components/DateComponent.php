@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use App\Helpers\DateHelper;
+use App\Models\Sfrt\Cheques;
 
 class DateComponent extends Component
 {   

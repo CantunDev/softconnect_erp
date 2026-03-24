@@ -8,19 +8,17 @@
             Usuario
         @endslot
         @slot('bcPrevLink')
-            {{ route('users.index') }}
+            {{ route('config.users.index') }}
         @endslot
         @slot('bcActiveText')
             Nueva usuario
         @endslot
     @endcomponent
-    @include('users._form',
-    [
-        'user' => new App\Models\User,
+    @include('users._form', [
+        'user' => new App\Models\User(),
         'method' => 'POST',
         'btnText' => 'Guardar',
-        'action' => route('users.store'),
-        'labelText' => 'Crear Nuevo Usuario'     
+        'action' => route('config.users.store'),
+        'labelText' => 'Crear Nuevo Usuario',
     ])
 @endsection
-

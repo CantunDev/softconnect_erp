@@ -42,7 +42,7 @@
                                     </h5>
                                     {{-- @can('create_providers') --}}
                                     <div class="flex-shrink-0">
-                                        <a href="{{ route('business.restaurants.providers.create', ['business' => request()->route('business'), 'restaurants' => request()->route('restaurants')]) }}"
+                                        <a href="{{ route('restaurants.providers.create', ['restaurant' => request()->route('restaurant')]) }}"
                                             class="btn btn-sm btn-success">
                                             <i class="mdi mdi-plus me-1"></i>
                                             Nuevo
@@ -174,9 +174,8 @@
                     providers: {
                         tableId: '#table_providers',
                         ajax: {
-                            url: '{!! route('business.restaurants.providers.index', [
-                                'business' => request()->route('business'),
-                                'restaurants' => request()->route('restaurants'),
+                            url: '{!! route('restaurants.providers.index', [
+                                'restaurant' => request()->route('restaurant'),
                             ]) !!}',
                             type: 'GET'
                         },
@@ -234,9 +233,8 @@
                     types: {
                         tableId: '#table_typeproviders',
                         ajax: {
-                            url: '{!! route('business.restaurants.typeproviders.index', [
-                                'business' => request()->route('business'),
-                                'restaurants' => request()->route('restaurants'),
+                            url: '{!! route('restaurants.typeproviders.index', [
+                                'restaurant' => request()->route('restaurant'),
                             ]) !!}',
                             type: 'GET'
                         },
@@ -285,9 +283,8 @@
                 e.preventDefault();
 
                 $.ajax({
-                    url: '{!! route('business.restaurants.typeproviders.store', [
-                        'business' => request()->route('business'),
-                        'restaurants' => request()->route('restaurants'),
+                    url: '{!! route('restaurants.typeproviders.store', [
+                        'restaurant' => request()->route('restaurant'),
                     ]) !!}',
                     type: 'POST',
                     data: $(this).serialize(),
@@ -399,9 +396,8 @@
                     var formattedId = id.toString().padStart(2, '0');
                     $.ajax({
                         type: 'PUT',
-                        url: '{!! route('business.restaurants.providers.suspend', [
-                            'business' => request()->route('business'),
-                            'restaurants' => request()->route('restaurants'),
+                        url: '{!! route('restaurants.providers.suspend', [
+                            'restaurant' => request()->route('restaurant'),
                             'providers' => ':id',
                         ]) !!}'.replace(':id', formattedId),
                         data: {

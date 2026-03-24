@@ -101,7 +101,7 @@ class BusinessController extends Controller
                     // }
                     if (Auth::user()->can('update_business')) {
                         if (!$result->trashed()) {
-                            $opciones .= '<a href="' . route('business.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1" title="Editar empresa" ><i class="mdi mdi-pencil font-size-18"></i></a>';
+                            $opciones .= '<a href="' . route('config.business.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1" title="Editar empresa" ><i class="mdi mdi-pencil font-size-18"></i></a>';
                             $opciones .= '<button type="button" onclick="btnSuspend(' . $result->id . ')" class="btn btn-sm text-secondary action-icon icon-dual-secondary p-1" title="Suspender empresa"><i class="mdi mdi-power-standby font-size-18"></i></button>';
                         }
                         if ($result->trashed()) {
@@ -168,7 +168,7 @@ class BusinessController extends Controller
 
 
         $business = Business::create($data);
-        return redirect()->route('business.index');
+        return redirect()->route('config.business.index');
     }
 
     /**
@@ -192,7 +192,7 @@ class BusinessController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BusinessRequest $request, $id)
+    public function update(BusinessRequestStore $request, $id)
     {
         //  return $request->all();
         $business = Business::findOrFail($id);
@@ -228,7 +228,7 @@ class BusinessController extends Controller
         $business->update($data);
 
         // Redirigir al índice con un mensaje de éxito
-        return redirect()->route('business.index')->with('success', 'Business updated successfully!');
+        return redirect()->route('config.business.index')->with('success', 'Business updated successfully!');
     }
 
     public function suspend($id)

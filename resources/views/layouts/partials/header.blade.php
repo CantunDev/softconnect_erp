@@ -1,44 +1,46 @@
 <header id="page-topbar">
-  <div class="navbar-header">
-    <div class="d-flex">
-      <!-- LOGO -->
-      <div class="navbar-brand-box">
-        <a href="{{ route('dashboard') }}" class="logo logo-dark">
-            <span class="logo-sm">
-                <span style="font-size: 1.2rem; font-weight: 800; color: var(--accent-violet);">N</span>
-            </span>
-            <span class="logo-lg">
-                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">
-                    <span style="color: var(--accent-violet);">Nexus</span><span style="color: var(--text-primary);">Rest</span>
-                </span>
-            </span>
-        </a>
+    <div class="navbar-header">
+        <div class="d-flex">
+            <!-- LOGO -->
+            <div class="navbar-brand-box">
+                <a href="{{ route('dashboard') }}" class="logo logo-dark">
+                    <span class="logo-sm">
+                        <span style="font-size: 1.2rem; font-weight: 800; color: var(--accent-violet);">N</span>
+                    </span>
+                    <span class="logo-lg">
+                        <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">
+                            <span style="color: var(--accent-violet);">Nexus</span><span
+                                style="color: var(--text-primary);">Rest</span>
+                        </span>
+                    </span>
+                </a>
 
-        <a href="{{ route('dashboard') }}" class="logo logo-light">
-            <span class="logo-sm">
-                <span style="font-size: 1.2rem; font-weight: 800; color: var(--accent-violet);">N</span>
-            </span>
-            <span class="logo-lg">
-                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">
-                    <span style="color: var(--accent-violet);">Nexus</span><span style="color: var(--accent-light);">Rest</span>
-                </span>
-            </span>
-        </a>
-    </div>
+                <a href="{{ route('dashboard') }}" class="logo logo-light">
+                    <span class="logo-sm">
+                        <span style="font-size: 1.2rem; font-weight: 800; color: var(--accent-violet);">N</span>
+                    </span>
+                    <span class="logo-lg">
+                        <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">
+                            <span style="color: var(--accent-violet);">Nexus</span><span
+                                style="color: var(--accent-light);">Rest</span>
+                        </span>
+                    </span>
+                </a>
+            </div>
 
-      <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
-        <i class="fa fa-fw fa-bars"></i>
-      </button>
+            <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
+                <i class="fa fa-fw fa-bars"></i>
+            </button>
 
-      <!-- App Search-->
-      {{-- <form class="app-search d-none d-lg-block">
+            <!-- App Search-->
+            {{-- <form class="app-search d-none d-lg-block">
         <div class="position-relative">
           <input type="text" class="form-control" placeholder="Search...">
           <span class="bx bx-search-alt"></span>
         </div>
       </form> --}}
 
-      {{-- <div class="dropdown dropdown-mega d-none d-lg-block ms-2">
+            {{-- <div class="dropdown dropdown-mega d-none d-lg-block ms-2">
         <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="false"
           aria-expanded="false">
           <span key="t-megamenu">Mega Menu</span>
@@ -170,11 +172,11 @@
 
         </div>
       </div> --}}
-    </div>
+        </div>
 
-    <div class="d-flex">
+        <div class="d-flex">
 
-      {{-- <div class="dropdown d-inline-block d-lg-none ms-2">
+            {{-- <div class="dropdown d-inline-block d-lg-none ms-2">
         <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="mdi mdi-magnify"></i>
@@ -194,7 +196,7 @@
         </div>
       </div> --}}
 
-      {{-- <div class="dropdown d-inline-block">
+            {{-- <div class="dropdown d-inline-block">
         <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
           <img id="header-lang-img" src="{{ asset('/skote/assets/images/flags/us.jpg') }}" alt="Header Language"
@@ -233,7 +235,7 @@
         </div>
       </div> --}}
 
-      {{-- <div class="dropdown d-none d-lg-inline-block ms-1">
+            {{-- <div class="dropdown d-none d-lg-inline-block ms-1">
         <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           <i class="bx bx-customize"></i>
@@ -285,24 +287,24 @@
         </div>
       </div> --}}
 
-      <div class="d-flex d-lg-inline-block font-size-20 mt-1 ms-1">
-        <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
-          <i class="bx bx-fullscreen"></i>
-        </button>
-      </div>
+            <div class="d-flex d-lg-inline-block font-size-20 mt-1 ms-1">
+                <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
+                    <i class="bx bx-fullscreen"></i>
+                </button>
+            </div>
 
-      <div class="d-flex align-items-center font-size-20 mb-1 ms-1">
-        <i class="bx bx-sun bx-spin mt-1 me-2"></i>
-        <div class="form-check form-switch">
-            <input type="checkbox" class="form-check-input" id="theme-toggle">
-        </div>
-        <i class="bx bx-moon bx-tada mt-1" style="margin-left: -0.25rem;"></i>
-    </div>
+            <div class="d-flex align-items-center font-size-20 mb-1 ms-1">
+                <i class="bx bx-sun bx-spin mt-1 me-2"></i>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="theme-toggle">
+                </div>
+                <i class="bx bx-moon bx-tada mt-1" style="margin-left: -0.25rem;"></i>
+            </div>
 
-    <input class="theme-choice d-none" type="checkbox" id="light-mode-switch" checked>
-    <input class="theme-choice d-none" type="checkbox" id="dark-mode-switch">
+            <input class="theme-choice d-none" type="checkbox" id="light-mode-switch" checked>
+            <input class="theme-choice d-none" type="checkbox" id="dark-mode-switch">
 
-      {{-- <div class="dropdown d-inline-block">
+            {{-- <div class="dropdown d-inline-block">
         <button type="button" class="btn header-item noti-icon waves-effect"
           id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
@@ -394,41 +396,37 @@
         </div>
       </div> --}}
 
-      <div class="dropdown d-inline-block">
-        <button type="button" class="btn header-item waves-effect d-flex align-items-center" 
-          id="page-header-user-dropdown"
-          data-bs-toggle="dropdown" 
-          aria-haspopup="true" 
-          aria-expanded="false">
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item waves-effect d-flex align-items-center"
+                    id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-          <img class="rounded-circle header-profile-user avatar-xs" 
-              src="{{ Auth::user()->avatar_url }}" 
-              alt="Header Avatar">
+                    <img class="rounded-circle header-profile-user avatar-xs" src="{{ Auth::user()->avatar_url }}"
+                        alt="Header Avatar">
 
-          <span class="d-none d-xl-inline-block ms-1">{{ Auth::user()->name }}</span>
-          <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
-      </button>
-        <div class="dropdown-menu dropdown-menu-end">
-          <!-- item-->
-          <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
-              class="bx bx-user font-size-16 align-middle me-1"></i> <span>{{ __('Profile') }}</span></a>
-          {{-- <a class="dropdown-item" href="#"><i class="bx bx-wallet font-size-16 align-middle me-1"></i>
+                    <span class="d-none d-xl-inline-block ms-1">{{ Auth::user()->name }}</span>
+                    <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <!-- item-->
+                    <a class="dropdown-item" href="{{ route('config.profile.edit', Auth::user()->id) }}"><i
+                            class="bx bx-user font-size-16 align-middle me-1"></i> <span>{{ __('Profile') }}</span></a>
+                    {{-- <a class="dropdown-item" href="#"><i class="bx bx-wallet font-size-16 align-middle me-1"></i>
             <span key="t-my-wallet">My Wallet</span></a>
           <a class="dropdown-item d-block" href="#"><span class="badge bg-success float-end">11</span><i
               class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Settings</span></a>
           <a class="dropdown-item" href="#"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i>
             <span key="t-lock-screen">Lock screen</span></a> --}}
-          <div class="dropdown-divider"></div>
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            @method('POST')
-            <button class="dropdown-item text-danger" type="submit">
-              <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
-              <span>{{ __('Log Out') }}</span></button>
-          </form>
-        </div>
-      </div>
+                    <div class="dropdown-divider"></div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        @method('POST')
+                        <button class="dropdown-item text-danger" type="submit">
+                            <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
+                            <span>{{ __('Log Out') }}</span></button>
+                    </form>
+                </div>
+            </div>
 
+        </div>
     </div>
-  </div>
 </header>

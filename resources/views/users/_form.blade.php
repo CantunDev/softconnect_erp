@@ -338,7 +338,8 @@
             <div class="col-sm-4 col-lg-4">
                 <label for="inputLastname" class="form-label">A. Paterno</label>
                 <input name="lastname" type="text" class="form-control @error('lastname') is-invalid @enderror"
-                    id="inputLastname" placeholder="Apellido paterno" value="{{ old('lastname', $user->lastname ?? '') }}">
+                    id="inputLastname" placeholder="Apellido paterno"
+                    value="{{ old('lastname', $user->lastname ?? '') }}">
                 @error('lastname')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -366,14 +367,14 @@
             <div class="col-sm-6 col-lg-4">
                 <label for="inputEmail" class="form-label">Correo electrónico</label>
                 <input type="email" name="email" id="inputEmail"
-                    class="form-control text-lowercase @error('email') is-invalid @enderror"
-                    placeholder="mail@mail.com" value="{{ old('email', $user->email ?? '') }}">
+                    class="form-control text-lowercase @error('email') is-invalid @enderror" placeholder="mail@mail.com"
+                    value="{{ old('email', $user->email ?? '') }}">
                 @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-        </div>
     </div>
+</div>
 </div>
 
 <div class="card">
@@ -382,16 +383,17 @@
 
         <div class="row g-3">
             <div class="col-sm-6 col-md-6 col-lg-6">
-                <label for="inputLogo" class="form-label">Imagen <span class="fw-normal text-muted">(opcional)</span></label>
+                <label for="inputLogo" class="form-label">Imagen <span
+                        class="fw-normal text-muted">(opcional)</span></label>
                 <input type="file" name="user_file" accept=".jpg,.jpeg,.png" id="inputLogo"
                     class="form-control @error('user_file') is-invalid @enderror" onchange="previewImage(event)">
-                
-                @if(isset($user) && $user->user_file)
+
+                @if (isset($user) && $user->user_file)
                     <small class="text-muted d-block mt-1">
                         <i class="fas fa-image me-1"></i> Imagen actual: {{ basename($user->user_file) }}
                     </small>
                 @endif
-                
+
                 @error('user_file')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -400,16 +402,18 @@
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <label class="form-label">Previsualización</label>
                 <div class="avatar-preview" id="avatarPreview">
-                    <div class="avatar-placeholder" id="avatarPlaceholder" style="{{ isset($user) && $user->user_file ? 'display: none;' : '' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="avatar-placeholder" id="avatarPlaceholder"
+                        style="{{ isset($user) && $user->user_file ? 'display: none;' : '' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <span>Haz clic para seleccionar imagen</span>
                         <span style="font-size: 0.75rem; opacity: 0.7;">JPG, PNG</span>
                     </div>
-                    
-                    @if(isset($user) && $user->user_file)
+
+                    @if (isset($user) && $user->user_file)
                         <img src="{{ Storage::url($user->user_file) }}" alt="Perfil" id="currentImage">
                     @endif
                 </div>
@@ -425,9 +429,9 @@
         <div class="row g-3">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <label for="business_id" class="form-label">Selecciona una opción</label>
-                <select class="form-control selectpicker" id="business_id" name="business_id[]" multiple data-live-search="true" data-actions-box="true" data-selected-text-format="count">
-                    <option value=""
-                        {{ in_array("", $selectedBusinessIds ?? []) ? 'selected' : '' }}>
+                <select class="form-control selectpicker" id="business_id" name="business_id[]" multiple
+                    data-live-search="true" data-actions-box="true" data-selected-text-format="count">
+                    <option value="" {{ in_array('', $selectedBusinessIds ?? []) ? 'selected' : '' }}>
                         Sin empresa / Solo restaurantes
                     </option>
                     @foreach ($business as $bs)
@@ -445,7 +449,8 @@
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <h4 class="card-title mb-4 d-flex align-items-center">
                     Selecciona tu restaurante
-                    <span class="selected-counter ms-2 badge bg-secondary" style="display: {{ isset($selectedRestaurantIds) && count($selectedRestaurantIds) > 0 ? 'inline-block' : 'none' }};">
+                    <span class="selected-counter ms-2 badge bg-secondary"
+                        style="display: {{ isset($selectedRestaurantIds) && count($selectedRestaurantIds) > 0 ? 'inline-block' : 'none' }};">
                         {{ isset($selectedRestaurantIds) ? count($selectedRestaurantIds) : 0 }} seleccionados
                     </span>
                 </h4>
@@ -458,10 +463,11 @@
                             </tr>
                         </thead>
                         <tbody id="restaurants-body">
-                            @if(isset($selectedRestaurantIds) && count($selectedRestaurantIds) > 0)
+                            @if (isset($selectedRestaurantIds) && count($selectedRestaurantIds) > 0)
                                 <tr>
                                     <td colspan="2" class="text-center text-muted">
-                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2"
+                                            role="status">
                                             <span class="visually-hidden">Cargando...</span>
                                         </div>
                                         Cargando restaurantes disponibles...
@@ -482,7 +488,7 @@
 
             <div class="col-12 mt-4 d-flex gap-2">
                 <button type="submit" form="create_users" class="btn btn-primary">{{ $btnText }}</button>
-                <a class="btn btn-outline-secondary" href="{{ route('users.index') }}">Cancelar</a>
+                <a class="btn btn-outline-secondary" href="{{ route('config.users.index') }}">Cancelar</a>
             </div>
         </div>
     </div>
@@ -490,178 +496,206 @@
 </form>
 
 @section('js')
-<script>
-/* ============================================
-   IMAGE PREVIEW
-============================================ */
-let currentImageUrl = '{{ isset($user) && $user->user_file ? Storage::url($user->user_file) : null }}';
+    <script>
+        /* ============================================
+           IMAGE PREVIEW
+        ============================================ */
+        let currentImageUrl = '{{ isset($user) && $user->user_file ? Storage::url($user->user_file) : null }}';
 
-function previewImage(event) {
-    const preview = document.getElementById('avatarPreview');
-    const placeholder = document.getElementById('avatarPlaceholder');
-    const file = event.target.files[0];
+        function previewImage(event) {
+            const preview = document.getElementById('avatarPreview');
+            const placeholder = document.getElementById('avatarPlaceholder');
+            const file = event.target.files[0];
 
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            if (placeholder) placeholder.style.display = 'none';
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (placeholder) placeholder.style.display = 'none';
 
-            const currentImg = document.getElementById('currentImage');
-            if (currentImg) currentImg.remove();
+                    const currentImg = document.getElementById('currentImage');
+                    if (currentImg) currentImg.remove();
 
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = 'Preview';
-            preview.appendChild(img);
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Preview';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                restoreImage();
+            }
+        }
+
+        function restoreImage() {
+            const preview = document.getElementById('avatarPreview');
+            const placeholder = document.getElementById('avatarPlaceholder');
+
+            preview.innerHTML = '';
+            if (placeholder) preview.appendChild(placeholder);
+
+            if (currentImageUrl) {
+                const img = document.createElement('img');
+                img.src = currentImageUrl;
+                img.alt = 'Perfil';
+                img.id = 'currentImage';
+                preview.appendChild(img);
+                if (placeholder) placeholder.style.display = 'none';
+            } else {
+                if (placeholder) placeholder.style.display = 'flex';
+            }
+        }
+
+        /* ============================================
+           VALIDATION RULES
+        ============================================ */
+        const rules = {
+            name: {
+                minLength: 3,
+                onlyLetters: true,
+                label: 'El nombre',
+                regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/
+            },
+            lastname: {
+                minLength: 3,
+                onlyLetters: true,
+                label: 'El apellido paterno',
+                regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/
+            },
+            surname: {
+                minLength: 3,
+                onlyLetters: true,
+                label: 'El apellido materno',
+                regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/
+            },
+            phone: {
+                digits: 10,
+                label: 'El teléfono',
+                regex: /^\d+$/
+            },
+            email: {
+                isEmail: true,
+                label: 'El correo',
+                regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            },
         };
-        reader.readAsDataURL(file);
-    } else {
-        restoreImage();
-    }
-}
 
-function restoreImage() {
-    const preview = document.getElementById('avatarPreview');
-    const placeholder = document.getElementById('avatarPlaceholder');
+        function validate(fieldName, value) {
+            const rule = rules[fieldName];
+            if (!rule) return null;
 
-    preview.innerHTML = '';
-    if (placeholder) preview.appendChild(placeholder);
+            if (!value || value.trim() === '') {
+                return fieldName === 'email' ? null : `${rule.label} es requerido`;
+            }
 
-    if (currentImageUrl) {
-        const img = document.createElement('img');
-        img.src = currentImageUrl;
-        img.alt = 'Perfil';
-        img.id = 'currentImage';
-        preview.appendChild(img);
-        if (placeholder) placeholder.style.display = 'none';
-    } else {
-        if (placeholder) placeholder.style.display = 'flex';
-    }
-}
+            if (rule.onlyLetters && !rule.regex.test(value)) return `${rule.label} solo puede contener letras`;
+            if (rule.minLength && value.trim().length < rule.minLength)
+                return `${rule.label} debe tener al menos ${rule.minLength} caracteres`;
 
-/* ============================================
-   VALIDATION RULES
-============================================ */
-const rules = {
-    name: { minLength: 3, onlyLetters: true, label: 'El nombre', regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/ },
-    lastname: { minLength: 3, onlyLetters: true, label: 'El apellido paterno', regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/ },
-    surname: { minLength: 3, onlyLetters: true, label: 'El apellido materno', regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/ },
-    phone: { digits: 10, label: 'El teléfono', regex: /^\d+$/ },
-    email: { isEmail: true, label: 'El correo', regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-};
+            if (rule.digits) {
+                if (!rule.regex.test(value)) return `${rule.label} solo puede contener números`;
+                if (value.length !== rule.digits) return `${rule.label} debe tener exactamente ${rule.digits} dígitos`;
+            }
 
-function validate(fieldName, value) {
-    const rule = rules[fieldName];
-    if (!rule) return null;
+            if (rule.isEmail && !rule.regex.test(value)) return `${rule.label} no tiene un formato válido`;
 
-    if (!value || value.trim() === '') {
-        return fieldName === 'email' ? null : `${rule.label} es requerido`;
-    }
-
-    if (rule.onlyLetters && !rule.regex.test(value)) return `${rule.label} solo puede contener letras`;
-    if (rule.minLength && value.trim().length < rule.minLength) return `${rule.label} debe tener al menos ${rule.minLength} caracteres`;
-
-    if (rule.digits) {
-        if (!rule.regex.test(value)) return `${rule.label} solo puede contener números`;
-        if (value.length !== rule.digits) return `${rule.label} debe tener exactamente ${rule.digits} dígitos`;
-    }
-
-    if (rule.isEmail && !rule.regex.test(value)) return `${rule.label} no tiene un formato válido`;
-
-    return null;
-}
-
-function showError(input, message) {
-    input.classList.add('is-invalid');
-    input.classList.remove('is-valid');
-
-    let feedback = input.nextElementSibling;
-    if (!feedback || !feedback.classList.contains('invalid-feedback')) {
-        feedback = document.createElement('div');
-        feedback.classList.add('invalid-feedback');
-        input.insertAdjacentElement('afterend', feedback);
-    }
-    feedback.textContent = message;
-}
-
-function showSuccess(input) {
-    input.classList.remove('is-invalid');
-    input.classList.add('is-valid');
-
-    const feedback = input.nextElementSibling;
-    if (feedback && feedback.classList.contains('invalid-feedback')) feedback.textContent = '';
-}
-
-/* ============================================
-   DOM READY
-============================================ */
-document.addEventListener('DOMContentLoaded', function() {
-
-    Object.keys(rules).forEach(fieldName => {
-        const input = document.querySelector(`[name="${fieldName}"]`);
-        if (!input) return;
-
-        input.addEventListener('input', function() {
-            const error = validate(fieldName, this.value);
-            error ? showError(this, error) : showSuccess(this);
-        });
-
-        input.addEventListener('blur', function() {
-            const error = validate(fieldName, this.value);
-            error ? showError(this, error) : showSuccess(this);
-        });
-    });
-
-    const preview = document.getElementById('avatarPreview');
-    const inputFile = document.getElementById('inputLogo');
-
-    if (preview && inputFile) {
-        preview.addEventListener('click', () => inputFile.click());
-        inputFile.addEventListener('click', function() { this.value = null; });
-    }
-
-    if ($.fn.selectpicker) {
-        $('.selectpicker').selectpicker('refresh');
-    }
-});
-
-/* ============================================
-   RESTAURANTS LOADER
-============================================ */
-$(document).ready(function() {
-
-    let selectedRestaurantIds = @json($selectedRestaurantIds ?? []);
-    selectedRestaurantIds = selectedRestaurantIds.map(id => Number(id));
-
-    function updateSelectedCounter() {
-        let count = $('input[name="restaurant_ids[]"]:checked').length;
-        let $counter = $('.selected-counter');
-
-        if (count > 0) {
-            $counter.text(count + ' seleccionados').show();
-        } else {
-            $counter.hide();
-        }
-    }
-
-    function renderRestaurants(data) {
-        let $tbody = $('#restaurants-body');
-        $tbody.empty();
-
-        if (!data.length) {
-            $tbody.append('<tr><td colspan="2" class="text-center text-muted py-4">No se encontraron restaurantes.</td></tr>');
-            return;
+            return null;
         }
 
-        data.forEach(function(restaurant) {
+        function showError(input, message) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
 
-            let imageUrl = restaurant.restaurant_file
-                ? `{{ Storage::url('') }}${restaurant.restaurant_file}`
-                : `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurant.name)}`;
+            let feedback = input.nextElementSibling;
+            if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+                feedback = document.createElement('div');
+                feedback.classList.add('invalid-feedback');
+                input.insertAdjacentElement('afterend', feedback);
+            }
+            feedback.textContent = message;
+        }
 
-            let isChecked = selectedRestaurantIds.includes(Number(restaurant.id)) ? 'checked' : '';
+        function showSuccess(input) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
 
-            let row = `
+            const feedback = input.nextElementSibling;
+            if (feedback && feedback.classList.contains('invalid-feedback')) feedback.textContent = '';
+        }
+
+        /* ============================================
+           DOM READY
+        ============================================ */
+        document.addEventListener('DOMContentLoaded', function() {
+
+            Object.keys(rules).forEach(fieldName => {
+                const input = document.querySelector(`[name="${fieldName}"]`);
+                if (!input) return;
+
+                input.addEventListener('input', function() {
+                    const error = validate(fieldName, this.value);
+                    error ? showError(this, error) : showSuccess(this);
+                });
+
+                input.addEventListener('blur', function() {
+                    const error = validate(fieldName, this.value);
+                    error ? showError(this, error) : showSuccess(this);
+                });
+            });
+
+            const preview = document.getElementById('avatarPreview');
+            const inputFile = document.getElementById('inputLogo');
+
+            if (preview && inputFile) {
+                preview.addEventListener('click', () => inputFile.click());
+                inputFile.addEventListener('click', function() {
+                    this.value = null;
+                });
+            }
+
+            if ($.fn.selectpicker) {
+                $('.selectpicker').selectpicker('refresh');
+            }
+        });
+
+        /* ============================================
+           RESTAURANTS LOADER
+        ============================================ */
+        $(document).ready(function() {
+
+            let selectedRestaurantIds = @json($selectedRestaurantIds ?? []);
+            selectedRestaurantIds = selectedRestaurantIds.map(id => Number(id));
+
+            function updateSelectedCounter() {
+                let count = $('input[name="restaurant_ids[]"]:checked').length;
+                let $counter = $('.selected-counter');
+
+                if (count > 0) {
+                    $counter.text(count + ' seleccionados').show();
+                } else {
+                    $counter.hide();
+                }
+            }
+
+            function renderRestaurants(data) {
+                let $tbody = $('#restaurants-body');
+                $tbody.empty();
+
+                if (!data.length) {
+                    $tbody.append(
+                        '<tr><td colspan="2" class="text-center text-muted py-4">No se encontraron restaurantes.</td></tr>'
+                    );
+                    return;
+                }
+
+                data.forEach(function(restaurant) {
+
+                    let imageUrl = restaurant.restaurant_file ?
+                        `{{ Storage::url('') }}${restaurant.restaurant_file}` :
+                        `https://avatar.oxro.io/avatar.svg?name=${encodeURIComponent(restaurant.name)}`;
+
+                    let isChecked = selectedRestaurantIds.includes(Number(restaurant.id)) ? 'checked' : '';
+
+                    let row = `
                 <tr>
                     <td style="width:40px;">
                         <div class="form-check">
@@ -679,88 +713,91 @@ $(document).ready(function() {
                         </div>
                     </td>
                 </tr>`;
-            $('#restaurants-body').append(row);
-        });
+                    $('#restaurants-body').append(row);
+                });
 
-        updateSelectedCounter();
-    }
+                updateSelectedCounter();
+            }
 
-    function loadRestaurants(businessIds, includeSinEmpresa) {
+            function loadRestaurants(businessIds, includeSinEmpresa) {
 
-        $('#restaurants-body').html('<tr><td colspan="2" class="text-center py-4"><div class="spinner-border spinner-border-sm"></div> Cargando...</td></tr>');
+                $('#restaurants-body').html(
+                    '<tr><td colspan="2" class="text-center py-4"><div class="spinner-border spinner-border-sm"></div> Cargando...</td></tr>'
+                );
 
-        $.ajax({
-            url: "{{ route('restaurants.get') }}",
-            type: "POST",
-            dataType: "json",
-            data: {
-                business_ids: businessIds,
-                include_sin_empresa: includeSinEmpresa,
-                _token: "{{ csrf_token() }}"
-            },
-            success: function(data) {
-                let flatData = Array.isArray(data) ? data.flat().filter(Boolean) : [];
-                renderRestaurants(flatData);
-            },
-            error: function() {
-                $('#restaurants-body').html('<tr><td colspan="2" class="text-danger text-center py-4">Error al cargar restaurantes</td></tr>');
+                $.ajax({
+                    url: "{{ route('config.restaurants.get') }}",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        business_ids: businessIds,
+                        include_sin_empresa: includeSinEmpresa,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        let flatData = Array.isArray(data) ? data.flat().filter(Boolean) : [];
+                        renderRestaurants(flatData);
+                    },
+                    error: function() {
+                        $('#restaurants-body').html(
+                            '<tr><td colspan="2" class="text-danger text-center py-4">Error al cargar restaurantes</td></tr>'
+                        );
+                    }
+                });
+            }
+
+            $('#business_id').on('change', function() {
+
+                let businessIds = $(this).val();
+
+                if (!Array.isArray(businessIds)) {
+                    businessIds = businessIds ? [businessIds] : [];
+                }
+
+                let includeSinEmpresa = businessIds.includes("");
+                let filteredIds = businessIds.filter(id => id !== "");
+
+                loadRestaurants(filteredIds, includeSinEmpresa);
+            });
+
+            $(document).on('change', 'input[name="restaurant_ids[]"]', updateSelectedCounter);
+
+            /* ✅ CARGA INICIAL (CREATE + EDIT) */
+            let initialBusinessIds = $('#business_id').val();
+
+            if (!Array.isArray(initialBusinessIds)) {
+                initialBusinessIds = initialBusinessIds ? [initialBusinessIds] : [];
+            }
+
+            let includeSinEmpresaInicial = initialBusinessIds.includes("");
+            let filteredInicial = initialBusinessIds.filter(id => id !== "");
+
+            if (includeSinEmpresaInicial || filteredInicial.length > 0) {
+                loadRestaurants(filteredInicial, includeSinEmpresaInicial);
             }
         });
-    }
 
-    $('#business_id').on('change', function() {
+        /* ============================================
+           FORM SUBMIT
+        ============================================ */
+        $('#create_users').on('submit', function(e) {
+            e.preventDefault();
 
-        let businessIds = $(this).val();
+            let seleccionados = [];
+            $('input[name="restaurant_ids[]"]:checked').each(function() {
+                seleccionados.push($(this).val());
+            });
 
-        if (!Array.isArray(businessIds)) {
-            businessIds = businessIds ? [businessIds] : [];
-        }
+            $('#restaurant_ids_field').remove();
 
-        let includeSinEmpresa = businessIds.includes("");
-        let filteredIds = businessIds.filter(id => id !== "");
+            $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'restaurant_ids')
+                .attr('id', 'restaurant_ids_field')
+                .val(seleccionados.join(','))
+                .appendTo(this);
 
-        loadRestaurants(filteredIds, includeSinEmpresa);
-    });
-
-    $(document).on('change', 'input[name="restaurant_ids[]"]', updateSelectedCounter);
-
-    /* ✅ CARGA INICIAL (CREATE + EDIT) */
-    let initialBusinessIds = $('#business_id').val();
-
-    if (!Array.isArray(initialBusinessIds)) {
-        initialBusinessIds = initialBusinessIds ? [initialBusinessIds] : [];
-    }
-
-    let includeSinEmpresaInicial = initialBusinessIds.includes("");
-    let filteredInicial = initialBusinessIds.filter(id => id !== "");
-
-    if (includeSinEmpresaInicial || filteredInicial.length > 0) {
-        loadRestaurants(filteredInicial, includeSinEmpresaInicial);
-    }
-});
-
-/* ============================================
-   FORM SUBMIT
-============================================ */
-$('#create_users').on('submit', function(e) {
-    e.preventDefault();
-
-    let seleccionados = [];
-    $('input[name="restaurant_ids[]"]:checked').each(function() {
-        seleccionados.push($(this).val());
-    });
-
-    $('#restaurant_ids_field').remove();
-
-    $('<input>')
-        .attr('type', 'hidden')
-        .attr('name', 'restaurant_ids')
-        .attr('id', 'restaurant_ids_field')
-        .val(seleccionados.join(','))
-        .appendTo(this);
-
-    this.submit();
-});
-</script>
-
+            this.submit();
+        });
+    </script>
 @endsection

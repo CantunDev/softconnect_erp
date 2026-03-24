@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 class ProvidersController extends Controller
 {
 
-    public function index(Business $business, Restaurant $restaurants,  Request $request, DateHelper $date_helper)
+    public function index(?Business $business, Restaurant $restaurants,  Request $request, DateHelper $date_helper)
     {
         if ($request->ajax()) {
             $providers = Provider::query();

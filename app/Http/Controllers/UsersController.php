@@ -75,7 +75,7 @@ class UsersController extends Controller
           // $opciones .= '<button type="button"  onclick="btnInfo('.$result->id.')" class="btn btn-sm action-icon icon-dual-blue"><i class="mdi mdi-dots-horizontal"></i></button>';
           // }
           if (Auth::user()->can('update_users')) {
-            $opciones .= '<a href="' . route('users.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
+            $opciones .= '<a href="' . route('config.users.edit', $result->id) . '" class="btn btn-sm text-warning action-icon icon-dual-warning p-1"><i class="mdi mdi-pencil font-size-18"></i></a>';
             if ($result->trashed()) {
               $opciones .= '<button type="button" onclick="btnRestore(' . $result->id . ')" class="btn btn-sm text-primary action-icon icon-dual-secondary p-1"><i class="mdi mdi-restore font-size-18"></i></button>';
             }
@@ -130,7 +130,7 @@ public function store(UserRequestStore $request)
       $restaurantIds = explode(',', $request->restaurant_ids);
       $user->restaurants()->attach($restaurantIds);
     }
-    return redirect()->route('users.index');
+    return redirect()->route('config.users.index');
 }
 
   /**
@@ -210,7 +210,7 @@ public function store(UserRequestStore $request)
           $user->restaurants()->sync([]);
       }
       
-      return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente');
+      return redirect()->route('config.users.index')->with('success', 'Usuario actualizado correctamente');
   }
 
   public function suspend($id)

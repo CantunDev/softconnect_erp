@@ -1,28 +1,28 @@
 @extends('layouts.master')
 @section('title')
-  Restaurantes |
+    Restaurantes |
 @endsection
 @section('content')
-  @component('components.breadcrumb')
-    @slot('title')
-      Restaurante
-    @endslot
-    @slot('bcPrevText')
-      Restaurante
-    @endslot
-    @slot('bcPrevLink')
-      {{ route('restaurants.index') }}
-    @endslot
-    @slot('bcActiveText')
-      Listado
-    @endslot
-  @endcomponent
+    @component('components.breadcrumb')
+        @slot('title')
+            Restaurante
+        @endslot
+        @slot('bcPrevText')
+            Restaurante
+        @endslot
+        @slot('bcPrevLink')
+            {{ route('config.restaurants.index') }}
+        @endslot
+        @slot('bcActiveText')
+            Listado
+        @endslot
+    @endcomponent
     <div class="card">
         <div class="card-body border-bottom">
             <div class="d-flex align-items-center">
                 <h5 class="mb-0 card-title flex-grow-1">Lista de Restaurantes</h5>
                 <div class="flex-shrink-0">
-                    <a href="{{route('restaurants.create')}}" class="btn btn-primary">Nuevo Restaurante</a>
+                    <a href="{{ route('config.restaurants.create') }}" class="btn btn-primary">Nuevo Restaurante</a>
                     {{-- <a href="#!" class="btn btn-light"><i class="mdi mdi-refresh"></i></a> --}}
                 </div>
             </div>
@@ -60,7 +60,8 @@
         <div class="card-body">
             <div class="table-responsive">
                 {{-- <table id="table_restaurants" class="table table-wrapper text-wrapper text-center align-middle dt-responsive nowrap w-100 table-check" id="job-list"> --}}
-                <table id="table_restaurants" class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
+                <table id="table_restaurants"
+                    class="table table-wrapper text-wrapper  dt-responsive nowrap w-100 align-middle table-nowrap table-hover">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">#</th>
@@ -79,183 +80,216 @@
         </div>
         <!-- end card body -->
     </div>
-          
 @endsection
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    $(document).ready(function(){
-        $('#table_restaurants').DataTable({
-            processing: true,
-            serverSide: true,
-            paging: true,
-            ajax: {
-                url: '{!! route('restaurants.index') !!}',
-            },
-            language: {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+    <script>
+        $(document).ready(function() {
+            $('#table_restaurants').DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                ajax: {
+                    url: '{!! route('config.restaurants.index') !!}',
+                },
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'restaurant', name: 'restaurant', orderable: false, searchable: false},
-                {data: 'description', name: 'description', orderable: false, searchable: false},
-                {data: 'assigned', name: 'assigned', orderable: false, searchable: false},
-                {data: 'ip', name: 'ip', orderable: false, searchable: false},
-                {data: 'status', name: 'status', orderable: false, searchable: false},
-                {data: 'action', name: 'action', orderable: false, searchable: false}
-            ],
+                    {
+                        data: 'restaurant',
+                        name: 'restaurant',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'description',
+                        name: 'description',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'assigned',
+                        name: 'assigned',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'ip',
+                        name: 'ip',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+            });
         });
-    });
-</script>
-<script>
-    function btnSuspend(id) {
-        Swal.fire({
-            title: "Desea suspender?",
-            text: "Por favor asegúrese y luego confirme!",
-            icon: 'warning',
-            showCancelButton: !0,
-            confirmButtonText: "¡Sí, suspender!",
-            cancelButtonText: "¡No, cancelar!",
-            reverseButtons: !0
-        }).then(function (e) {
-            if (e.value === true) {
-                $.ajax({
-                    type: 'PUT',
-                    url: "{{ url('suspend/restaurants') }}/" + id, 
-                    data: {
-                        id: id,
-                        _token: '{!! csrf_token() !!}'
-                    },
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log(response);
-                        if (response.success === true) {
+    </script>
+    <script>
+        function btnSuspend(id) {
+            Swal.fire({
+                title: "Desea suspender?",
+                text: "Por favor asegúrese y luego confirme!",
+                icon: 'warning',
+                showCancelButton: !0,
+                confirmButtonText: "¡Sí, suspender!",
+                cancelButtonText: "¡No, cancelar!",
+                reverseButtons: !0
+            }).then(function(e) {
+                if (e.value === true) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: "{{ url('config/suspend/restaurants') }}/" + id,
+                        data: {
+                            id: id,
+                            _token: '{!! csrf_token() !!}'
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            console.log(response);
+                            if (response.success === true) {
+                                Swal.fire({
+                                    title: "Hecho!",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "Hecho!",
+                                });
+                                $('#table_restaurants').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: response.message,
+                                    icon: "error",
+                                    confirmButtonText: "Cancelar!",
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    e.dismiss;
+                }
+            }, function(dismiss) {
+                return false;
+            })
+        }
+    </script>
+    <script>
+        function btnRestore(id) {
+            Swal.fire({
+                title: "Desea Restaurar?",
+                text: "Esta accion restaurara el restaurente",
+                icon: 'warning',
+                showCancelButton: !0,
+                confirmButtonText: "¡Sí, restaurar!",
+                cancelButtonText: "¡No, cancelar!",
+                reverseButtons: !0
+            }).then(function(e) {
+                if (e.value === true) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: "{{ url('config/restore/restaurants') }}/" + id,
+                        data: {
+                            id: id,
+                            _token: '{!! csrf_token() !!}'
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            console.log(response);
+                            if (response.success === true) {
+                                Swal.fire({
+                                    title: "Hecho!",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "Hecho!",
+                                });
+                                $('#table_restaurants').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: response.message,
+                                    icon: "error",
+                                    confirmButtonText: "Cancelar!",
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    e.dismiss;
+                }
+            }, function(dismiss) {
+                return false;
+            })
+        }
+    </script>
+    <script>
+        function btnDelete(id) {
+            Swal.fire({
+                title: "¿Desea eliminar?",
+                text: "Esta acción será irreversible!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: "¡Sí, eliminar!",
+                cancelButtonText: "¡No, cancelar!",
+                reverseButtons: true
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST', // ← Cambiar a POST
+                        url: "{{ url('config/restaurants') }}/" + id,
+                        data: {
+                            id: id,
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE' // ← Spoofing del método DELETE
+                        },
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if (response.success === true) {
+                                Swal.fire({
+                                    title: "¡Hecho!",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "Aceptar",
+                                }).then(function() {
+                                    $('#table_restaurants').DataTable().ajax.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "¡Error!",
+                                    text: response.message,
+                                    icon: "error",
+                                    confirmButtonText: "Cancelar",
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error(xhr.responseText);
                             Swal.fire({
-                                title: "Hecho!",
-                                text: response.message,
-                                icon: "success",
-                                confirmButtonText: "Hecho!",
-                            });
-                            $('#table_restaurants').DataTable().ajax.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: response.message,
+                                title: "¡Error!",
+                                text: "Ocurrió un error inesperado.",
                                 icon: "error",
-                                confirmButtonText: "Cancelar!",
+                                confirmButtonText: "Cerrar",
                             });
                         }
-                    }
-                });
-            } else {
-                e.dismiss;
-            }
-        }, function (dismiss) {
-            return false;
-        })
-    }
-</script>
-<script>
-    function btnRestore(id) {
-        Swal.fire({
-            title: "Desea Restaurar?",
-            text: "Esta accion restaurara el restaurente",
-            icon: 'warning',
-            showCancelButton: !0,
-            confirmButtonText: "¡Sí, restaurar!",
-            cancelButtonText: "¡No, cancelar!",
-            reverseButtons: !0
-        }).then(function (e) {
-            if (e.value === true) {
-                $.ajax({
-                    type: 'PUT',
-                    url: "{{ url('restore/restaurants') }}/" + id, 
-                    data: {
-                        id: id,
-                        _token: '{!! csrf_token() !!}'
-                    },
-                    dataType: 'JSON',
-                    success: function (response) {
-                        console.log(response);
-                        if (response.success === true) {
-                            Swal.fire({
-                                title: "Hecho!",
-                                text: response.message,
-                                icon: "success",
-                                confirmButtonText: "Hecho!",
-                            });
-                            $('#table_restaurants').DataTable().ajax.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: response.message,
-                                icon: "error",
-                                confirmButtonText: "Cancelar!",
-                            });
-                        }
-                    }
-                });
-            } else {
-                e.dismiss;
-            }
-        }, function (dismiss) {
-            return false;
-        })
-    }
-</script>
-<script>
-function btnDelete(id) {
-    Swal.fire({
-        title: "¿Desea eliminar?",
-        text: "Esta acción será irreversible!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: "¡Sí, eliminar!",
-        cancelButtonText: "¡No, cancelar!",
-        reverseButtons: true
-    }).then(function (result) {
-        if (result.isConfirmed) {
-            $.ajax({
-                type: 'POST',  // ← Cambiar a POST
-                url: "{{ url('restaurants') }}/" + id,
-                data: {
-                    id: id,
-                    _token: '{{ csrf_token() }}',
-                    _method: 'DELETE'  // ← Spoofing del método DELETE
-                },
-                dataType: 'JSON',
-                success: function (response) {
-                    if (response.success === true) {
-                        Swal.fire({
-                            title: "¡Hecho!",
-                            text: response.message,
-                            icon: "success",
-                            confirmButtonText: "Aceptar",
-                        }).then(function() {
-                            $('#table_restaurants').DataTable().ajax.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "¡Error!",
-                            text: response.message,
-                            icon: "error",
-                            confirmButtonText: "Cancelar",
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                    Swal.fire({
-                        title: "¡Error!",
-                        text: "Ocurrió un error inesperado.",
-                        icon: "error",
-                        confirmButtonText: "Cerrar",
                     });
                 }
             });
         }
-    });
-}
-</script>
+    </script>
 @endsection
