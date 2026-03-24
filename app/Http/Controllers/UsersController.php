@@ -188,7 +188,7 @@ public function store(UserRequestStore $request)
       $businessIds = array_filter($request->business_id ?? [], 'is_numeric');
 
       if (!empty($businessIds)) {
-          $user->business()->attach($businessIds);
+          $user->business()->sync($businessIds);
       }
       
       // Sincronizar restaurants - MANEJANDO CORRECTAMENTE EL CASO VACÍO
