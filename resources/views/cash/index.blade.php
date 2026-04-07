@@ -90,7 +90,6 @@
             // ── Flatpickr ────────────────────────────────────────────────
             flatpickr('#start-date', {
                 dateFormat: 'Y-m-d',
-                locale: 'es',
                 onChange: function(selectedDates, dateStr) {
                     if (dateStr) {
                         endPicker.set('minDate', dateStr);
@@ -102,7 +101,6 @@
 
             var endPicker = flatpickr('#end-date', {
                 dateFormat: 'Y-m-d',
-                locale: 'es',
                 onChange: function(selectedDates, dateStr) {
                     syncModeIndicator();
                 }
@@ -199,9 +197,6 @@
                 order: [
                     [1, 'desc']
                 ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
-                },
                 footerCallback: function(row, data, start, end, display) {
                     var api = this.api();
 

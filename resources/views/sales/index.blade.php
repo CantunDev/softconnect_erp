@@ -19,289 +19,295 @@
     @endcomponent
     <x-date-component />
     <x-date-searcher-component />
-    <x-sales.monthly-sales-component :restaurants="$restaurants" :errors="$errors" />
-    <x-sales.monthly-sales-food :restaurants="$restaurants" />
+    {{-- <x-sales.monthly-sales-component :restaurants="$restaurants" :errors="$errors" /> --}}
+    {{-- <x-sales.monthly-sales-food :restaurants="$restaurants" /> --}}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card" style="border: 2px solid #ccc">
+                <div class="card-body">
+                    {{-- <h4 class="card-title mb-4">Ventas del mes Restaurante</h4> --}}
+                    <div class="accordion accordion-flush" id="accordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button
+                                    style="background-color: {{ $restaurants->color_primary ?? '' }}; color: {{ $restaurants->color_accent ?? '' }}"
+                                    class="accordion-button fw-medium d-flex justify-content-between align-items-center"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseV"
+                                    aria-expanded="true" aria-controls="flush-collapseV">
+                                    <span>
+                                        <i class="bx bx-dollar font-size-12 align-middle me-1"></i>
+                                        Movimientos de caja {{ $restaurants->name }}
+                                    </span>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="flush-collapseV" class="accordion-collapse collapse show mb-4"
+                            aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlush">
+                            <div class="row">
+                                <div class="table-rep-plugin mt-2 ">
+                                    <div class="table-responsive mb-0" data-pattern="priority-columns">
+                                        <table id="salesMonthlyTable" class="table table-bordered table-striped">
+                                            <thead
+                                                style="background-color: {{ $restaurants->color_secondary ?? '' }}; color: {{ $restaurants->color_accent ?? '' }}">
+                                                <tr>
+                                                    <th data-priority="1">Fecha</th>
+                                                    <th data-priority="3" class="text-center">Clientes</th>
+                                                    <th data-priority="1">Total</th>
+                                                    <th data-priority="3">Iva</th>
+                                                    <th data-priority="3">Subtotal</th>
+                                                    <th data-priority="6">Efectivo</th>
+                                                    <th data-priority="6">Propinas</th>
+                                                    <th data-priority="6">Tarjeta</th>
+                                                    <th data-priority="6">Descuento</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Los datos se cargarán vía AJAX -->
+                                            </tbody>
+                                            <tfoot
+                                                style="background-color: {{ $restaurants->color_secondary ?? '' }}; color: {{ $restaurants->color_accent ?? '' }}">
+                                                <tr>
+                                                    <th>Total</th>
+                                                    <th id="total_clientes"></th>
+                                                    <th id="total_venta"></th>
+                                                    <th id="total_iva"></th>
+                                                    <th id="total_subtotal"></th>
+                                                    <th id="total_efectivo"></th>
+                                                    <th id="total_propina"></th>
+                                                    <th id="total_tarjeta"></th>
+                                                    <th id="total_descuento"></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    {{-- Script 2: Tabla y Filtros --}}
     <script>
-        // ── Flatpickr ────────────────────────────────────────────────
-        flatpickr('#start-date', {
-            dateFormat: 'Y-m-d',
-            locale: 'es',
-            onChange: function(selectedDates, dateStr) {
-                if (dateStr) {
-                    endPicker.set('minDate', dateStr);
-                    // Limpiar mes/año visualmente
+        $(document).ready(function() {
+            flatpickr('#start-date', {
+                dateFormat: 'Y-m-d',
+                onChange: function(selectedDates, dateStr) {
+                    if (dateStr) {
+                        endPicker.set('minDate', dateStr);
+                        syncModeIndicator();
+                    }
+                }
+            });
+            var endPicker = flatpickr('#end-date', {
+                dateFormat: 'Y-m-d',
+                onChange: function(selectedDates, dateStr) {
                     syncModeIndicator();
                 }
-            }
-        });
+            });
 
-        var endPicker = flatpickr('#end-date', {
-            dateFormat: 'Y-m-d',
-            locale: 'es',
-            onChange: function(selectedDates, dateStr) {
-                syncModeIndicator();
-            }
-        });
-        let table;
-        let tableFood;
+            var table = $('#salesMonthlyTable').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: false,
+                pageLength: -1,
+                order: [
+                    [0, 'asc']
+                ],
+                ajax: {
+                    url: '{!! route('business.restaurants.home.index', [
+                        'business' => request()->route('business'),
+                        'restaurants' => request()->route('restaurants'),
+                    ]) !!}',
+                    data: function(d) {
+                        var startDate = $('#start-date').val();
+                        var endDate = $('#end-date').val();
 
-        // =========================
-        // FUNCIONES GLOBALES
-        // =========================
+                        if (startDate && endDate) {
+                            d.start_date = startDate;
+                            d.end_date = endDate;
+                            d.month = null;
+                            d.year = null;
+                        } else {
+                            d.month = $('#sel-month').val();
+                            d.year = $('#sel-year').val();
+                            d.start_date = null;
+                            d.end_date = null;
+                        }
+                        d.ajax = true;
+                    },
+                    beforeSend: function() {
+                        $('#loading-indicator').removeClass('d-none');
+                    },
+                    complete: function() {
+                        $('#loading-indicator').addClass('d-none');
+                    },
+                    error: function(xhr) {
+                        $('#loading-indicator').addClass('d-none');
+                        Swal.fire('Error', 'Error al cargar los datos', 'error');
+                    }
+                },
+                columns: [{
+                        data: 'fecha_formateada',
+                        name: 'fecha',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'total_clientes',
+                        name: 'total_clientes',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'total_venta',
+                        name: 'total_venta'
+                    },
+                    {
+                        data: 'total_iva',
+                        name: 'total_iva'
+                    },
+                    {
+                        data: 'total_subtotal',
+                        name: 'total_subtotal'
+                    },
+                    {
+                        data: 'total_efectivo',
+                        name: 'total_efectivo'
+                    },
+                    {
+                        data: 'total_propina',
+                        name: 'total_propina'
+                    },
+                    {
+                        data: 'total_tarjeta',
+                        name: 'total_tarjeta'
+                    },
+                    {
+                        data: 'total_descuento',
+                        name: 'total_descuento'
+                    }
+                ],
+                order: [
+                    [0, 'asc']
+                ],
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api();
 
-        function recalcularTotales() {
-            if (!table) return;
+                    // Función para formatear moneda
+                    var formatCurrency = function(value) {
+                        return new Intl.NumberFormat('es-MX', {
+                            style: 'currency',
+                            currency: 'MXN',
+                            minimumFractionDigits: 2
+                        }).format(value);
+                    };
 
-            let total_clientes = 0;
-            let total_venta = 0;
-            let total_iva = 0;
-            let total_subtotal = 0;
-            let total_efectivo = 0;
-            let total_propina = 0;
-            let total_tarjeta = 0;
-            let total_descuento = 0;
+                    // Calcular totales
+                    var totalClientes = api.column(1, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseInt(b) || 0);
+                    }, 0);
 
-            table.rows({
-                search: 'applied'
-            }).every(function() {
-                let rowData = this.data();
-                if (rowData) {
-                    total_clientes += parseFloat(rowData[1]) || 0;
-                    total_venta += parseFloat(rowData[2]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_iva += parseFloat(rowData[3]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_subtotal += parseFloat(rowData[4]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_efectivo += parseFloat(rowData[5]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_propina += parseFloat(rowData[6]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_tarjeta += parseFloat(rowData[7]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_descuento += parseFloat(rowData[8]?.toString().replace(/[$,]/g, '')) || 0;
+                    var totalVenta = api.column(2, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    var totalIva = api.column(3, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    var totalSubtotal = api.column(4, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    var totalEfectivo = api.column(5, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    var totalPropina = api.column(6, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    var totalTarjeta = api.column(7, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    var totalDescuento = api.column(8, {
+                        search: 'applied'
+                    }).data().reduce(function(a, b) {
+                        return a + (parseFloat(b) || 0);
+                    }, 0);
+
+                    // Actualizar totales en el footer
+                    $('#total_clientes').text(totalClientes);
+                    $('#total_venta').text(formatCurrency(totalVenta));
+                    $('#total_iva').text(formatCurrency(totalIva));
+                    $('#total_subtotal').text(formatCurrency(totalSubtotal));
+                    $('#total_efectivo').text(formatCurrency(totalEfectivo));
+                    $('#total_propina').text(formatCurrency(totalPropina));
+                    $('#total_tarjeta').text(formatCurrency(totalTarjeta));
+                    $('#total_descuento').text(formatCurrency(totalDescuento));
                 }
             });
-
-            actualizarFooterTotales({
-                clientes: total_clientes,
-                venta: total_venta,
-                iva: total_iva,
-                subtotal: total_subtotal,
-                efectivo: total_efectivo,
-                propina: total_propina,
-                tarjeta: total_tarjeta,
-                descuento: total_descuento
-            });
-        }
-
-        function recalcularTotalesFood() {
-            if (!tableFood) return;
-
-            let total_food = 0;
-            let total_desc_food = 0;
-            let total_drinks = 0;
-            let total_desc_drinks = 0;
-            let total_pct_food = 0;
-            let total_pct_drinks = 0;
-            let contador = 0;
-
-            tableFood.rows({
-                search: 'applied'
-            }).every(function() {
-                let rowData = this.data();
-                if (rowData) {
-                    total_food += parseFloat(rowData[1]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_desc_food += parseFloat(rowData[2]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_drinks += parseFloat(rowData[4]?.toString().replace(/[$,]/g, '')) || 0;
-                    total_desc_drinks += parseFloat(rowData[5]?.toString().replace(/[$,]/g, '')) || 0;
-
-                    total_pct_food += parseFloat(rowData[3]?.toString().replace(/[%]/g, '')) || 0;
-                    total_pct_drinks += parseFloat(rowData[6]?.toString().replace(/[%]/g, '')) || 0;
-
-                    contador++;
-                }
-            });
-
-            let avg_food = contador ? total_pct_food / contador : 0;
-            let avg_drinks = contador ? total_pct_drinks / contador : 0;
-
-            actualizarFooterTotalesFood({
-                total_food,
-                total_desc_food,
-                avg_food,
-                total_drinks,
-                total_desc_drinks,
-                avg_drinks
-            });
-        }
-
-        function actualizarFooterTotales(t) {
-            $('#total_clientes').text(t.clientes.toFixed(0));
-            $('#total_venta').text('$' + t.venta.toFixed(2));
-            $('#total_iva').text('$' + t.iva.toFixed(2));
-            $('#total_subtotal').text('$' + t.subtotal.toFixed(2));
-            $('#total_efectivo').text('$' + t.efectivo.toFixed(2));
-            $('#total_propina').text('$' + t.propina.toFixed(2));
-            $('#total_tarjeta').text('$' + t.tarjeta.toFixed(2));
-            $('#total_descuento').text('$' + t.descuento.toFixed(2));
-        }
-
-        function actualizarFooterTotalesFood(t) {
-            $('#total_food').text('$' + t.total_food.toFixed(2));
-            $('#total_desc_food').text('$' + t.total_desc_food.toFixed(2));
-            $('#avg_food').text(t.avg_food.toFixed(1) + '%');
-            $('#total_drinks').text('$' + t.total_drinks.toFixed(2));
-            $('#total_desc_drinks').text('$' + t.total_desc_drinks.toFixed(2));
-            $('#avg_drinks').text(t.avg_drinks.toFixed(1) + '%');
-        }
-
-        function actualizarTabla(selector, html, callback) {
-            if ($.fn.DataTable.isDataTable(selector)) {
-                $(selector).DataTable().destroy();
-            }
-
-            let temp = $('<div>').html(html);
-            let tbody = temp.find(selector + ' tbody').html();
-
-            $(selector + ' tbody').html(tbody);
-
-            return $(selector)
-                .on('init.dt draw.dt', callback)
-                .DataTable({
-                    responsive: true,
-                    order: [
-                        [0, 'asc']
-                    ],
-                    pageLength: -1
-                });
-        }
-
-        // =========================
-        // READY
-        // =========================
-
-        $(document).ready(function() {
-
-            // Ventas
-            table = $('#datatable_ventas')
-                .on('init.dt draw.dt', recalcularTotales)
-                .DataTable({
-                    responsive: true,
-                    order: [
-                        [0, 'asc']
-                    ],
-                    pageLength: -1
-                });
-
-            // Food & Drinks
-            tableFood = $('#datatable_ventas_food')
-                .on('init.dt draw.dt', recalcularTotalesFood)
-                .DataTable({
-                    responsive: true,
-                    order: [
-                        [0, 'asc']
-                    ],
-                    pageLength: -1
-                });
-
-            // =========================
-            // FILTRO
-            // =========================
             $('#btn-filter').on('click', function() {
+                var startDate = $('#start-date').val();
+                var endDate = $('#end-date').val();
 
-                let start = $('#start-date').val();
-                let end = $('#end-date').val();
-
-                if ((start && !end) || (!start && end)) {
-                    alert('Selecciona ambas fechas');
+                if ((startDate && !endDate) || (!startDate && endDate)) {
+                    Swal.fire('Atención', 'Selecciona tanto la fecha inicio como la fecha fin.', 'warning');
                     return;
                 }
 
-                let payload = (start && end) ? {
-                    start_date: start,
-                    end_date: end
-                } : {
-                    month: $('#sel-month').val(),
-                    year: $('#sel-year').val()
-                };
-
-                $('#loading-indicator').removeClass('d-none');
-                $('#btn-filter').prop('disabled', true);
-
-                $.ajax({
-                    url: @if ($restaurants->business_id)
-                        '{{ route('business.restaurants.home.filter', ['business' => $restaurants->business->slug, 'restaurants' => $restaurants->slug]) }}'
-                    @else
-                        '{{ route('restaurants.home.filter', ['restaurants' => $restaurants->slug]) }}'
-                    @endif ,
-                    method: 'GET',
-                    data: payload,
-
-                    success: function(res) {
-
-                        if (res.rowsVentas) {
-                            table = actualizarTabla('#datatable_ventas', res.rowsVentas,
-                                recalcularTotales);
-                        }
-
-                        if (res.rowsFoodDrink) {
-                            tableFood = actualizarTabla('#datatable_ventas_food', res
-                                .rowsFoodDrink, recalcularTotalesFood);
-                        }
-                    },
-
-                    complete: function() {
-                        $('#loading-indicator').addClass('d-none');
-                        $('#btn-filter').prop('disabled', false);
-                    }
-                });
+                table.ajax.reload();
+            });
+            // ── Limpiar rango ────────────────────────────────────────────
+            $('#btn-clear-range').on('click', function() {
+                $('#start-date').val('');
+                $('#end-date').val('');
+                $(this).addClass('d-none');
+                syncModeIndicator();
+                table.ajax.reload();
+            });
+            // ── Mostrar botón limpiar cuando hay rango completo ──────────
+            $('#start-date, #end-date').on('change', function() {
+                var hasRange = $('#start-date').val() && $('#end-date').val();
+                $('#btn-clear-range').toggleClass('d-none', !hasRange);
+                syncModeIndicator();
+            });
+            // ── Cambio de mes/año limpia el rango y recarga ───────────────
+            $('#sel-month, #sel-year').on('change', function() {
+                $('#start-date').val('');
+                $('#end-date').val('');
+                $('#btn-clear-range').addClass('d-none');
+                syncModeIndicator();
+                table.ajax.reload();
             });
         });
-    </script>
-    <script>
-        $(document).ready(function() {
-            // Exportar PDF
-            $('#btn-export-pdf').on('click', function(e) {
-                e.preventDefault();
-                // Mostrar spinner
-                $(this).prop('disabled', true);
-                $('#pdf-spinner').removeClass('d-none');
-                // Obtener filtros actuales
-                var startDate = $('#start-date').val();
-                var endDate = $('#end-date').val();
-                var month = $('#sel-month').val();
-                var year = $('#sel-year').val();
-                console.log(startDate, endDate, month, year);
-
-                var URL =
-                    @if ($restaurants->business_id)
-                        '{{ route('business.restaurants.export.pdf.monthly', [
-                            'business' => $restaurants->business->slug,
-                            'restaurants' => $restaurants->slug,
-                        ]) }}'
-                    @else
-                        '{{ route('restaurants.export.pdf.monthly', [
-                            'restaurants' => $restaurants->slug,
-                        ]) }}'
-                    @endif ;
-                // Construir parámetros
-                var params = new URLSearchParams();
-
-                if (startDate && endDate) {
-                    params.append('start_date', startDate);
-                    params.append('end_date', endDate);
-                } else {
-                    params.append('month', month);
-                    params.append('year', year);
-                }
-
-                window.location.href = URL + '?' + params.toString();
-
-                setTimeout(function() {
-                    $('#btn-export-pdf').prop('disabled', false);
-                    $('#pdf-spinner').addClass('d-none');
-                }, 3000);
-            });
-        });
+        // ── Indicador visual del modo activo ────────────────────────────
+        function syncModeIndicator() {
+            var hasRange = $('#start-date').val() && $('#end-date').val();
+            if (hasRange) {
+                $('#sel-month, #sel-year').addClass('opacity-50');
+            } else {
+                $('#sel-month, #sel-year').removeClass('opacity-50');
+            }
+        }
     </script>
 @endsection
