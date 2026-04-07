@@ -109,7 +109,7 @@ class CashMovementsController extends Controller
         ->addColumn('estatus', function ($result) {
             return $result->cancelado
                 ? '<span class="badge badge-soft-danger">Cancelado</span>'
-                : '<span class="badge badge-soft-success">Activo</span>';
+                : '<span class="badge badge-soft-success">Pagado</span>';
         })
         ->addColumn('action', function ($result) {
             $id       = $result->id;
